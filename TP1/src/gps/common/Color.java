@@ -2,5 +2,6 @@ package gps.common;
 
 public enum Color {
 	Red,
-	Yellow
+	Yellow,
+	Grey
 }
