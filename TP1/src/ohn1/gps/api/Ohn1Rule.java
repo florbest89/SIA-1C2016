@@ -50,6 +50,10 @@ public class Ohn1Rule implements GPSRule{
 			throw new NotAppliableException();
 		}
 		
+		if(isRowComplete(clone)){
+			clone.CompleteRow(row);
+		}
+		
 		return clone;
 	}
 	
@@ -82,6 +86,28 @@ public class Ohn1Rule implements GPSRule{
 		
 		if(count >= 3){
 			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean isRowComplete(Ohn1State state){
+		
+		for(int col = 0 ; col < Ohn1State.BOARD_SIZE; col++){
+			int sameColor = 0;
+			int current = Cell.Grey.getValue();
+		
+			int cell = state.getCell(row, col);
+				
+			if(!Cell.sameColor(current, cell)){
+				current = cell;
+				sameColor = 0;
+			} else {
+				sameColor++;
+				if(sameColor >= 3){
+					return false;
+				}
+			}
 		}
 		
 		return true;

@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gps.api.GPSState;
-import gps.common.BoardSelector;
-import gps.common.Cell;
-import gps.common.Cell;
+import gps.common.*;
+
 
 public class Ohn1State implements GPSState{
 	
@@ -56,6 +55,10 @@ public class Ohn1State implements GPSState{
 	
 	public RowStats getRowStat(int row){
 		return rowStats.get(row);
+	}
+	
+	public void CompleteRow(int row){
+		rowStats.get(row).Complete();
 	}
 	
 	public int getCell(int i, int j){

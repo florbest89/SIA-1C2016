@@ -37,6 +37,12 @@ public class Ohn1Problem implements GPSProblem{
 			return false;
 		}
 		
+		if(checkSameCols(ohn1State)){
+			return false;
+		}
+		
+		//TODO: CheckSameRows
+		
 		
 		return false;
 	}
@@ -66,6 +72,28 @@ public class Ohn1Problem implements GPSProblem{
 		return true;		
 	}
 
+	private boolean checkSameCols(Ohn1State state){
+		
+		boolean check = false;
+		
+		for(int j = 0 ; j < Ohn1State.BOARD_SIZE && !check; j++){
+			for(int k = j + 1 ; k < Ohn1State.BOARD_SIZE && !check; k++){
+				
+				check = true;
+				
+				for(int i = 0; i < Ohn1State.BOARD_SIZE && check; i++){
+					check = check && Cell.sameColor(state.getCell(i, j), state.getCell(i, k));
+				}
+				
+				if(check){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+		
+	}
 
 	@Override
 	public List<GPSRule> getRules() {
