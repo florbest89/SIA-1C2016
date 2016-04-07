@@ -6,23 +6,22 @@ import java.util.List;
 import gps.api.GPSState;
 import gps.common.BoardSelector;
 import gps.common.Cell;
+import gps.common.Cell;
 
 public class Ohn1State implements GPSState{
 	
-	private Cell[][] board;
+	private int[][] board;
 	private List<RowStats> rowStats;
-	private int board_size;
+	public static int BOARD_SIZE = 6;
 	
-	public Ohn1State(int size){
-		initializeBoard(size);
-		initializeRowStats(size);
-		this.board_size = size;
+	public Ohn1State(){
+		initializeBoard(BOARD_SIZE);
+		initializeRowStats(BOARD_SIZE);
 	}
 	
-	public Ohn1State(Cell[][] board, List<RowStats> stats, int size){
+	public Ohn1State(int[][] board, List<RowStats> stats){
 		this.board = board;
 		this.rowStats = stats;
-		this.board_size = size;
 	}
 	
 	public boolean equals(Object state){
@@ -37,14 +36,10 @@ public class Ohn1State implements GPSState{
 		
 		Ohn1State other = (Ohn1State) state;
 		
-		if(other.getSize() != board_size){
-			return false;
-		}
-		
-		for(int i = 0; i < board_size ; i++){
-			for(int j = 0; j < board_size ; j++){
+		for(int i = 0; i < BOARD_SIZE ; i++){
+			for(int j = 0; j < BOARD_SIZE ; j++){
 				
-				if(!other.getCell(i, j).equals(board[i][j])){
+				if(other.getCell(i, j) != board[i][j]){
 					return false;
 				}
 			}
@@ -54,24 +49,25 @@ public class Ohn1State implements GPSState{
 		
 	}
 	
+	/*It is only used when the solver starts*/
+	public static void setSize(int size){
+		Ohn1State.BOARD_SIZE = size;
+	}
+	
 	public RowStats getRowStat(int row){
 		return rowStats.get(row);
 	}
 	
-	public Cell getCell(int i, int j){
+	public int getCell(int i, int j){
 		return board[i][j];
 	}
 	
-	public void setCell(Cell cell,int i, int j){
+	public void setCell(int cell,int i, int j){
 		board[i][j] = cell;
 	}
 	
-	public int getSize(){
-		return board_size;
-	}
-	
 	public Ohn1State clone(){
-		return new Ohn1State(cloneBoard(), cloneStats(), board_size);
+		return new Ohn1State(cloneBoard(), cloneStats());
 	}
 	
 	private void initializeBoard(int size){
@@ -89,13 +85,13 @@ public class Ohn1State implements GPSState{
 		}
 	}
 	
-	private Cell[][] cloneBoard(){
+	private int[][] cloneBoard(){
 		
-		Cell[][] board = new Cell[board_size][board_size];
+		int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
 		
-		for(int i = 0; i < board_size ; i++){
-			for(int j = 0 ; j <= board_size ; j++){
-				board[i][j] = this.board[i][j].clone();
+		for(int i = 0; i < BOARD_SIZE ; i++){
+			for(int j = 0 ; j <= BOARD_SIZE ; j++){
+				board[i][j] = this.board[i][j];
 			}
 		}
 		

@@ -1,46 +1,32 @@
 package gps.common;
 
-public class Cell {
+public enum Cell {
+	Red(0),	Yellow(1), Grey(2), RedFixed(3), YellowFixed(4);
 	
-	private Color color;
-	private boolean fixed;
+	private final int value;
 	
-	public Cell(Color color, boolean fixed){
-		this.color = color;
-		this.fixed = fixed;
+	private Cell(int value){
+		this.value = value;
 	}
 	
-	public void setColor(Color color){
-		this.color = color;
+	public int getValue(){
+		return value;
 	}
 	
-	public Color getColor(){
-		return this.color;
+	public static boolean isFixed(int value){
+		return value == Red.getValue() || value == Yellow.getValue();
 	}
 	
-	public boolean isFixed(){
-		return fixed;
-	}
-	
-	public Cell clone(){
-		return new Cell(color,fixed);
-	}
-	
-	@Override
-	public boolean equals(Object other){
+	public static boolean sameColor(int color1, int color2){
 		
-		if(other == null){
-			return false;
+		if(color1 == Red.getValue() || color1 == RedFixed.getValue()){
+			return color2 == Red.getValue() || color2 == RedFixed.getValue();
 		}
 		
-		if(other.getClass() != Cell.class){
-			return false;
+		if(color1 == Yellow.getValue() || color1 == Yellow.getValue()){
+			return color2 == Yellow.getValue() || color2 == YellowFixed.getValue();
 		}
 		
-		Cell other_cell = (Cell) other;
-		
-		return fixed == other_cell.isFixed() && color.equals(other_cell.getColor());
-		
+		return color1 == color2;
 	}
-	
 }

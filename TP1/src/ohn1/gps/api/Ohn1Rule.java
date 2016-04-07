@@ -2,7 +2,7 @@ package ohn1.gps.api;
 
 import gps.api.GPSRule;
 import gps.api.GPSState;
-import gps.common.Cell;
+import gps.common.*;
 import gps.exception.NotAppliableException;
 
 public class Ohn1Rule implements GPSRule{	
@@ -30,14 +30,14 @@ public class Ohn1Rule implements GPSRule{
 			throw new NotAppliableException();
 		}
 		
-		Cell cell1 = clone.getCell(row, col1);
-		Cell cell2 = clone.getCell(row, col2);
+		int cell1 = clone.getCell(row, col1);
+		int cell2 = clone.getCell(row, col2);
 		
-		if(cell1.isFixed() || cell2.isFixed()){
+		if(Cell.isFixed(cell1) || Cell.isFixed(cell2)){
 			throw new NotAppliableException();
 		}
 		
-		if(cell1.getColor().equals(cell2.getColor())){
+		if(Cell.sameColor(cell1, cell2)){
 			throw new NotAppliableException();
 		}
 		
@@ -55,14 +55,14 @@ public class Ohn1Rule implements GPSRule{
 	
 	private boolean isValid(int col, Ohn1State state){
 		
-		Cell cell = state.getCell(row, col);
+		int cell = state.getCell(row, col);
 		
 		int count = 1;
 		boolean breakFlag = false;
 		
 		/*Check to the left*/
 		for(int j = col - 1 ; j >= 0 && j != col - 3 && !breakFlag ; j--){
-			if(state.getCell(row, j).getColor().equals(cell.getColor())){
+			if(Cell.sameColor(state.getCell(row, j), cell)){
 				count ++;
 			} else {
 				breakFlag = true;
@@ -72,8 +72,8 @@ public class Ohn1Rule implements GPSRule{
 		breakFlag = false;
 		
 		/*Check to the right*/
-		for(int j = col + 1 ; j < state.getSize() && j != col + 3 && !breakFlag ; j++){
-			if(state.getCell(row, j).getColor().equals(cell.getColor())){
+		for(int j = col + 1 ; j < Ohn1State.BOARD_SIZE && j != col + 3 && !breakFlag ; j++){
+			if(Cell.sameColor(state.getCell(row, j), cell)){
 				count ++;
 			} else {
 				breakFlag = true;
