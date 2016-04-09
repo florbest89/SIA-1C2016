@@ -99,15 +99,16 @@ public class Ohn1Rule implements GPSRule{
 	
 	private boolean isRowComplete(Ohn1State state){
 		
+		int current = Cell.Grey.getValue();
+		int sameColor = 1;
+		
 		for(int col = 0 ; col < Ohn1State.BOARD_SIZE; col++){
-			int sameColor = 0;
-			int current = Cell.Grey.getValue();
 		
 			int cell = state.getCell(row, col);
 				
 			if(!Cell.sameColor(current, cell)){
 				current = cell;
-				sameColor = 0;
+				sameColor = 1;
 			} else {
 				sameColor++;
 				if(sameColor >= 3){

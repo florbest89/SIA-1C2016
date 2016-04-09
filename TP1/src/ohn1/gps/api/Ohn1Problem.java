@@ -48,14 +48,27 @@ public class Ohn1Problem implements GPSProblem{
 		return true;
 	}
 	
-	public void prepareBoard(Ohn1State state){
+	public void prepareBoard(Ohn1State state){		
 		
 		for(int i = 0; i < Ohn1State.BOARD_SIZE ; i++){
 			
 			int red = Ohn1State.BOARD_SIZE / 2;
 			int yellow = Ohn1State.BOARD_SIZE / 2;
 			
-			for(int j = 0 ; j < Ohn1State.BOARD_SIZE && yellow > 0 && red > 0 ; j++){
+			/*Check how many red and yellow cells needed*/
+			for(int j = 0; j < Ohn1State.BOARD_SIZE ; j++){
+				
+				if(state.getCell(i, j) == Cell.RedFixed.getValue()){
+					red --;
+				}
+				
+				if(state.getCell(i, j) == Cell.YellowFixed.getValue()){
+					yellow--;
+				}				
+			}			
+			
+			/*Complete row*/
+			for(int j = 0 ; j < Ohn1State.BOARD_SIZE && (yellow > 0 || red > 0) ; j++){
 				int cell = state.getCell(i, j);
 				
 				if(cell == Cell.Grey.getValue()){
@@ -68,6 +81,34 @@ public class Ohn1Problem implements GPSProblem{
 					}
 				}
 			}
+			
+			/*Check for complete rows*/
+			for(int row = 0 ; row < Ohn1State.BOARD_SIZE ; row++){
+				
+				boolean notcomplete = false;
+				int current = Cell.Grey.getValue();
+				int sameColor = 1;
+				
+				for(int col = 0 ; col < Ohn1State.BOARD_SIZE && !notcomplete ; col++){
+				
+					int cell = state.getCell(row, col);
+						
+					if(!Cell.sameColor(current, cell)){
+						current = cell;
+						sameColor = 1;
+					} else {
+						sameColor++;
+						if(sameColor >= 3){
+							notcomplete = true;
+						}
+					}
+				}
+				
+				if(!notcomplete){
+					state.CompleteRow(row);					
+				}
+			}
+			
 		}
 		
 	}
@@ -75,7 +116,7 @@ public class Ohn1Problem implements GPSProblem{
 	private boolean checkThreeCellsRuleInCol(Ohn1State state){
 		
 		for(int col = 0 ; col < Ohn1State.BOARD_SIZE; col++){
-			int sameColor = 0;
+			int sameColor = 1;
 			int current = Cell.Grey.getValue();
 			
 			for(int row = 0 ; row < Ohn1State.BOARD_SIZE; row++){
@@ -84,7 +125,7 @@ public class Ohn1Problem implements GPSProblem{
 				
 				if(!Cell.sameColor(current, cell)){
 					current = cell;
-					sameColor = 0;
+					sameColor = 1;
 				} else {
 					sameColor++;
 					if(sameColor >= 3){
