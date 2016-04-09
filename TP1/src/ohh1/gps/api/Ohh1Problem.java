@@ -14,16 +14,23 @@ public class Ohh1Problem implements GPSProblem{
 	 * Default Heuristic
 	 */
 	public static Heuristic H = Heuristic.SwapsPerRow;  
+
+
+	static Ohh1State board;
+
 	
 	@Override
 	public GPSState getInitState() {
-		return new Ohh1State();
+		this.board = new Ohh1State();
+		System.out.println(this.board.toString());
+		prepareBoard(this.board);
+		System.out.println(this.board.toString());
+		return this.board;
 	}
-
 	@Override
 	public boolean isGoal(GPSState state) {
 		
-		Ohh1State ohn1State = (Ohh1State) state;
+		Ohh1State ohh1State = (Ohh1State) state;
 		
 		/*
 		 * Check if the rows are complete
@@ -32,21 +39,25 @@ public class Ohh1Problem implements GPSProblem{
 		 */
 		 
 		for(int i = 0 ; i < Ohh1State.BOARD_SIZE ; i++){
-			if(!ohn1State.getRowStat(i).isComplete()){
+			if(!ohh1State.getRowStat(i).isComplete()){
 				return false;
 			}
 		}
 		
 		/*Check that there are no three or more cells adjacent of same color in a column*/
-		if(!checkThreeCellsRuleInCol(ohn1State)){
+		if(!checkThreeCellsRuleInCol(ohh1State)){
 			return false;
 		}
 		
-		if(checkSameCols(ohn1State)){
+		if(checkSameCols(ohh1State)){
 			return false;
 		}
 		
-		if(checkSameRows(ohn1State)){
+		if(checkSameRows(ohh1State)){
+			return false;
+		}
+		
+		if(!validColorBalanceInCols(ohh1State)){
 			return false;
 		}
 				
@@ -187,6 +198,33 @@ public class Ohh1Problem implements GPSProblem{
 		return false;
 	}
 
+	private boolean validColorBalanceInCols(Ohh1State state){		
+		
+		for(int j = 0 ; j < Ohh1State.BOARD_SIZE ; j++){
+			
+			int red = Ohh1State.BOARD_SIZE / 2;
+			int yellow = Ohh1State.BOARD_SIZE / 2;
+			
+			for(int i = 0; i < Ohh1State.BOARD_SIZE; i++){
+				
+				int cell = state.getCell(i, j);
+				
+				if(Cell.sameColor(cell, Cell.Red.getValue())){
+					red--;
+				} else {
+					yellow--;
+				}
+			}
+			
+			if(red != yellow){
+				return false;
+			}
+		}
+		
+		return true;
+		
+	}
+	
 	@Override
 	public List<GPSRule> getRules() {
 		
