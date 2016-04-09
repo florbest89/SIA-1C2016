@@ -1,4 +1,4 @@
-package ohn1.gps.api;
+package ohh1.gps.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +8,17 @@ import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.common.Cell;
 
-public class Ohn1Problem implements GPSProblem{
+public class Ohh1Problem implements GPSProblem{
 
 	@Override
 	public GPSState getInitState() {
-		return new Ohn1State();
+		return new Ohh1State();
 	}
 
 	@Override
 	public boolean isGoal(GPSState state) {
 		
-		Ohn1State ohn1State = (Ohn1State) state;
+		Ohh1State ohn1State = (Ohh1State) state;
 		
 		/*
 		 * Check if the rows are complete
@@ -26,7 +26,7 @@ public class Ohn1Problem implements GPSProblem{
 		 * 
 		 */
 		 
-		for(int i = 0 ; i < Ohn1State.BOARD_SIZE ; i++){
+		for(int i = 0 ; i < Ohh1State.BOARD_SIZE ; i++){
 			if(!ohn1State.getRowStat(i).isComplete()){
 				return false;
 			}
@@ -48,15 +48,15 @@ public class Ohn1Problem implements GPSProblem{
 		return true;
 	}
 	
-	public void prepareBoard(Ohn1State state){		
+	public void prepareBoard(Ohh1State state){		
 		
-		for(int i = 0; i < Ohn1State.BOARD_SIZE ; i++){
+		for(int i = 0; i < Ohh1State.BOARD_SIZE ; i++){
 			
-			int red = Ohn1State.BOARD_SIZE / 2;
-			int yellow = Ohn1State.BOARD_SIZE / 2;
+			int red = Ohh1State.BOARD_SIZE / 2;
+			int yellow = Ohh1State.BOARD_SIZE / 2;
 			
 			/*Check how many red and yellow cells needed*/
-			for(int j = 0; j < Ohn1State.BOARD_SIZE ; j++){
+			for(int j = 0; j < Ohh1State.BOARD_SIZE ; j++){
 				
 				if(state.getCell(i, j) == Cell.RedFixed.getValue()){
 					red --;
@@ -68,7 +68,7 @@ public class Ohn1Problem implements GPSProblem{
 			}			
 			
 			/*Complete row*/
-			for(int j = 0 ; j < Ohn1State.BOARD_SIZE && (yellow > 0 || red > 0) ; j++){
+			for(int j = 0 ; j < Ohh1State.BOARD_SIZE && (yellow > 0 || red > 0) ; j++){
 				int cell = state.getCell(i, j);
 				
 				if(cell == Cell.Grey.getValue()){
@@ -83,13 +83,13 @@ public class Ohn1Problem implements GPSProblem{
 			}
 			
 			/*Check for complete rows*/
-			for(int row = 0 ; row < Ohn1State.BOARD_SIZE ; row++){
+			for(int row = 0 ; row < Ohh1State.BOARD_SIZE ; row++){
 				
 				boolean notcomplete = false;
 				int current = Cell.Grey.getValue();
 				int sameColor = 1;
 				
-				for(int col = 0 ; col < Ohn1State.BOARD_SIZE && !notcomplete ; col++){
+				for(int col = 0 ; col < Ohh1State.BOARD_SIZE && !notcomplete ; col++){
 				
 					int cell = state.getCell(row, col);
 						
@@ -113,13 +113,13 @@ public class Ohn1Problem implements GPSProblem{
 		
 	}
 	
-	private boolean checkThreeCellsRuleInCol(Ohn1State state){
+	private boolean checkThreeCellsRuleInCol(Ohh1State state){
 		
-		for(int col = 0 ; col < Ohn1State.BOARD_SIZE; col++){
+		for(int col = 0 ; col < Ohh1State.BOARD_SIZE; col++){
 			int sameColor = 1;
 			int current = Cell.Grey.getValue();
 			
-			for(int row = 0 ; row < Ohn1State.BOARD_SIZE; row++){
+			for(int row = 0 ; row < Ohh1State.BOARD_SIZE; row++){
 				
 				int cell = state.getCell(row, col);
 				
@@ -138,16 +138,16 @@ public class Ohn1Problem implements GPSProblem{
 		return true;		
 	}
 
-	private boolean checkSameCols(Ohn1State state){
+	private boolean checkSameCols(Ohh1State state){
 		
 		boolean check = false;
 		
-		for(int j = 0 ; j < Ohn1State.BOARD_SIZE && !check; j++){
-			for(int k = j + 1 ; k < Ohn1State.BOARD_SIZE && !check; k++){
+		for(int j = 0 ; j < Ohh1State.BOARD_SIZE && !check; j++){
+			for(int k = j + 1 ; k < Ohh1State.BOARD_SIZE && !check; k++){
 				
 				check = true;
 				
-				for(int i = 0; i < Ohn1State.BOARD_SIZE && check; i++){
+				for(int i = 0; i < Ohh1State.BOARD_SIZE && check; i++){
 					check = check && Cell.sameColor(state.getCell(i, j), state.getCell(i, k));
 				}
 				
@@ -161,15 +161,15 @@ public class Ohn1Problem implements GPSProblem{
 		
 	}
 	
-	private boolean checkSameRows(Ohn1State state){
+	private boolean checkSameRows(Ohh1State state){
 		boolean check = false;
 		
-		for(int i = 0 ; i < Ohn1State.BOARD_SIZE && !check; i++){
-			for(int k = i + 1 ; k < Ohn1State.BOARD_SIZE && !check; k++){
+		for(int i = 0 ; i < Ohh1State.BOARD_SIZE && !check; i++){
+			for(int k = i + 1 ; k < Ohh1State.BOARD_SIZE && !check; k++){
 				
 				check = true;
 				
-				for(int j = 0 ; j < Ohn1State.BOARD_SIZE && check; j++){
+				for(int j = 0 ; j < Ohh1State.BOARD_SIZE && check; j++){
 					check = check && Cell.sameColor(state.getCell(i, j), state.getCell(k, j));
 				}
 				
@@ -187,10 +187,10 @@ public class Ohn1Problem implements GPSProblem{
 		
 		List<GPSRule> rules = new ArrayList<GPSRule>();
 		
-		for(int i = 0; i < Ohn1State.BOARD_SIZE ; i++){
-			for(int j = 0; j < Ohn1State.BOARD_SIZE ; j++){
-				for(int k = j + 1; k < Ohn1State.BOARD_SIZE ; k++){
-					rules.add((GPSRule) new Ohn1Rule(i,j,k));
+		for(int i = 0; i < Ohh1State.BOARD_SIZE ; i++){
+			for(int j = 0; j < Ohh1State.BOARD_SIZE ; j++){
+				for(int k = j + 1; k < Ohh1State.BOARD_SIZE ; k++){
+					rules.add((GPSRule) new Ohh1Rule(i,j,k));
 				}
 			}
 		}

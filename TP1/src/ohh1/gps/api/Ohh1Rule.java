@@ -1,16 +1,16 @@
-package ohn1.gps.api;
+package ohh1.gps.api;
 
 import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.common.*;
 import gps.exception.NotAppliableException;
 
-public class Ohn1Rule implements GPSRule{	
+public class Ohh1Rule implements GPSRule{	
 	
 	private int row;
 	private int col1,col2;
 	
-	public Ohn1Rule(int row, int col1, int col2) {
+	public Ohh1Rule(int row, int col1, int col2) {
 		this.row = row;
 		this.col1 = col1;
 		this.col2 = col2;
@@ -30,7 +30,7 @@ public class Ohn1Rule implements GPSRule{
 	@Override
 	public GPSState evalRule(GPSState state) throws NotAppliableException {
 		
-		Ohn1State clone = ((Ohn1State) state).clone();
+		Ohh1State clone = ((Ohh1State) state).clone();
 		
 		if(clone.getRowStat(row).isComplete()){
 			throw new NotAppliableException();
@@ -63,7 +63,7 @@ public class Ohn1Rule implements GPSRule{
 		return clone;
 	}
 	
-	private boolean isValid(int col, Ohn1State state){
+	private boolean isValid(int col, Ohh1State state){
 		
 		int cell = state.getCell(row, col);
 		
@@ -82,7 +82,7 @@ public class Ohn1Rule implements GPSRule{
 		breakFlag = false;
 		
 		/*Check to the right*/
-		for(int j = col + 1 ; j < Ohn1State.BOARD_SIZE && j != col + 3 && !breakFlag ; j++){
+		for(int j = col + 1 ; j < Ohh1State.BOARD_SIZE && j != col + 3 && !breakFlag ; j++){
 			if(Cell.sameColor(state.getCell(row, j), cell)){
 				count ++;
 			} else {
@@ -97,12 +97,12 @@ public class Ohn1Rule implements GPSRule{
 		return true;
 	}
 	
-	private boolean isRowComplete(Ohn1State state){
+	private boolean isRowComplete(Ohh1State state){
 		
 		int current = Cell.Grey.getValue();
 		int sameColor = 1;
 		
-		for(int col = 0 ; col < Ohn1State.BOARD_SIZE; col++){
+		for(int col = 0 ; col < Ohh1State.BOARD_SIZE; col++){
 		
 			int cell = state.getCell(row, col);
 				
