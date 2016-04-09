@@ -14,7 +14,7 @@ public enum Cell {
 	}
 	
 	public static boolean isFixed(int value){
-		return value == Red.getValue() || value == Yellow.getValue();
+		return value == RedFixed.getValue() || value == YellowFixed.getValue();
 	}
 	
 	public static boolean sameColor(int color1, int color2){
@@ -23,7 +23,7 @@ public enum Cell {
 			return color2 == Red.getValue() || color2 == RedFixed.getValue();
 		}
 		
-		if(color1 == Yellow.getValue() || color1 == Yellow.getValue()){
+		if(color1 == Yellow.getValue() || color1 == YellowFixed.getValue()){
 			return color2 == Yellow.getValue() || color2 == YellowFixed.getValue();
 		}
 		

@@ -89,6 +89,7 @@ public class Ohh1State implements GPSState{
 		
 		while(i < size){
 			rowStats.add(new RowStats(i));
+			i++;
 		}
 	}
 	
@@ -97,7 +98,7 @@ public class Ohh1State implements GPSState{
 		int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
 		
 		for(int i = 0; i < BOARD_SIZE ; i++){
-			for(int j = 0 ; j <= BOARD_SIZE ; j++){
+			for(int j = 0 ; j < BOARD_SIZE ; j++){
 				board[i][j] = this.board[i][j];
 			}
 		}
@@ -113,5 +114,20 @@ public class Ohh1State implements GPSState{
 		}
 		
 		return stats;
+	}
+	
+	@Override
+	public String toString(){
+		String textBoard = "";
+		
+		textBoard = "===================\n";
+		for(int i = 0; i < BOARD_SIZE ; i++){
+			for(int j = 0 ; j < BOARD_SIZE ; j++){
+				textBoard += this.board[i][j] + " ";
+			}
+			textBoard += "\n";
+		}
+		
+		return textBoard;
 	}
 }

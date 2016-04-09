@@ -10,11 +10,16 @@ import gps.common.Cell;
 
 public class Ohh1Problem implements GPSProblem{
 
+	static Ohh1State board;
+	
 	@Override
 	public GPSState getInitState() {
-		return new Ohh1State();
+		this.board = new Ohh1State();
+		System.out.println(this.board.toString());
+		prepareBoard(this.board);
+		System.out.println(this.board.toString());
+		return this.board;
 	}
-
 	@Override
 	public boolean isGoal(GPSState state) {
 		

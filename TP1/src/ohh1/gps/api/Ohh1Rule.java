@@ -32,9 +32,9 @@ public class Ohh1Rule implements GPSRule{
 		
 		Ohh1State clone = ((Ohh1State) state).clone();
 		
-		if(clone.getRowStat(row).isComplete()){
-			throw new NotAppliableException();
-		}
+//		if(clone.getRowStat(row).isComplete()){
+//			throw new NotAppliableException();
+//		}
 		
 		int cell1 = clone.getCell(row, col1);
 		int cell2 = clone.getCell(row, col2);
