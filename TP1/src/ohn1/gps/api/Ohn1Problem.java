@@ -41,10 +41,11 @@ public class Ohn1Problem implements GPSProblem{
 			return false;
 		}
 		
-		//TODO: CheckSameRows
-		
-		
-		return false;
+		if(checkSameRows(ohn1State)){
+			return false;
+		}
+				
+		return true;
 	}
 	
 	public void prepareBoard(Ohn1State state){
@@ -117,6 +118,27 @@ public class Ohn1Problem implements GPSProblem{
 		
 		return false;
 		
+	}
+	
+	private boolean checkSameRows(Ohn1State state){
+		boolean check = false;
+		
+		for(int i = 0 ; i < Ohn1State.BOARD_SIZE && !check; i++){
+			for(int k = i + 1 ; k < Ohn1State.BOARD_SIZE && !check; k++){
+				
+				check = true;
+				
+				for(int j = 0 ; j < Ohn1State.BOARD_SIZE && check; j++){
+					check = check && Cell.sameColor(state.getCell(i, j), state.getCell(k, j));
+				}
+				
+				if(check){
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	@Override
