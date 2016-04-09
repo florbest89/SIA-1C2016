@@ -6,10 +6,15 @@ import java.util.List;
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
-import gps.common.Cell;
+import gps.common.*;
 
 public class Ohh1Problem implements GPSProblem{
-
+	
+	/**
+	 * Default Heuristic
+	 */
+	public static Heuristic H = Heuristic.SwapsPerRow;  
+	
 	@Override
 	public GPSState getInitState() {
 		return new Ohh1State();
@@ -200,8 +205,19 @@ public class Ohh1Problem implements GPSProblem{
 
 	@Override
 	public Integer getHValue(GPSState state) {
-		// TODO Auto-generated method stub
+		
+		Ohh1State ohn1State = (Ohh1State) state;
+
+		switch(H) {
+			case SwapsPerRow:
+				break;
+			case H2:
+				break;
+		}
+		
 		return null;
 	}
+	
+	
 
 }
