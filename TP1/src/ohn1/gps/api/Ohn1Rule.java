@@ -10,6 +10,12 @@ public class Ohn1Rule implements GPSRule{
 	private int row;
 	private int col1,col2;
 	
+	public Ohn1Rule(int row, int col1, int col2) {
+		this.row = row;
+		this.col1 = col1;
+		this.col2 = col2;
+	}
+	
 	@Override
 	public Integer getCost() {
 		/*Each rule allows for one swap to take place*/
