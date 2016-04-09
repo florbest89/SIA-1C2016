@@ -23,6 +23,10 @@ public class Ohn1State implements GPSState{
 		this.rowStats = stats;
 	}
 	
+	public int[][] getBoard(){
+		return board;
+	}
+	
 	public boolean equals(Object state){
 		
 		if(state == null){

@@ -1,12 +1,12 @@
 package ohn1.gps.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
-
-import gps.common.*;
+import gps.common.Cell;
 
 public class Ohn1Problem implements GPSProblem{
 
@@ -45,6 +45,30 @@ public class Ohn1Problem implements GPSProblem{
 		
 		
 		return false;
+	}
+	
+	public void prepareBoard(Ohn1State state){
+		
+		for(int i = 0; i < Ohn1State.BOARD_SIZE ; i++){
+			
+			int red = Ohn1State.BOARD_SIZE / 2;
+			int yellow = Ohn1State.BOARD_SIZE / 2;
+			
+			for(int j = 0 ; j < Ohn1State.BOARD_SIZE && yellow > 0 && red > 0 ; j++){
+				int cell = state.getCell(i, j);
+				
+				if(cell == Cell.Grey.getValue()){
+					if(red > 0){
+						state.setCell(Cell.Red.getValue(), i, j);
+						red--;
+					} else {
+						state.setCell(Cell.Yellow.getValue(), i, j);
+						yellow--;
+					}
+				}
+			}
+		}
+		
 	}
 	
 	private boolean checkThreeCellsRuleInCol(Ohn1State state){
@@ -97,8 +121,18 @@ public class Ohn1Problem implements GPSProblem{
 
 	@Override
 	public List<GPSRule> getRules() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<GPSRule> rules = new ArrayList<GPSRule>();
+		
+		for(int i = 0; i < Ohn1State.BOARD_SIZE ; i++){
+			for(int j = 0; j < Ohn1State.BOARD_SIZE ; j++){
+				for(int k = j + 1; k < Ohn1State.BOARD_SIZE ; k++){
+					rules.add((GPSRule) new Ohn1Rule(i,j,k));
+				}
+			}
+		}
+		
+		return rules;
 	}
 
 	@Override
