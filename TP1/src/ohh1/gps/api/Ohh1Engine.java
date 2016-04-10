@@ -1,8 +1,4 @@
 package ohh1.gps.api;
-
-import java.util.Comparator;
-import java.util.PriorityQueue;
-
 import gps.GPSEngine;
 import gps.GPSNode;
 import gps.SearchStrategy;

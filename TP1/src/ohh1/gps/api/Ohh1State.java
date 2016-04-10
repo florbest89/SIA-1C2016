@@ -78,7 +78,7 @@ public class Ohh1State implements GPSState{
 	}
 	
 	private void initializeBoard(int size){
-		this.board = BoardSelector.Selector(size,1);
+		this.board = BoardSelector.Selector(size);
 	}
 	
 	private void initializeRowStats(int size){
@@ -123,7 +123,17 @@ public class Ohh1State implements GPSState{
 		textBoard = "===================\n";
 		for(int i = 0; i < BOARD_SIZE ; i++){
 			for(int j = 0 ; j < BOARD_SIZE ; j++){
-				textBoard += this.board[i][j] + " ";
+				
+				if(this.board[i][j] == Cell.Grey.getValue()){
+					textBoard += "G ";
+				}
+				else if(this.board[i][j] == Cell.Red.getValue() || this.board[i][j] == Cell.RedFixed.getValue()){
+					textBoard += "R ";
+				}
+				else {
+					textBoard += "Y ";
+				}
+				
 			}
 			textBoard += "\n";
 		}
