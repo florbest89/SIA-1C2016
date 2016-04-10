@@ -1,7 +1,6 @@
 package ohh1.gps.api;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -20,12 +19,9 @@ public class Ohh1Problem implements GPSProblem{
 	
 	@Override
 	public GPSState getInitState() {
-		GPSState board = new Ohh1State();
-		System.out.println(board);
-		board = prepareBoard((Ohh1State)board);
-		System.out.println(board);
-		return board;
+		return prepareBoard(new Ohh1State());
 	}
+	
 	@Override
 	public boolean isGoal(GPSState state) {
 		
