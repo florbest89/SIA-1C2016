@@ -25,10 +25,13 @@ public abstract class GPSEngine {
 	// Use this variable in open set order.
 	protected SearchStrategy strategy;
 
+	private int generatedCOunter = 0;
 	public void engine(GPSProblem myProblem, SearchStrategy myStrategy) {
 
 		problem = myProblem;
 		strategy = myStrategy;
+
+		long startTime = System.currentTimeMillis();
 
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0);
 		boolean finished = false;
@@ -43,13 +46,17 @@ public abstract class GPSEngine {
 				closed.add(currentNode);
 				open.remove(0);
 				if (problem.isGoal(currentNode.getState())) {
+					long endTime = System.currentTimeMillis();
 					finished = true;
 					System.out.println(currentNode.getSolution());
 					System.out.println("Expanded nodes: " + explosionCounter);
 					System.out.println("Solution cost: " + currentNode.getCost());
+					System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
 					System.out.println(currentNode.getState().toString());
 				} else {
 					explosionCounter++;
+//					System.out.println("valor explosionCounter: "+explosionCounter);
+
 					if(explosionCounter%10000 == 0)
 						System.out.println("valor explosionCounter: "+explosionCounter);
 					explode(currentNode);
@@ -84,7 +91,7 @@ public abstract class GPSEngine {
 						+ rule.getCost());
 				newNode.setParent(node);
 				addNode(newNode);
-//				generatedCOunter++;
+				generatedCOunter++;
 			}
 		}
 		return true;

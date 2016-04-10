@@ -1,7 +1,10 @@
 package ohh1.gps.api;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
@@ -230,6 +233,9 @@ public class Ohh1Problem implements GPSProblem{
 				}
 			}
 		}
+		
+		long seed = System.nanoTime();
+		Collections.shuffle(rules, new Random(seed));
 		
 		return rules;
 	}
