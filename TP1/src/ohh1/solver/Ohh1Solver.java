@@ -3,6 +3,7 @@ package ohh1.solver;
 import gps.GPSEngine;
 import gps.SearchStrategy;
 import gps.api.GPSProblem;
+import gps.common.Heuristic;
 import ohh1.gps.api.Ohh1Engine;
 import ohh1.gps.api.Ohh1Problem;
 import ohh1.gps.api.Ohh1State;
@@ -46,16 +47,17 @@ public class Ohh1Solver {
 		
 		String heuristic = args[0];
 		
+		GPSProblem ohh1Problem = new Ohh1Problem();
+
 		if(heuristic.equalsIgnoreCase("swapsperrow")){
-			//TODO : Seleccionar el enum que corresponda a esta heuristica			
+			Ohh1Problem.setH(Heuristic.SwapsPerRow);
 		} else if( heuristic.equalsIgnoreCase("swapspercol")){
-			//TODO : Idem a arriba
+			Ohh1Problem.setH(Heuristic.ColorPerCol);
 		} else {
 			System.out.println("Invalid arguments! Heuristics must be 'SwapsPerRow' or 'SwapsPerCol'");
 			return;
 		}
 		
-		GPSProblem ohh1Problem = new Ohh1Problem();
 		GPSEngine solver = new Ohh1Engine();
 		
 		String searchStrategy = args[1];

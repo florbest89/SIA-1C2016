@@ -9,9 +9,14 @@ import java.util.Random;
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
-import gps.common.Cell;
+import gps.common.*;
 
 public class Ohh1Problem implements GPSProblem{
+
+	/**
+	 * Default Heuristic
+	 */
+	public static Heuristic H = Heuristic.SwapsPerRow;  
 	
 	@Override
 	public GPSState getInitState() {
@@ -237,8 +242,24 @@ public class Ohh1Problem implements GPSProblem{
 
 	@Override
 	public Integer getHValue(GPSState state) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		Integer hValue = 0;
+		Ohh1State ohn1State = (Ohh1State) state;
 
+		switch(H) {
+			case SwapsPerRow:
+				hValue = Heuristic.getSwapsPerRowHValue(ohn1State);
+				break;
+			case ColorPerCol:
+				break;
+		}
+		
+		return hValue;
+	}
+	
+	public static Heuristic getH() {
+		return H;
+	}
+	public static void setH(Heuristic h) {
+		H = h;
+	}
 }

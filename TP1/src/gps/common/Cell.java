@@ -29,4 +29,22 @@ public enum Cell {
 		
 		return color1 == color2;
 	}
+	
+	public static boolean isRed(int color)
+	{
+		if(color == Red.getValue() || color == RedFixed.getValue()){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static boolean isYellow(int color)
+	{
+		if(color == Yellow.getValue() || color == YellowFixed.getValue()){
+			return true;
+		}
+		
+		return false;
+	}
 }
