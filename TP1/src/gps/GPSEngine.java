@@ -25,7 +25,7 @@ public abstract class GPSEngine {
 	// Use this variable in open set order.
 	protected SearchStrategy strategy;
 
-	private int generatedCOunter = 0;
+	private int generatedCounter = 0;
 	public void engine(GPSProblem myProblem, SearchStrategy myStrategy) {
 
 		problem = myProblem;
@@ -50,15 +50,12 @@ public abstract class GPSEngine {
 					finished = true;
 					System.out.println(currentNode.getSolution());
 					System.out.println("Expanded nodes: " + explosionCounter);
+					System.out.println("Generated nodes: " + generatedCounter);
 					System.out.println("Solution cost: " + currentNode.getCost());
+					System.out.println("Border nodes: " + open.size());
 					System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
-					System.out.println(currentNode.getState().toString());
 				} else {
 					explosionCounter++;
-//					System.out.println("valor explosionCounter: "+explosionCounter);
-
-					if(explosionCounter%10000 == 0)
-						System.out.println("valor explosionCounter: "+explosionCounter);
 					explode(currentNode);
 				}
 			}
@@ -75,7 +72,7 @@ public abstract class GPSEngine {
 			System.err.println("No rules!");
 			return false;
 		}
-		int valido=0;
+
 		for (GPSRule rule : problem.getRules()) {
 			GPSState newState = null;
 			try {
@@ -90,9 +87,8 @@ public abstract class GPSEngine {
 				GPSNode newNode = new GPSNode(newState, node.getCost()
 						+ rule.getCost());
 				newNode.setParent(node);
-//				System.out.println("regla valida: "+ ++valido);
 				addNode(newNode);
-				generatedCOunter++;
+				generatedCounter++;
 			}
 		}
 		return true;
@@ -147,13 +143,13 @@ public abstract class GPSEngine {
 //		return true;
 //	}
 
-	private boolean isBest(GPSState state, Integer cost) {
-		return !bestCosts.containsKey(state) || cost < bestCosts.get(state);
-	}
-
-	private void updateBest(GPSNode node) {
-		bestCosts.put(node.getState(), node.getCost());
-	}
+//	private boolean isBest(GPSState state, Integer cost) {
+//		return !bestCosts.containsKey(state) || cost < bestCosts.get(state);
+//	}
+//
+//	private void updateBest(GPSNode node) {
+//		bestCosts.put(node.getState(), node.getCost());
+//	}
 
 	public SearchStrategy getStrategy() {
 		return strategy;
