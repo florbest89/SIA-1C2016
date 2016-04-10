@@ -75,7 +75,7 @@ public abstract class GPSEngine {
 			System.err.println("No rules!");
 			return false;
 		}
-		
+		int valido=0;
 		for (GPSRule rule : problem.getRules()) {
 			GPSState newState = null;
 			try {
@@ -90,6 +90,7 @@ public abstract class GPSEngine {
 				GPSNode newNode = new GPSNode(newState, node.getCost()
 						+ rule.getCost());
 				newNode.setParent(node);
+//				System.out.println("regla valida: "+ ++valido);
 				addNode(newNode);
 				generatedCOunter++;
 			}
@@ -160,6 +161,14 @@ public abstract class GPSEngine {
 	
 	public List<GPSNode> getOpen() {
 		return open;
+	}
+
+	public List<GPSNode> getClosed() {
+		return closed;
+	}
+	
+	public void resetClosedNode() {
+		this.closed.clear();
 	}
 	
 	public GPSProblem getProblem() {

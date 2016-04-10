@@ -1,4 +1,6 @@
 package ohh1.gps.api;
+import java.util.List;
+
 import gps.GPSEngine;
 import gps.GPSNode;
 import gps.SearchStrategy;
@@ -41,10 +43,14 @@ public class Ohh1Engine extends GPSEngine {
 			//nodo raiz, me guardo la raiz.
 			if (this.getOpen().size() == 0) {
 				nodeRoot = node.getParent();
+				depth++;
 			}
 
-			if (node.getParent().equals(nodeRoot)){
-				depth++;
+			if (!this.getOpen().isEmpty() && this.getOpen().get(0).equals(nodeRoot)){
+				if(!this.getClosed().isEmpty()){
+					this.resetClosedNode();
+				}
+				return;
 			}
 
 
@@ -63,13 +69,14 @@ public class Ohh1Engine extends GPSEngine {
 						lastBrother = true;
 					}
 				}
-
+				
 				this.getOpen().add(index, node);
 			} else {
 				//vuelvo a poner el nodo raiz para volver a recorrer
 				//los estados.
-				if (!this.getOpen().contains(nodeRoot))
+				if (!this.getOpen().contains(nodeRoot)){
 					this.getOpen().add(nodeRoot);
+				}
 			}
 		}
 
