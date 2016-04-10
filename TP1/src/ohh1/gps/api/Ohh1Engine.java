@@ -51,5 +51,78 @@ public class Ohh1Engine extends GPSEngine {
 			}
 
 		}
+		
+		if (this.getStrategy().equals(SearchStrategy.GREEDY)){
+			  if (!this.getOpen().isEmpty()) {
+			    
+			    int i = 0;
+			    
+			    //Save H value of current node 
+			    int hValueCurrent = this.getProblem().getHValue(node.getState());
+
+			    //Iterate the open node list to find nodes with the same parent
+			    while (i < this.getOpen().size() && this.getOpen().get(i).getParent().equals(node.getParent())) {
+
+			      int hValueLocal = this.getProblem().getHValue(this.getOpen().get(i).getState());
+
+			      //Compare current H value to add the node the correct order.
+			      if (hValueCurrent < hValueLocal) {
+			        this.getOpen().add(i, node);
+			        return;
+			      }
+
+			      i++;
+			    }
+
+			    if (i == this.getOpen().size()) {
+			      this.getOpen().add(node);
+			      return;
+			    }
+
+			    this.getOpen().add(i, node);
+			    
+			  } else {
+				  
+			    this.getOpen().add(node);
+			    
+			  }
+		}
+		
+		if (this.getStrategy().equals(SearchStrategy.ASTAR)){
+			if (!this.getOpen().isEmpty()) {
+		        
+			    int hValue = getProblem().getHValue(node.getState());
+			    int fValue = hValue + node.getCost();
+
+			    for (int i = 0; i < this.getOpen().size(); i++) {
+
+			      GPSNode aNode = this.getOpen().get(i);
+
+			      int fValueOther = this.getProblem().getHValue(aNode.getState()) + aNode.getCost();
+
+			      if (fValue == fValueOther) {
+
+			        if (hValue < this.getProblem().getHValue(aNode.getState())) {
+
+			          this.getOpen().add(i, node);
+			          return;
+			        }
+
+			      } else {
+
+			        if (fValue < fValueOther) {
+			          this.getOpen().add(i, node);
+			          return;
+			        }
+			      }
+			    }
+
+			    this.getOpen().add(node);
+
+			  } else {
+
+			    this.getOpen().add(node);
+			  }
+		}
 	}
 }

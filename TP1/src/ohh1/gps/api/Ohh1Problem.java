@@ -243,17 +243,18 @@ public class Ohh1Problem implements GPSProblem{
 
 	@Override
 	public Integer getHValue(GPSState state) {
-		
+		Integer hValue = 0;
 		Ohh1State ohn1State = (Ohh1State) state;
 
 		switch(H) {
 			case SwapsPerRow:
+				hValue = Heuristic.getSwapsPerRowHValue(ohn1State);
 				break;
 			case ColorPerCol:
 				break;
 		}
 		
-		return null;
+		return hValue;
 	}
 	
 	
