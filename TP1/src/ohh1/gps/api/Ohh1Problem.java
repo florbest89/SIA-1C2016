@@ -20,7 +20,11 @@ public class Ohh1Problem implements GPSProblem{
 	
 	@Override
 	public GPSState getInitState() {
-		return prepareBoard(new Ohh1State());
+		GPSState board = new Ohh1State();
+		System.out.println(board);
+		board = prepareBoard((Ohh1State)board);
+		System.out.println(board);
+		return board;
 	}
 	@Override
 	public boolean isGoal(GPSState state) {

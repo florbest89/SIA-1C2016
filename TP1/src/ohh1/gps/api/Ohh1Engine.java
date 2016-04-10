@@ -43,8 +43,11 @@ public class Ohh1Engine extends GPSEngine {
 				nodeRoot = node.getParent();
 			}
 
-			if (node.getParent().equals(nodeRoot))
+			if (node.getParent().equals(nodeRoot)){
 				depth++;
+				System.out.println("profundidad: "+ depth);
+			}
+
 
 			int index = 0;
 			boolean foundParent = false;

@@ -7,7 +7,7 @@ public class BoardSelector {
 		double num = Math.random();
 		
 		switch(size){
-			case 4: return num > 0.5? size4board1() : size4board2();
+			case 4: return num > 0.5 ? size4board1() : size4board2();
 			case 6: return num > 0.5 ? size6board1() : size6board2();
 			case 8: return num > 0.5 ? size8board1() : size8board2(); 
 			default: return null;
@@ -138,7 +138,7 @@ public class BoardSelector {
 		board[0][0] = Cell.Grey.getValue();
 		board[0][1] = Cell.Grey.getValue();
 		board[0][2] = Cell.Grey.getValue();
-		board[0][2] = Cell.Grey.getValue();
+		board[0][3] = Cell.Grey.getValue();
 		board[0][4] = Cell.Grey.getValue();
 		board[0][5] = Cell.Grey.getValue();
 		
