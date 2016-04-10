@@ -12,22 +12,10 @@ import gps.api.GPSState;
 import gps.common.Cell;
 
 public class Ohh1Problem implements GPSProblem{
-	//TODO: BORRAR
-	static Ohh1State board;
 	
 	@Override
 	public GPSState getInitState() {
-		
-		//TODO: EMPROLIJAR METODO.
-		/*
-		 * return prepareBoard(new Ohh1State());
-		 */
-		
-		this.board = new Ohh1State();
-		System.out.println(this.board.toString());
-		prepareBoard(this.board);
-		System.out.println(this.board.toString());
-		return this.board;
+		return prepareBoard(new Ohh1State());
 	}
 	@Override
 	public boolean isGoal(GPSState state) {
@@ -66,7 +54,7 @@ public class Ohh1Problem implements GPSProblem{
 		return true;
 	}
 	
-	public void prepareBoard(Ohh1State state){		
+	private Ohh1State prepareBoard(Ohh1State state){		
 		
 		for(int i = 0; i < Ohh1State.BOARD_SIZE ; i++){
 			
@@ -129,6 +117,7 @@ public class Ohh1Problem implements GPSProblem{
 			
 		}
 		
+		return state;
 	}
 	
 	private boolean checkThreeCellsRuleInCol(Ohh1State state){
