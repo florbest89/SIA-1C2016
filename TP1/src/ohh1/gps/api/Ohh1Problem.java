@@ -9,18 +9,24 @@ import gps.api.GPSState;
 import gps.common.*;
 
 public class Ohh1Problem implements GPSProblem{
-	
+
 	/**
 	 * Default Heuristic
 	 */
 	public static Heuristic H = Heuristic.SwapsPerRow;  
 
 
+	//TODO: BORRAR
 	static Ohh1State board;
-
 	
 	@Override
 	public GPSState getInitState() {
+		
+		//TODO: EMPROLIJAR METODO.
+		/*
+		 * return prepareBoard(new Ohh1State());
+		 */
+		
 		this.board = new Ohh1State();
 		System.out.println(this.board.toString());
 		prepareBoard(this.board);
@@ -256,7 +262,4 @@ public class Ohh1Problem implements GPSProblem{
 		
 		return hValue;
 	}
-	
-	
-
 }
