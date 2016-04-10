@@ -15,7 +15,6 @@ public class Ohh1Problem implements GPSProblem{
 	 */
 	public static Heuristic H = Heuristic.SwapsPerRow;  
 
-
 	//TODO: BORRAR
 	static Ohh1State board;
 	
@@ -261,5 +260,12 @@ public class Ohh1Problem implements GPSProblem{
 		}
 		
 		return hValue;
+	}
+	
+	public static Heuristic getH() {
+		return H;
+	}
+	public static void setH(Heuristic h) {
+		H = h;
 	}
 }
