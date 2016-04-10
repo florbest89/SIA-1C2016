@@ -249,7 +249,7 @@ public class Ohh1Problem implements GPSProblem{
 		switch(H) {
 			case SwapsPerRow:
 				break;
-			case H2:
+			case ColorPerCol:
 				break;
 		}
 		

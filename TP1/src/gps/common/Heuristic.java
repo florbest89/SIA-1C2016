@@ -3,7 +3,7 @@ package gps.common;
 import ohh1.gps.api.Ohh1State;
 
 public enum Heuristic {
-	SwapsPerRow, H2;
+	SwapsPerRow, ColorPerCol;
 
 	public static Integer getSwapsPerRowValue(Ohh1State state)
 	{
@@ -18,4 +18,3 @@ public enum Heuristic {
 	}
 
 }
-
