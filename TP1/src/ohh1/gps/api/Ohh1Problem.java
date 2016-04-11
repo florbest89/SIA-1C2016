@@ -1,7 +1,9 @@
 package ohh1.gps.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
@@ -14,24 +16,12 @@ public class Ohh1Problem implements GPSProblem{
 	 * Default Heuristic
 	 */
 	public static Heuristic H = Heuristic.SwapsPerRow;  
-
-	//TODO: BORRAR
-	static Ohh1State board;
 	
 	@Override
 	public GPSState getInitState() {
-		
-		//TODO: EMPROLIJAR METODO.
-		/*
-		 * return prepareBoard(new Ohh1State());
-		 */
-		
-		this.board = new Ohh1State();
-		System.out.println(this.board.toString());
-		prepareBoard(this.board);
-		System.out.println(this.board.toString());
-		return this.board;
+		return prepareBoard(new Ohh1State());
 	}
+	
 	@Override
 	public boolean isGoal(GPSState state) {
 		
@@ -69,7 +59,7 @@ public class Ohh1Problem implements GPSProblem{
 		return true;
 	}
 	
-	public void prepareBoard(Ohh1State state){		
+	private Ohh1State prepareBoard(Ohh1State state){		
 		
 		for(int i = 0; i < Ohh1State.BOARD_SIZE ; i++){
 			
@@ -132,6 +122,7 @@ public class Ohh1Problem implements GPSProblem{
 			
 		}
 		
+		return state;
 	}
 	
 	private boolean checkThreeCellsRuleInCol(Ohh1State state){
@@ -242,6 +233,9 @@ public class Ohh1Problem implements GPSProblem{
 				}
 			}
 		}
+		
+		long seed = System.nanoTime();
+		Collections.shuffle(rules, new Random(seed));
 		
 		return rules;
 	}

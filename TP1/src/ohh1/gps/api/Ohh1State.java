@@ -27,6 +27,22 @@ public class Ohh1State implements GPSState{
 		return board;
 	}
 	
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		int i = 0;
+		for (int[] row : this.board) {
+			for (int slot : row) {
+				if (slot != -1) {
+					hash += Math.pow(10, i) * slot;
+				}
+				i++;
+			}
+		}
+		return hash;
+	}
+	
+	@Override
 	public boolean equals(Object state){
 		
 		if(state == null){
