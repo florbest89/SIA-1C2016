@@ -17,7 +17,7 @@ Matias L. Rivas (51274)
 INSTRUCCIONES DE EJECUCION
 *********************************
 
-java -jar 0hh1game.jar HEURISTIC STRATEGY [[SIZE]]
+java -jar 0hh1game.jar HEURISTIC STRATEGY [[SIZE]] BOARD
 
 *********************************
 PARAMETROS
@@ -27,4 +27,6 @@ HEURISTIC: SwapsPerRow OR ColumnColorFix
 
 STRATEGY: bfs OR dfs OR iterative OR greedy OR astar
 
-SIZE: 4 OR 6 
+SIZE: 4 OR 6
+
+BOARD: 1 OR 2
