@@ -76,7 +76,7 @@ public class Ohh1Solver {
 		} else if( heuristic.equalsIgnoreCase("swapspercol")){
 			Ohh1Problem.setH(Heuristic.ColorPerCol);
 		} else {
-			System.out.println("Invalid arguments! Heuristics must be 'SwapsPerRow' or 'SwapsPerCol'");
+			System.out.println("Invalid arguments! Heuristics must be 'SwapsPerRow' or 'ColorPerCol'");
 			return;
 		}
 		
