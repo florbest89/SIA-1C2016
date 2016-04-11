@@ -12,15 +12,17 @@ public class Ohh1State implements GPSState{
 	private int[][] board;
 	private List<RowStats> rowStats;
 	public static int BOARD_SIZE = 6;
+	private List<String> appliedRule= new ArrayList<String>();
 	
 	public Ohh1State(){
 		initializeBoard(BOARD_SIZE);
 		initializeRowStats(BOARD_SIZE);
 	}
 	
-	public Ohh1State(int[][] board, List<RowStats> stats){
+	public Ohh1State(int[][] board, List<RowStats> stats, List<String> rules){
 		this.board = board;
 		this.rowStats = stats;
+		this.appliedRule = rules;
 	}
 	
 	public int[][] getBoard(){
@@ -90,7 +92,7 @@ public class Ohh1State implements GPSState{
 	}
 	
 	public Ohh1State clone(){
-		return new Ohh1State(cloneBoard(), cloneStats());
+		return new Ohh1State(cloneBoard(), cloneStats(), cloneAppliedRule());
 	}
 	
 	private void initializeBoard(int size){
@@ -131,7 +133,25 @@ public class Ohh1State implements GPSState{
 		
 		return stats;
 	}
+
+	private List<String> cloneAppliedRule(){
+		List<String> cloneAR = new ArrayList<String>();
+		
+		for(String each : appliedRule){
+			cloneAR.add(each);
+		}
+		
+		return cloneAR;
+	}
 	
+	public List<String> getAppliedRule() {
+		return appliedRule;
+	}
+
+	public void setAppliedRule(List<String> appliedRule) {
+		this.appliedRule = appliedRule;
+	}
+
 	@Override
 	public String toString(){
 		String textBoard = "";
@@ -155,5 +175,10 @@ public class Ohh1State implements GPSState{
 		}
 		
 		return textBoard;
+	}
+	
+
+	public void addAppliedRule(String rule) {
+		this.appliedRule.add(rule);
 	}
 }
