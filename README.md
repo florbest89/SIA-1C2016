@@ -17,7 +17,7 @@ Matias L. Rivas (51274)
 INSTRUCCIONES DE EJECUCION
 *********************************
 
-java -jar 0hn0game.jar HEURISTIC STRATEGY [[SIZE]]
+java -jar 0hh1game.jar HEURISTIC STRATEGY [[SIZE]]
 
 *********************************
 PARAMETROS
