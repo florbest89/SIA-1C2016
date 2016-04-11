@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 public abstract class GPSEngine {
 
@@ -53,9 +54,7 @@ public abstract class GPSEngine {
 					System.out.println("Generated nodes: " + generatedCounter);
 					System.out.println("Solution cost: " + currentNode.getCost());
 					System.out.println("Border nodes: " + open.size());
-					float seconds = (float) (((endTime - startTime) / 1000.0) % 60.0);
-					String formattedSeconds = String.format("%.02f", seconds);
-					System.out.println("Execution time: " + (endTime - startTime) + " milliseconds ("+ formattedSeconds +" seconds)");
+					System.out.println("Execution time: " + (endTime - startTime) + " milliseconds ("+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime) +" seconds)");
 				} else {
 					explosionCounter++;
 					explode(currentNode);
