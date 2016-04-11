@@ -70,7 +70,7 @@ public class Ohh1Solver {
 		String heuristic = args[0];
 		
 		GPSProblem ohh1Problem = new Ohh1Problem();
-
+		
 		if(heuristic.equalsIgnoreCase("swapsperrow")){
 			Ohh1Problem.setH(Heuristic.SwapsPerRow);
 		} else if( heuristic.equalsIgnoreCase("swapspercol")){

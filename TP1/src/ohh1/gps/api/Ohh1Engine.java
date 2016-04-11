@@ -35,7 +35,6 @@ public class Ohh1Engine extends GPSEngine {
 
 				this.getOpen().add(i, node);
 			}
-
 		}
 
 		if (this.getStrategy().equals(SearchStrategy.IDDFS)) {
