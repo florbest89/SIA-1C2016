@@ -8,8 +8,8 @@ public class BoardSelector {
 		
 		switch(size){
 			case 4: return num > 0.5 ? size4board1() : size4board2();
-			case 6: return num > 0.5 ? size6board1() : size6board2();
-//			case 6: return size6board2();
+//			case 6: return num > 0.5 ? size6board1() : size6board2();
+			case 6: return size6board2();
 //			case 6: return size6board1();
 			case 8: return num > 0.5 ? size8board1() : size8board2(); 
 			default: return null;
