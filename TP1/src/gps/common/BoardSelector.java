@@ -2,16 +2,17 @@ package gps.common;
 
 public class BoardSelector {
 	
+	public static int OPTION = 1;
+	
 	public static int[][] Selector(int size){
 		
-		double num = Math.random();
-		
+	
 		switch(size){
-			case 4: return num > 0.5 ? size4board1() : size4board2();
-			case 6: return num > 0.5 ? size6board1() : size6board2();
+			case 4: return OPTION > 0.5 ? size4board1() : size4board2();
+			case 6: return OPTION > 0.5 ? size6board1() : size6board2();
 //			case 6: return size6board2();
 //			case 6: return size6board1();
-			case 8: return num > 0.5 ? size8board1() : size8board2(); 
+			case 8: return OPTION > 0.5 ? size8board1() : size8board2(); 
 			default: return null;
 		}  
 	}
