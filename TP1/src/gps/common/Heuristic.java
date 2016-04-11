@@ -5,7 +5,7 @@ import java.util.HashMap;
 import ohh1.gps.api.Ohh1State;
 
 public enum Heuristic {
-	SwapsPerRow, ColorPerCol;
+	SwapsPerRow, ColumnColorFix;
 
 	public static Integer ColorPerColHValue(Ohh1State state){
 		Integer hValue = 0;

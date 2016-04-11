@@ -249,7 +249,7 @@ public class Ohh1Problem implements GPSProblem{
 			case SwapsPerRow:
 				hValue = Heuristic.getSwapsPerRowHValue(ohn1State);
 				break;
-			case ColorPerCol:
+			case ColumnColorFix:
 				break;
 		}
 		
