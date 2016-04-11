@@ -30,3 +30,18 @@ STRATEGY: bfs OR dfs OR iterative OR greedy OR astar
 SIZE: 4 OR 6
 
 BOARD: 1 OR 2
+
+*********************************
+EJEMPLOS DE EJECUCION
+*********************************
+
+java -jar 0hh1game.jar SwapsPerRow ASTAR 6 1
+
+java -jar 0hh1game.jar ColumnColorFix ASTAR 6 1
+
+java -jar 0hh1game.jar ColumnColorFix DFS 4 2
+
+java -jar 0hh1game.jar SwapsPerRow BFS 4 1
+
+
+
