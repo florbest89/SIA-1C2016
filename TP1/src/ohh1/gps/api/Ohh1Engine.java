@@ -18,24 +18,23 @@ public class Ohh1Engine extends GPSEngine {
 		}
 
 		if (this.getStrategy().equals(SearchStrategy.DFS)) {
-//			int openSize = this.getOpen().size();
-//			if (openSize == 0) {
-//
-//				this.getOpen().add(node);
-//
-//			} else {
-//
-//				int i = 0;
-//
-//				while (i < openSize
-//						&& this.getOpen().get(i).getParent()
-//								.equals(node.getParent())) {
-//					i++;
-//				}
-//
-//				this.getOpen().add(i, node);
-//			}
-			this.getOpen().add(0, node);
+			int openSize = this.getOpen().size();
+			if (openSize == 0) {
+
+				this.getOpen().add(node);
+
+			} else {
+
+				int i = 0;
+
+				while (i < openSize
+						&& this.getOpen().get(i).getParent()
+								.equals(node.getParent())) {
+					i++;
+				}
+
+				this.getOpen().add(i, node);
+			}
 		}
 
 		if (this.getStrategy().equals(SearchStrategy.IDDFS)) {
