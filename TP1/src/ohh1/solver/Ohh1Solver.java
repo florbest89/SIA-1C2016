@@ -3,6 +3,7 @@ package ohh1.solver;
 import gps.GPSEngine;
 import gps.SearchStrategy;
 import gps.api.GPSProblem;
+import gps.common.BoardSelector;
 import gps.common.Heuristic;
 import ohh1.gps.api.Ohh1Engine;
 import ohh1.gps.api.Ohh1Problem;
@@ -17,10 +18,12 @@ public class Ohh1Solver {
 		 * 1. Heuristic
 		 * 2. Search strategy
 		 * 3. Board size
+		 * 4. Board option
 		 * 
-		 */
+		 */		
 		
-		if(args.length == 3){
+		
+		if(args.length == 4){
 			try{
 				int boardSize = Integer.parseInt(args[2]);
 				
@@ -36,12 +39,31 @@ public class Ohh1Solver {
 				System.out.println("Invalid arguments! Size must be a number");
 				return;
 			}
+			
+			try{
+				int boption = Integer.parseInt(args[3]);
+				
+				if(boption == 1 || boption == 2){
+					BoardSelector.OPTION = boption;
+					System.out.println("Board option: " + boption);
+				} else {
+					System.out.println("Invalid option! Must be 1 or 2");
+					return;
+				}
+				
+			}catch(NumberFormatException ex){
+				System.out.println("Invalid arguments! Board option must be a number");
+				return;
+			}
+			
+			
 		} else {
 			System.out.println("Invalid arguments!");
-			System.out.println("Arguments must be (in order) : Heuristic, Search strategy, Board size");
+			System.out.println("Arguments must be (in order) : Heuristic, Search strategy, Board size, Board option");
 			System.out.println("Heuristics available: SwapsPerRows, SwapsPerCols");
 			System.out.println("Search strategies available: IDDFS, BFS, DFS, ASTAR, GREEDY");
 			System.out.println("Boards of size 4, 6 or 8 only");
+			System.out.println("Board option is 1 or 2");
 			return;
 		}
 		

@@ -30,10 +30,14 @@ public class Ohh1Rule implements GPSRule{
 	@Override
 	public GPSState evalRule(GPSState state) throws NotAppliableException {
 		
+		int cell1 = ((Ohh1State) state).getCell(row, col1);
+		int cell2 = ((Ohh1State) state).getCell(row, col2);
+		String ruleToApply = String.valueOf(row)+String.valueOf(col1)+String.valueOf(cell1)+String.valueOf(col2)+String.valueOf(cell2);
+		
+		if(((Ohh1State) state).getAppliedRule().contains(ruleToApply))
+			throw new NotAppliableException();
+			
 		Ohh1State clone = ((Ohh1State) state).clone();
-
-		int cell1 = clone.getCell(row, col1);
-		int cell2 = clone.getCell(row, col2);
 		
 		if(Cell.isFixed(cell1) || Cell.isFixed(cell2)){
 			throw new NotAppliableException();
@@ -56,6 +60,7 @@ public class Ohh1Rule implements GPSRule{
 			clone.CompleteRow(row);
 		}
 		
+		clone.addAppliedRule(ruleToApply);
 		return clone;
 	}
 	
