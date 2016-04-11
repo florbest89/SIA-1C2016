@@ -53,7 +53,9 @@ public abstract class GPSEngine {
 					System.out.println("Generated nodes: " + generatedCounter);
 					System.out.println("Solution cost: " + currentNode.getCost());
 					System.out.println("Border nodes: " + open.size());
-					System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
+					float seconds = (float) (((endTime - startTime) / 1000.0) % 60.0);
+					String formattedSeconds = String.format("%.02f", seconds);
+					System.out.println("Execution time: " + (endTime - startTime) + " milliseconds ("+ formattedSeconds +" seconds)");
 				} else {
 					explosionCounter++;
 					explode(currentNode);
