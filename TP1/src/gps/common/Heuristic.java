@@ -8,9 +8,75 @@ public enum Heuristic {
 	SwapsPerRow, ColorPerCol;
 
 	public static Integer ColorPerColHValue(Ohh1State state){
-		// TODO Implementar la segunda heuristica 
-		return null;
+		Integer hValue = 0;
+		int missingColors = 0;
+		int invalidRows = 0;
+		int colClusterCorrection = 0;
+		HashMap<Integer, Boolean> RowStates = new HashMap<Integer, Boolean>();
+		
+		for (int i = 0; i < state.BOARD_SIZE; i++)
+		{
+			boolean isValid = isRowValid(state.getBoard(), state.BOARD_SIZE, i);
+			RowStates.put(i, isValid);
+			
+			if (!isValid){
+				invalidRows++;
+			}
+		}
+		
+		//Check column states
+		for (int i = 0; i < state.BOARD_SIZE; i++)
+		{
+			ColumnState colState = getMinSwapsInCol(state.getBoard(), state.BOARD_SIZE, i, RowStates);
+			
+			missingColors += colState.countYellow - colState.countRed; 
+			colClusterCorrection += colState.swaps;				
+		}
+		
+		hValue = missingColors + colClusterCorrection + invalidRows;
+		
+		if (hValue == 0)
+		{
+			//Add swaps needed to fix group duplicates
+			int duplicateRows = getDuplicateRows(state.getBoard(), state.BOARD_SIZE);
+			int duplicateCols = getDuplicateCols(state.getBoard(), state.BOARD_SIZE);
+
+			hValue += (duplicateRows + duplicateCols) / 2;
+		}
+						
+		return hValue;
 	}
+				
+	/**
+	 * Returns TRUE if the row is valid
+	 * @param board
+	 * @param size
+	 * @param row
+	 * @return
+	 */
+	private static boolean isRowValid(int[][] board, int size, int row)
+	{
+		int streakColor = board[row][0];
+		int colorCount = 1;
+		
+		for (int i = 1; i < size; i++)
+		{
+			if (Cell.sameColor(board[row][i], streakColor)){
+				colorCount++;
+			}
+			else
+			{
+				colorCount = 1;
+				streakColor = board[row][i];	
+			}
+			
+			if (colorCount >= 3){
+				return false;
+			}				
+		}
+		
+		return true;
+	}	
 	
 	public static Integer getSwapsPerRowHValue(Ohh1State state)
 	{
