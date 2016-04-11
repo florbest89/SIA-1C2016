@@ -33,7 +33,7 @@ public class Ohh1Rule implements GPSRule{
 		int cell1 = ((Ohh1State) state).getCell(row, col1);
 		int cell2 = ((Ohh1State) state).getCell(row, col2);
 		String ruleToApply = String.valueOf(row)+String.valueOf(col1)+String.valueOf(cell1)+String.valueOf(col2)+String.valueOf(cell2);
-		String ruleToApplyInverse = String.valueOf(row)+String.valueOf(col2)+String.valueOf(cell2)+String.valueOf(col1)+String.valueOf(cell1);
+		String ruleToApplyInverse = String.valueOf(row)+String.valueOf(col1)+String.valueOf(cell2)+String.valueOf(col2)+String.valueOf(cell1);
 
 		
 		if(((Ohh1State) state).getAppliedRule().contains(ruleToApply))
