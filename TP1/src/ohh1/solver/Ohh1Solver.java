@@ -68,7 +68,7 @@ public class Ohh1Solver {
 
 		if (heuristic.equalsIgnoreCase("swapsperrow")) {
 			Ohh1Problem.setH(Heuristic.SwapsPerRow);
-		} else if (heuristic.equalsIgnoreCase("columncolorcix")) {
+		} else if (heuristic.equalsIgnoreCase("columncolorfix")) {
 			Ohh1Problem.setH(Heuristic.ColumnColorFix);
 		} else {
 			System.out.println("Invalid arguments! Heuristics must be 'SwapsPerRow' or 'ColumnColorFix'");
