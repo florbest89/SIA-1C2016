@@ -60,6 +60,8 @@ public class Ohh1Rule implements GPSRule{
 		
 		if(isRowComplete(clone)){
 			clone.CompleteRow(row);
+		} else {
+			clone.BreakRow(row);
 		}
 		
 		clone.addAppliedRule(ruleToApply);

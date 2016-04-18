@@ -83,6 +83,10 @@ public class Ohh1State implements GPSState{
 		rowStats.get(row).Complete();
 	}
 	
+	public void BreakRow(int row){
+		rowStats.get(row).Break();
+	}
+	
 	public int getCell(int i, int j){
 		return board[i][j];
 	}

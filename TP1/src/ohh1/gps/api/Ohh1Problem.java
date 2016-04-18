@@ -92,34 +92,33 @@ public class Ohh1Problem implements GPSProblem{
 					}
 				}
 			}
+		}
+		
+		/*Check for complete rows*/
+		for(int row = 0 ; row < Ohh1State.BOARD_SIZE ; row++){
 			
-			/*Check for complete rows*/
-			for(int row = 0 ; row < Ohh1State.BOARD_SIZE ; row++){
-				
-				boolean notcomplete = false;
-				int current = Cell.Grey.getValue();
-				int sameColor = 1;
-				
-				for(int col = 0 ; col < Ohh1State.BOARD_SIZE && !notcomplete ; col++){
-				
-					int cell = state.getCell(row, col);
-						
-					if(!Cell.sameColor(current, cell)){
-						current = cell;
-						sameColor = 1;
-					} else {
-						sameColor++;
-						if(sameColor >= 3){
-							notcomplete = true;
-						}
+			boolean notcomplete = false;
+			int current = Cell.Grey.getValue();
+			int sameColor = 1;
+			
+			for(int col = 0 ; col < Ohh1State.BOARD_SIZE && !notcomplete ; col++){
+			
+				int cell = state.getCell(row, col);
+					
+				if(!Cell.sameColor(current, cell)){
+					current = cell;
+					sameColor = 1;
+				} else {
+					sameColor++;
+					if(sameColor >= 3){
+						notcomplete = true;
 					}
-				}
-				
-				if(!notcomplete){
-					state.CompleteRow(row);					
 				}
 			}
 			
+			if(!notcomplete){
+				state.CompleteRow(row);					
+			}
 		}
 		
 		return state;

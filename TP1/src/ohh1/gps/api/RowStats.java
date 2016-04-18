@@ -19,6 +19,10 @@ public class RowStats {
 		complete = true;
 	}
 	
+	public void Break(){
+		complete = false;
+	}
+	
 	public boolean isComplete(){
 		return complete;
 	}
