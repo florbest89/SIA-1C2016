@@ -25,11 +25,16 @@ public enum Heuristic {
 		}
 		
 		//Check column states
+		int colorBalance = state.BOARD_SIZE / 2;
 		for (int i = 0; i < state.BOARD_SIZE; i++)
 		{
 			ColumnState colState = getMinSwapsInCol(state.getBoard(), state.BOARD_SIZE, i, RowStates);
 			
-			missingColors += colState.countYellow - colState.countRed; 
+			if (colState.countRed > colorBalance)
+			{
+				missingColors += colState.countRed - colorBalance; 
+			}
+			
 			colClusterCorrection += colState.swaps;				
 		}
 		
