@@ -61,6 +61,8 @@ public class Ohh1Problem implements GPSProblem{
 	
 	private Ohh1State prepareBoard(Ohh1State state){		
 		
+		System.out.println(state.toString());
+		
 		for(int i = 0; i < Ohh1State.BOARD_SIZE ; i++){
 			
 			int red = Ohh1State.BOARD_SIZE / 2;
