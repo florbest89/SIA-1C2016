@@ -39,12 +39,23 @@ public class Ohh1Solver {
 			try {
 				int boption = Integer.parseInt(args[3]);
 
-				if (boption == 1 || boption == 2) {
-					BoardSelector.OPTION = boption;
-					System.out.println("Board option: " + boption);
-				} else {
-					System.out.println("Invalid option! Must be 1 or 2");
-					return;
+				if(Integer.parseInt(args[2]) == 6){
+					if (boption == 1 || boption == 2 || boption == 3 || boption == 4 || boption == 5) {
+						BoardSelector.OPTION = boption;
+						System.out.println("Board option: " + boption);
+					} else {
+						System.out.println("Invalid option! Must be 1, 2, 3, 4 or 5");
+						return;
+					}
+				}else if (Integer.parseInt(args[2]) == 2){					
+					if (boption == 1 || boption == 2) {
+						BoardSelector.OPTION = boption;
+						System.out.println("Board option: " + boption);
+					} else {
+						System.out.println("Invalid option! Must be 1 or 2");
+						return;
+					}
+					
 				}
 
 			} catch (NumberFormatException ex) {
