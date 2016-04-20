@@ -38,15 +38,22 @@ public enum Heuristic {
 			colClusterCorrection += colState.swaps;				
 		}
 		
-		hValue = missingColors + colClusterCorrection + invalidRows;
+		hValue = Math.max(missingColors, invalidRows); 
 		
 		if (hValue == 0)
 		{
-			//Add swaps needed to fix group duplicates
-			int duplicateRows = getDuplicateRows(state.getBoard(), state.BOARD_SIZE);
-			int duplicateCols = getDuplicateCols(state.getBoard(), state.BOARD_SIZE);
-
-			hValue += (duplicateRows + duplicateCols) / 2;
+			if (colClusterCorrection > 0)
+			{
+				hValue += colClusterCorrection;
+				
+			}else{
+				
+				//Add swaps needed to fix group duplicates
+				int duplicateRows = getDuplicateRows(state.getBoard(), state.BOARD_SIZE);
+				int duplicateCols = getDuplicateCols(state.getBoard(), state.BOARD_SIZE);
+	
+				hValue += (duplicateRows + duplicateCols) / 2;
+			}
 		}
 						
 		return hValue;
