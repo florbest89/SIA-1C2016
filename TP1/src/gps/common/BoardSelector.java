@@ -9,7 +9,7 @@ public class BoardSelector {
 	
 		switch(size){
 			case 4: return OPTION == 1 ? size4board1() : size4board2();
-			case 6: return OPTION == 1 ? size6board1() : size6board2();
+			case 6: return OPTION == 1 ? size6board1() : size6board4();
 
 			default: return null;
 		}  
@@ -341,5 +341,60 @@ public class BoardSelector {
 		
 		return board;
 	}
+	
+	private static int[][] size6board4(){
+		int[][] board = new int[6][6];
+		
+		/*Row 0*/
+		board[0][0] = Cell.Grey.getValue();
+		board[0][1] = Cell.RedFixed.getValue();
+		board[0][2] = Cell.Grey.getValue();
+		board[0][3] = Cell.Grey.getValue();
+		board[0][4] = Cell.Grey.getValue();
+		board[0][5] = Cell.Grey.getValue();
+		
+		/*Row 1*/
+		board[1][0] = Cell.Grey.getValue();
+		board[1][1] = Cell.Grey.getValue();
+		board[1][2] = Cell.Grey.getValue();
+		board[1][3] = Cell.YellowFixed.getValue();
+		board[1][4] = Cell.Grey.getValue();
+		board[1][5] = Cell.YellowFixed.getValue();
+		
+		/*Row 2*/
+		board[2][0] = Cell.Grey.getValue();
+		board[2][1] = Cell.Grey.getValue();
+		board[2][2] = Cell.YellowFixed.getValue();
+		board[2][3] = Cell.Grey.getValue();
+		board[2][4] = Cell.Grey.getValue();
+		board[2][5] = Cell.Grey.getValue();
+		
+		/*Row 3*/
+		board[3][0] = Cell.Grey.getValue();
+		board[3][1] = Cell.YellowFixed.getValue();
+		board[3][2] = Cell.Grey.getValue();
+		board[3][3] = Cell.Grey.getValue();
+		board[3][4] = Cell.YellowFixed.getValue();
+		board[3][5] = Cell.Grey.getValue();
+		
+		/*Row 4*/
+		board[4][0] = Cell.Grey.getValue();
+		board[4][1] = Cell.Grey.getValue();
+		board[4][2] = Cell.Grey.getValue();
+		board[4][3] = Cell.Grey.getValue();
+		board[4][4] = Cell.YellowFixed.getValue();
+		board[4][5] = Cell.Grey.getValue();
+		
+		/*Row 5*/
+		board[5][0] = Cell.YellowFixed.getValue();
+		board[5][1] = Cell.RedFixed.getValue();
+		board[5][2] = Cell.Grey.getValue();
+		board[5][3] = Cell.Grey.getValue();
+		board[5][4] = Cell.Grey.getValue();
+		board[5][5] = Cell.YellowFixed.getValue();
+		
+		return board;
+	}
+
 
 }
