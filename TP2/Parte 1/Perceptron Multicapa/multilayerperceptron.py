@@ -32,21 +32,22 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,error_cuad):
             vs = []
             hs = []
 
-            vs[0] = np_input[u]
+            vs.append(np_input[u])
+            hs.append(np_input[u])
 
             # 3. Feed Forward
             # m : capa de la red
             m = 1
-            while m <= len(arquitecture):
-                hs[m] = h(np.append(np.array(vs[m-1]),bias),weights[m-1])
-                vs[m] = g(hs[m],beta)
+            while m < len(arquitecture):
+                hs.append(h(np.append(np.array(vs[m-1]),bias),weights[m-1]))
+                vs.append(g(hs[m],beta))
                 m += 1
 
             # M : Ultima capa -> Capa de salida
             M = m - 1
 
             # Calculo del error
-            deltas_error, ecm = error(vs[M],np_output[u])
+            deltas_error, ecm = error_quad(vs[M],np_output[u])
             errors.append(ecm)
             error = ecm
 
@@ -65,16 +66,16 @@ def h(vs,weights):
     return np.dot(vs, weights)
 
 def g(hs,beta):
-    return ((1 / (1 + m.exp(- 2 * beta * h))) for h in hs)
+    return np.array([(1 / (1 + m.exp(- 2 * beta * h))) for h in hs])
 
-def error(out_obtained,out_expected):
-    deltas_error = np.substract(out_expected, out_obtained)
-    pow_deltas = ((d ** 2) for d in deltas_error)
+def error_quad(out_obtained,out_expected):
+    deltas_error = np.subtract(out_expected, out_obtained)
+    pow_deltas = [(d ** 2) for d in deltas_error]
     sum_pow_deltas = np.sum(pow_deltas)
     return deltas_error, (1/2) * sum_pow_deltas
 
 
-multilayer_perceptron([2,3,1])
+multilayer_perceptron([2,3,1],[[1,1],[1,0],[0,1],[0,0]],[[1],[1],[1],[0]],-1,0.5,0.001)
 
 
 
