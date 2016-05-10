@@ -51,6 +51,26 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,error_cuad):
             errors.append(ecm)
             error = ecm
 
+            # 4. Calculo los delta para la capa de salida
+            m = M - 1
+            deltas = [None] * M
+
+            gs_derived = g_derived(hs[M],beta)
+            deltas_output = [a * b for a,b in zip(gs_derived,deltas_error)]
+            deltas[m] = deltas_output
+
+            # 5. Calculo los deltas para capas anteriores
+            while m - 1 >= 0:
+                wt = weights_trans(weights[m])
+                deltas[m-1] = get_deltas(hs[m],beta,deltas[m],wt)
+
+            
+
+
+
+
+
+
 
 def initialize_weights(arquitecture):
     weights = []
@@ -68,11 +88,28 @@ def h(vs,weights):
 def g(hs,beta):
     return np.array([(1 / (1 + m.exp(- 2 * beta * h))) for h in hs])
 
+def g_derived(hs,beta):
+    #g'(h) = 2βg(1 − g).
+    gs = g(hs,beta)
+    gs_g = g([(1 - x) for x in gs],beta)
+    return np.array([(2 * beta * g) for g in gs_g])
+
 def error_quad(out_obtained,out_expected):
     deltas_error = np.subtract(out_expected, out_obtained)
     pow_deltas = [(d ** 2) for d in deltas_error]
     sum_pow_deltas = np.sum(pow_deltas)
     return deltas_error, (1/2) * sum_pow_deltas
+
+def weights_trans(weights):
+    rows,cols = weights.shape
+    aux = numpy.delete(weights, (rows - 1), axis=0)
+    return aux.transpose()
+
+def get_deltas(hs,beta,delta_upper,weights):
+    gs = g_derived(hs,beta)
+    dterm = np.dot(delta_upper, weights)
+    return [a * b for a,b in zip(gs,dterm)]
+
 
 
 multilayer_perceptron([2,3,1],[[1,1],[1,0],[0,1],[0,0]],[[1],[1],[1],[0]],-1,0.5,0.001)
