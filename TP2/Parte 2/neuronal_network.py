@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 import numpy.matlib
 import math as m
@@ -9,10 +10,11 @@ import matplotlib.pyplot as plt
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
+def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun):
 
     np_input = np.array(input)
-    np_output = np.array(output)
+    #np_output = np.array(output)
+    np_output = normalize(output,beta,fun)
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
@@ -23,6 +25,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
     errors = []
 
     while error > error_cuad:
+        #out = np.zeros((np_input.itemsize,np_output[0].size))
         out = np.array([])
 
         # u : patron que estoy analizando
@@ -40,14 +43,12 @@ def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
             # m : capa de la red
             m = 1
             while m < len(arquitecture):
-                hs.append(h(np.append(np.array(vs[m-1]), bias), weights[m-1]))
+                hs.append(h(np.append(np.array(vs[m-1]),bias),weights[m-1]))
 
-                if fun == 'sgm':
-                    vs.append(sigm(hs[m]))
-                elif fun == 'esc':
-                    vs.append(escalon(hs[m]))
-                elif fun == 'linear':
-                    vs.append(linear(hs[m]))
+                if fun == 'exp':
+                    vs.append(exp(hs[m], beta))
+                else:
+                    vs.append(tan(hs[m], beta))
 
                 m += 1
 
@@ -64,14 +65,10 @@ def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
             m = M - 1
             deltas = [None] * M
 
-            gs_derived = np.array([])
-
-            if fun == 'sgm':
-                gs_derived = sigm_derived(hs[M])
-            elif fun == 'esc':
-                gs_derived = escalon_derived(hs[M])
-            elif fun == 'linear':
-                gs_derived = linear_derived(hs[M])
+            if fun == 'exp':
+                gs_derived = exp_derived(hs[M], beta)
+            else:
+                gs_derived = tan_derived(hs[M], beta)
 
             deltas_output = [a * b for a,b in zip(gs_derived,deltas_error)]
             deltas[m] = deltas_output
@@ -79,7 +76,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
             # 5. Calculo los deltas para capas anteriores
             while m - 1 >= 0:
                 wt = weights_trans(weights[m])
-                deltas[m-1] = get_deltas(hs[m],fun,deltas[m],wt)
+                deltas[m-1] = get_deltas(hs[m],beta,deltas[m],wt,fun)
                 m -= 1
 
             # 6. Actualizo los pesos
@@ -87,6 +84,12 @@ def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
 
             new_weights = [None] * len(weights)
 
+            #while m >= 0:
+                #rows, cols = weights[m].shape
+                #vs_copy = create_vs_transpose(vs[m], bias, cols)
+                #deltas_copy = create_deltas_matrix(deltas[m],eta,rows)
+                #new_weights[m] = get_new_weights(weights[m],vs_copy,deltas_copy)
+                #m-=1
             for i in range(0,M):
                 rows, cols = weights[i].shape
                 vs_copy = create_vs_transpose(vs[i], bias, cols)
@@ -97,14 +100,15 @@ def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
 
         errors.append(ecm)
         error = ecm
-        print('ecm = ' + str(error))
 
-    print('Expected output')
-    print(np_output)
-    print('Obtained output')
-    print(out)
-    plt.plot(errors)
-    plt.show()
+    #print('Expected output')
+    #print(np_output)
+    #print('Obtained output')
+    #print(out)
+    #plt.plot(errors)
+    #plt.show()
+
+    return errors
 
 
 
@@ -121,45 +125,36 @@ def initialize_weights(arquitecture):
 def h(vs,weights):
     return np.dot(vs, weights)
 
-def sigm(hs):
-    return np.array([(1 / (1 + m.exp(-i))) for i in hs])
+def normalize(array,beta,fun):
+    normalized_out = np.array([])
 
-def sigm_derived(hs):
-    s = sigm(hs)
-    s_s = sigm([(1 - x) for x in s])
-    return np.array(s_s)
+    for i in range(0,len(array)):
+        num = array[i][0]
 
-def escalon(hs):
-    # = np.array([])
+        if fun == 'exp':
+            normalized_out = np.append(normalized_out,1 / (1 + m.exp(- 2 * beta * num)))
+        else:
+            normalized_out = np.append(normalized_out, 1 / (1 + m.tanh(beta * num)))
 
-    #for i in hs:
-        #f i > 0.5:
-            #result = np.append(result,1)
-        #else:
-            #result = np.append(result,0)
+    normalized_out = np.mat(normalized_out).transpose()
+    return np.asarray(normalized_out)
 
-    #return result
-    ex = np.sign(hs)
-
-    return np.sign(hs)
-
-def escalon_derived(hs):
-    return np.array([(1) for i in hs])
-
-def linear(hs):
-    return hs
-
-def linear_derived(hs):
-    return np.array([(1) for i in hs])
-
-def g(hs,beta):
+def exp(hs,beta):
     return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
 
-def g_derived(hs,beta):
+def exp_derived(hs,beta):
     #g'(h) = 2βg(1 − g).
-    gs = g(hs,beta)
-    gs_g = g([(1 - x) for x in gs],beta)
+    gs = exp(hs,beta)
+    gs_g = exp([(1 - x) for x in gs],beta)
     return np.array([(2 * beta * g) for g in gs_g])
+
+def tan(hs,beta):
+    return np.array([(m.tanh(beta * x)) for x in hs])
+
+def tan_derived(hs,beta):
+    gs = tan(hs,beta)
+    gs_pow = [( x ** 2) for x in gs]
+    return np.array([(beta * (1 - x)) for x in gs_pow])
 
 def error_quad(out_obtained,out_expected):
     deltas_error = np.subtract(out_expected, out_obtained)
@@ -172,18 +167,14 @@ def weights_trans(weights):
     aux = numpy.delete(weights, (rows - 1), axis=0)
     return aux.transpose()
 
-def get_deltas(hs,fun,delta_upper,weights):
-    gs_derived = np.array([])
-
-    if fun == 'sgm':
-        gs_derived = sigm_derived(hs)
-    elif fun == 'esc':
-        gs_derived = escalon_derived(hs)
-    elif fun == 'linear':
-        gs_derived = linear_derived(hs)
+def get_deltas(hs,beta,delta_upper,weights,fun):
+    if fun == 'exp':
+        gs = exp_derived(hs, beta)
+    else:
+        gs = tan_derived(hs, beta)
 
     dterm = np.dot(delta_upper, weights)
-    return [a * b for a,b in zip(gs_derived,dterm)]
+    return [a * b for a,b in zip(gs,dterm)]
 
 def create_vs_transpose(vs, bias, cols):
     vs_copy = vs.copy()
@@ -217,9 +208,20 @@ def get_new_weights(weights,vs,deltas):
     #return np.add(weights, vs_deltas_m)
     return np.asarray(weights + vs_deltas_m)
 
-multilayer_perceptron([3,5,1],[[1,1,1],[0,0,1],[0,1,1],[0,0,0]],[[0],[0],[1],[1]],-1,'linear',0.3,0.0001)
+def neuronal_network():
+   errors_tan = multilayer_perceptron([2,5,1],[[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1]],[[2],[3],[4],[5],[6],[7],[8],[9],[10],[11]],-1,0.5,0.3,0.0005,'tan')
+   errors_exp = multilayer_perceptron([2, 5, 1], [[1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1]],[[2], [3], [4], [5], [6], [7], [8], [9], [10], [11]], -1, 0.5, 0.3, 0.0005, 'exp')
 
+   plt.plot(range(1,len(errors_tan) +1),errors_tan, 'magenta')
+   plt.xlabel('Iteraciones')
+   plt.ylabel('Error cuadratico medio')
+   plt.title('Funcion de activacion: tanh')
+   plt.show()
 
+   plt.plot(range(1,len(errors_exp) +1),errors_exp, 'magenta')
+   plt.xlabel('Iteraciones')
+   plt.ylabel('Error cuadratico medio')
+   plt.title('Funcion de activacion: exp')
+   plt.show()
 
-
-
+neuronal_network()
