@@ -9,7 +9,7 @@ import math as m
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-def multilayer_perceptron(arquitecture,input,output,bias,beta,error_cuad):
+def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad):
 
     np_input = np.array(input)
     np_output = np.array(output)
@@ -63,13 +63,22 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,error_cuad):
             while m - 1 >= 0:
                 wt = weights_trans(weights[m])
                 deltas[m-1] = get_deltas(hs[m],beta,deltas[m],wt)
+                m -= 1
 
-            
+            # 6. Actualizo los pesos
+            m = M - 1
 
+            new_weights = [None] * M
 
+            while m >= 0:
+                rows, cols = weights[m].shape
+                vs_copy = create_vs_transpose(vs[m], bias, cols)
+                deltas_copy = create_deltas_matrix(deltas[m],eta,rows)
+                new_weights[m] = get_new_weights(weights[m],vs_copy,deltas_copy)
+                m-=1
 
-
-
+            weights = new_weights
+    print(errors)
 
 
 def initialize_weights(arquitecture):
@@ -110,9 +119,38 @@ def get_deltas(hs,beta,delta_upper,weights):
     dterm = np.dot(delta_upper, weights)
     return [a * b for a,b in zip(gs,dterm)]
 
+def create_vs_transpose(vs, bias, cols):
+    vs_copy = vs.copy()
 
+    vs_copy = np.append(vs_copy,bias)
+    aux = vs_copy
 
-multilayer_perceptron([2,3,1],[[1,1],[1,0],[0,1],[0,0]],[[1],[1],[1],[0]],-1,0.5,0.001)
+    cols_count = 1
+
+    while cols_count != cols:
+        vs_copy = numpy.vstack([vs_copy, aux])
+        cols_count += 1
+
+    return np.mat(vs_copy).transpose()
+
+def create_deltas_matrix(deltas,eta,rows):
+    deltas_copy = deltas.copy()
+    deltas_copy = [(d * eta) for d in deltas_copy]
+    aux = deltas_copy.copy()
+
+    rows_count = 1
+
+    while rows_count != rows:
+        deltas_copy = numpy.vstack([deltas_copy, aux])
+        rows_count += 1
+
+    return deltas_copy
+
+def get_new_weights(weights,vs,deltas):
+    vs_deltas_m = np.multiply(vs,deltas)
+    return np.add(weights, vs_deltas_m)
+
+multilayer_perceptron([2,3,1],[[1,1],[1,0],[0,1],[0,0]],[[1],[1],[1],[0]],-1,0.5,0.7,0.001)
 
 
 
