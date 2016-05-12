@@ -10,7 +10,7 @@ import math as m
 # error_cuad : error cuadrático medio
 # beta = 0.5
 def multilayer_perceptron(arquitecture,input,output,bias,beta,error_cuad):
-
+    print('pase')
     np_input = np.array(input)
     np_output = np.array(output)
 
@@ -112,7 +112,7 @@ def get_deltas(hs,beta,delta_upper,weights):
 
 
 
-multilayer_perceptron([2,3,1],[[1,1],[1,0],[0,1],[0,0]],[[1],[1],[1],[0]],-1,0.5,0.001)
+# multilayer_perceptron([2,3,1],[[1,1],[1,0],[0,1],[0,0]],[[1],[1],[1],[0]],-1,0.5,0.001)
 
 
 
