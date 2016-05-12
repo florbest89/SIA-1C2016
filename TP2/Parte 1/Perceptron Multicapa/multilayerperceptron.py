@@ -23,7 +23,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
     errors = []
 
     while error > error_cuad:
-
+        print('error: ', error, 'error_cuad: ',error_cuad)
         out = np.array([])
 
         # u : patron que estoy analizando
@@ -219,7 +219,7 @@ def get_new_weights(weights,vs,deltas):
     return np.asarray(weights + vs_deltas_m)
 
 
-multilayer_perceptron([3,5,1],[[1,1,1],[0,0,1],[0,1,1],[0,0,0]],[[0],[0],[1],[1]],-1,'linear',0.3,0.0001)
+# multilayer_perceptron([3,5,1],[[1,1,1],[0,0,1],[0,1,1],[0,0,0]],[[0],[0],[1],[1]],-1,'linear',0.3,0.0001)
 
 
 
