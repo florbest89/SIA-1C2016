@@ -11,7 +11,6 @@ def parserFile(infile, number_of_values):
     i = 0
     count = 0
     limit = number_of_values
-    print('value file: ', infile)
     for line in open(infile, 'r'):
         val = re.findall('[a-zA-Z0-9\.-]+', line)
         if  i == 1 and  count < limit:

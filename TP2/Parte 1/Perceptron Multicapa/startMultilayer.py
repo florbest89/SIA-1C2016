@@ -19,7 +19,8 @@ def main():
 	# print('valor 1ro: ', args.inputFile)
 	# print('valor 2do: ',args[0])
 	input_values,output_expected = parser.parserFile(args.inputFile, args.values)
-	multilayerperceptron.multilayer_perceptron([3,5,1],input_values,output_expected,-1,0.3,0.0001)
+	# print('size_input: ', len(input_values), ' output: ', len(output_expected))
+	multilayerperceptron.multilayer_perceptron([2,5,1],input_values,output_expected,-1,0.3,0.0001)
 	# runMultilayer(args[0], args[1])
 
 

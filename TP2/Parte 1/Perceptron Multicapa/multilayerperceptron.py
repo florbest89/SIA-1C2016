@@ -23,6 +23,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,error_cuad):
     errors = []
 
     while error > error_cuad:
+        print('error: ', error, ' error_cuad: ', error_cuad)
         out = np.zeros((np_input.itemsize,np_output[0].size))
 
         # u : patron que estoy analizando
