@@ -13,13 +13,12 @@ def parse_arguments():
 	return parser.parse_args()
 
 def main():
-	args = parse_arguments()
-	# print('valor 1ro: ', args.inputFile)
-	# print('valor 2do: ',args[0])
-	input_values,output_expected = parser.parserFile(args.inputFile, args.values)
-	# print('salida: ', output_expected)
-	print('size_input: ', len(input_values), ' output: ', len(output_expected))
-	nn.multilayer_perceptron([2,5,1],input_values,output_expected,-1, 0.5,0.3,0.001,'linear',0)
+    args = parse_arguments()
 
+    # input_values, output_expected = parser.parserFile(args.inputFile, args.values)
+    input_values,output_expected = parser.parserFile(args.inputFile, args.values)
+    err, w = nn.multilayer_perceptron([2,20,1], input_values, output_expected, 1, 0.5, 0.6, 0.00001,'tan',0,0.9)
+    # ESTA CONFIGURACION DE LA RED ME DIO UN RESULTADO MUY BUENO, con una entrada de 150
+    # err,w = nn.multilayer_perceptron([2,10,10,10,1],input_values,output_expected,1, 0.5,0.6,0.0001,'tan',0,0.9,input_test,output_test)
 
 if __name__ == "__main__": main()

@@ -7,9 +7,10 @@ import matplotlib.pyplot as plt
 def parserFile(infile, number_of_values):
     values = []
     out_expected = []
-    val = []
+
     i = 0
     count = 0
+    dots = 0
     limit = number_of_values
     for line in open(infile, 'r'):
         val = re.findall('[a-zA-Z0-9\.-]+', line)
@@ -42,6 +43,6 @@ def plotX1X2Z(array_values, out_values):
     plt.show()
     return
 
-# print('archivo de entrada:', sys.argv[1])
-# valores, expected = parserFile(sys.argv[1], 100)
-# plotX1X2Z(valores, expected)
+print('archivo de entrada:', sys.argv[1])
+valores, expected = parserFile(sys.argv[1], 150)
+plotX1X2Z(valores, expected)
