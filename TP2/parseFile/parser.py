@@ -10,7 +10,7 @@ def parserFile(infile, number_of_values):
 
     i = 0
     count = 0
-    dots = 0
+    dots = 0 
     limit = number_of_values
     for line in open(infile, 'r'):
         val = re.findall('[a-zA-Z0-9\.-]+', line)
