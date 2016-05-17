@@ -10,7 +10,11 @@ import matplotlib.pyplot as plt
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun,norm):
+# alfa = 0.9
+# a = 0.5
+# b = 0.2
+# k = racha
+def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun,norm,alfa,a,b,k):
 
     np_input = np.array(input)
 
@@ -21,19 +25,33 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
+    # esta es la lista de deltas previos que utilizo para el MOMENTUM
+    deltas_prev = [0] * len(weights)
+    # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
+    # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
+    ecm_prev = 0
+    # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
+    k_counter = 0
+    # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
+    alfa_value_backup = alfa
 
+    # esta es la lista de deltas previos auxiliar que utilizo para el eta adaptativo
+    deltas_prev_aux = [0] * len(weights)
     error = 1
 
     # Array que lleva los valores de los errores cuadrático medios para cada patron
     errors = []
 
     it = 1
+    not_reduce_eta = 1
+
     while error > error_cuad:
         print('COMIENZO DE CICLO')
         out = np.array([])
 
         # u : patron que estoy analizando
         limit,col = np_input.shape
+
         for u in range(0,limit):
 
             # 2. El patron de entrada seran los primeros V
@@ -57,9 +75,9 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
                         vs.append(tan(hs[m], beta))
                 # Si no estoy normalizando, los V de la capa final son h
                 else:
-                    if m == (len(arquitecture) - 1):
-                        vs.append(hs[m])
-                    else:
+                    # if m == (len(arquitecture) - 1):
+                    #     vs.append(hs[m])
+                    # else:
                         if fun == 'exp':
                             vs.append(exp(hs[m], beta))
                         else:
@@ -75,6 +93,28 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
             # Calculo del error
             deltas_error, ecm = error_quad(vs[M],np_output[u])
             #print('ECM del patron ' + str(u) + ': ' + str(ecm))
+
+
+            if ecm_prev == 0:
+                ecm_prev = ecm
+                # good_step = 1
+            else:
+                if((ecm - ecm_prev) < 0 ):
+                    k_counter = k_counter + 1
+                    alfa = alfa_value_backup
+                    if(k_counter >= k):
+                        eta = eta + a
+                    # good_step = 1
+                    not_reduce_eta = 1
+                elif((ecm - ecm_prev) > 0 and not_reduce_eta):
+                    eta = eta - b*eta
+                    alfa = 0
+                    k_counter = 0
+                    # good_step = 0
+                    not_reduce_eta = 0
+                # else:
+                #     eta = 0
+                ecm_prev = ecm
 
             # 4. Calculo los delta para la capa de salida
             m = M - 1
@@ -109,7 +149,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
                 rows, cols = weights[i].shape
                 vs_copy = create_vs_transpose(vs[i], bias, cols)
                 deltas_copy = create_deltas_matrix(deltas[i],eta,rows)
-                new_weights[i] = get_new_weights(weights[i],vs_copy,deltas_copy)
+                new_weights[i], deltas_prev[i] = get_new_weights(weights[i],vs_copy,deltas_copy, deltas_prev[i], alfa)
 
             weights = new_weights
 
@@ -118,23 +158,19 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
         print('ECM de corrida ' + str(it) + ': ' + str(ecm))
         it += 1
 
-    #print('Expected output')
-    #print(np_output)
-    #print('Obtained output')
-    #print(out)
     print(errors)
 
-    print('Salidas esperadas: ' + str(output))
-    print('Salidas obtenidas: ' + str(out))
+    print('Salidas obtenida | Salidas esperada')
+    for j in range(len(out)):
+        print(str(out[j]),'||', str(output[j]))
 
-    plt.plot(range(1,it),errors)
-    plt.xlabel('Iteración')
-    plt.ylabel('Error cuadrático medio')
-    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: 20, función de activación: ' + fun)
-    plt.show()
+    # plt.plot(range(1,it),errors)
+    # plt.xlabel('Iteración')
+    # plt.ylabel('Error cuadrático medio')
+    # plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: 20, función de activación: ' + fun)
+    # plt.show()
 
-
-    return errors
+    return errors, weights, out
 
 
 
@@ -145,7 +181,7 @@ def initialize_weights(arquitecture):
     while ( i + 1 ) < len(arquitecture):
         weights.append(np.random.rand(arquitecture[i] + 1, arquitecture[i+1]))
         i += 1
-
+    print('pesos iniciales: ',weights)
     return weights
 
 def h(vs,weights):
@@ -155,7 +191,7 @@ def normalize(array,beta,fun):
     normalized_out = np.array([])
 
     for i in range(0,len(array)):
-        num = array[i][0]
+        num = array[i]
 
         if fun == 'exp':
             normalized_out = np.append(normalized_out,1 / (1 + m.exp(- 2 * beta * num)))
@@ -166,7 +202,8 @@ def normalize(array,beta,fun):
     return np.asarray(normalized_out)
 
 def exp(hs,beta):
-    return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
+    l = np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
+    return l
 
 def exp_derived(hs,beta):
     #g'(h) = 2βg(1 − g).
@@ -229,10 +266,11 @@ def create_deltas_matrix(deltas,eta,rows):
 
     return deltas_copy
 
-def get_new_weights(weights,vs,deltas):
+def get_new_weights(weights,vs,deltas, deltas_prev, alfa):
     vs_deltas_m = np.multiply(vs,deltas)
-    #return np.add(weights, vs_deltas_m)
-    return np.asarray(weights + vs_deltas_m)
+    delta_alfa = np.multiply(deltas_prev,alfa)
+    # el termino delta_alfa es el termino de momentum
+    return np.asarray(weights + vs_deltas_m + delta_alfa), vs_deltas_m
 
 def neuronal_network():
    errors_tan = multilayer_perceptron([2,5,1],[[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1]],[[2],[3],[4],[5],[6],[7],[8],[9],[10],[11]],-1,0.5,0.3,0.0005,'tan',1)
@@ -250,25 +288,72 @@ def neuronal_network():
    plt.title('Funcion de activacion: exp')
    plt.show()
 
+# FUNCION PARA PROBAR CON LOS PATRONES DE PRUEBA
+# ==============================================
+# COMO PARAMETRO RECIBE LOS PESOS(W) CALCULADOS
+def mp_test(arquitecture, input, output, bias, beta, eta, error_cuad, fun, norm, weights):
+   salidas_obtenidas = []
+   np_input = np.array(input)
 
-multilayer_perceptron([2,5,1],[[0.8010,0.8794],
-                               [0.8010,-0.1999],
-                               [-0.6339,-1.9764],
-                               [1.9191,0],
-                               [-1.4482,1.2694],
-                               [-0.9249,-1.7458],
-                               [1.3614,1.2694],
-                               [-1.9888,-0.1999],
-                               [0.4345,-1.8447],
-                               [-0.1989,-1.9764],
-                               [1.3085, -1.0446],
-                               [1.9191, 0.3689],
-                               [-0.1989, -0.3841],
-                               [0, -0.6568],
-                               [-0.6339, -1.1440],
-                               [1.5867, -0.6568],
-                               [-0.1989, 1.2694],
-                               [-1.0969, 1.9573],
-                               [-1.4482, 1.0199],
-                               [0.6109, -0.3841]],
-                            [[0.3579],[-0.2113],[-0.0256],[0],[0.0501],[-0.0394],[0.0624],[-0.0072],[-0.0535],[-0.0338],[-0.1049],[0.0145],[-0.6051],[-0.7215],[-0.3549],[-0.0621],[0.3555],[0.0127],[0.0675],[-0.4310]],-1,0.5,0.3,0.001,'tan',0)
+   # u : patron que estoy analizando
+   limit, col = np_input.shape
+   for u in range(0, limit):
+
+       # 2. El patron de entrada seran los primeros V
+       vs = []
+       hs = []
+
+       vs.append(np_input[u])
+       hs.append(np_input[u])
+
+       # 3. Feed Forward
+       # m : capa de la red
+       m = 1
+       while m < len(arquitecture):
+           hs.append(h(np.append(np.array(vs[m - 1]), bias), weights[m - 1]))
+
+           # Si estoy normalizando, los V de la capa final son g(h)
+           if norm == 1:
+               if fun == 'exp':
+                   vs.append(exp(hs[m], beta))
+               else:
+                   vs.append(tan(hs[m], beta))
+           # Si no estoy normalizando, los V de la capa final son h
+           else:
+               if m == (len(arquitecture) - 1):
+                   vs.append(hs[m])
+               else:
+                   if fun == 'exp':
+                       vs.append(exp(hs[m], beta))
+                   else:
+                       vs.append(tan(hs[m], beta))
+
+           m += 1
+
+       # M : Ultima capa -> Capa de salida
+       M = m - 1
+
+   return
+
+               # https: // mattmazur.com / 2015 / 03 / 17 / a - step - by - step - backpropagation - example /
+# multilayer_perceptron([2,5,1],[[0.8010,0.8794],
+#                                [0.8010,-0.1999],
+#                                [-0.6339,-1.9764],
+#                                [1.9191,0],
+#                                [-1.4482,1.2694],
+#                                [-0.9249,-1.7458],
+#                                [1.3614,1.2694],
+#                                [-1.9888,-0.1999],
+#                                [0.4345,-1.8447],
+#                                [-0.1989,-1.9764],
+#                                [1.3085, -1.0446],
+#                                [1.9191, 0.3689],
+#                                [-0.1989, -0.3841],
+#                                [0, -0.6568],
+#                                [-0.6339, -1.1440],
+#                                [1.5867, -0.6568],
+#                                [-0.1989, 1.2694],
+#                                [-1.0969, 1.9573],
+#                                [-1.4482, 1.0199],
+#                                [0.6109, -0.3841]],
+#                             [[0.3579],[-0.2113],[-0.0256],[0],[0.0501],[-0.0394],[0.0624],[-0.0072],[-0.0535],[-0.0338],[-0.1049],[0.0145],[-0.6051],[-0.7215],[-0.3549],[-0.0621],[0.3555],[0.0127],[0.0675],[-0.4310]],-1,0.5,0.3,0.00001,'tan',0)

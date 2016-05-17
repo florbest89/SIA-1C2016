@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
 
+def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
     np_input = np.array(input)
     np_output = np.array(output)
 
@@ -23,6 +23,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,fun,eta,error_cuad):
     errors = []
 
     while error > error_cuad:
+        print('error: ', error, 'error_cuad: ',error_cuad)
         out = np.array([])
 
         # u : patron que estoy analizando
@@ -217,7 +218,9 @@ def get_new_weights(weights,vs,deltas):
     #return np.add(weights, vs_deltas_m)
     return np.asarray(weights + vs_deltas_m)
 
-multilayer_perceptron([3,5,1],[[1,1,1],[0,0,1],[0,1,1],[0,0,0]],[[0],[0],[1],[1]],-1,'linear',0.3,0.0001)
+
+# multilayer_perceptron([3,5,1],[[1,1,1],[0,0,1],[0,1,1],[0,0,0]],[[0],[0],[1],[1]],-1,'linear',0.3,0.0001)
+
 
 
 
