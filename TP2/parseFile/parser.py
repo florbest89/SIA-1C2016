@@ -43,6 +43,6 @@ def plotX1X2Z(array_values, out_values):
     plt.show()
     return
 
-print('archivo de entrada:', sys.argv[1])
-valores, expected = parserFile(sys.argv[1], 150)
-plotX1X2Z(valores, expected)
+# print('archivo de entrada:', sys.argv[1])
+# valores, expected = parserFile(sys.argv[1], -1)
+# plotX1X2Z(valores, expected)

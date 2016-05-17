@@ -10,7 +10,11 @@ import matplotlib.pyplot as plt
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun,norm,alfa):
+# alfa = 0.9
+# a = 0.5
+# b = 0.2
+# k = racha
+def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun,norm,alfa,a,b,k):
 
     np_input = np.array(input)
 
@@ -23,18 +27,31 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
     weights = initialize_weights(arquitecture)
     # esta es la lista de deltas previos que utilizo para el MOMENTUM
     deltas_prev = [0] * len(weights)
+    # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
+    # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
+    ecm_prev = 0
+    # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
+    k_counter = 0
+    # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
+    alfa_value_backup = alfa
+
+    # esta es la lista de deltas previos auxiliar que utilizo para el eta adaptativo
+    deltas_prev_aux = [0] * len(weights)
     error = 1
 
     # Array que lleva los valores de los errores cuadrático medios para cada patron
     errors = []
 
     it = 1
+    not_reduce_eta = 1
+
     while error > error_cuad:
         print('COMIENZO DE CICLO')
         out = np.array([])
 
         # u : patron que estoy analizando
         limit,col = np_input.shape
+
         for u in range(0,limit):
 
             # 2. El patron de entrada seran los primeros V
@@ -58,9 +75,9 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
                         vs.append(tan(hs[m], beta))
                 # Si no estoy normalizando, los V de la capa final son h
                 else:
-                    if m == (len(arquitecture) - 1):
-                        vs.append(hs[m])
-                    else:
+                    # if m == (len(arquitecture) - 1):
+                    #     vs.append(hs[m])
+                    # else:
                         if fun == 'exp':
                             vs.append(exp(hs[m], beta))
                         else:
@@ -76,6 +93,28 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
             # Calculo del error
             deltas_error, ecm = error_quad(vs[M],np_output[u])
             #print('ECM del patron ' + str(u) + ': ' + str(ecm))
+
+
+            if ecm_prev == 0:
+                ecm_prev = ecm
+                # good_step = 1
+            else:
+                if((ecm - ecm_prev) < 0 ):
+                    k_counter = k_counter + 1
+                    alfa = alfa_value_backup
+                    if(k_counter >= k):
+                        eta = eta + a
+                    # good_step = 1
+                    not_reduce_eta = 1
+                elif((ecm - ecm_prev) > 0 and not_reduce_eta):
+                    eta = eta - b*eta
+                    alfa = 0
+                    k_counter = 0
+                    # good_step = 0
+                    not_reduce_eta = 0
+                # else:
+                #     eta = 0
+                ecm_prev = ecm
 
             # 4. Calculo los delta para la capa de salida
             m = M - 1
@@ -125,13 +164,13 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
     for j in range(len(out)):
         print(str(out[j]),'||', str(output[j]))
 
-    plt.plot(range(1,it),errors)
-    plt.xlabel('Iteración')
-    plt.ylabel('Error cuadrático medio')
-    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: 20, función de activación: ' + fun)
-    plt.show()
+    # plt.plot(range(1,it),errors)
+    # plt.xlabel('Iteración')
+    # plt.ylabel('Error cuadrático medio')
+    # plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: 20, función de activación: ' + fun)
+    # plt.show()
 
-    return errors, weights
+    return errors, weights, out
 
 
 
@@ -152,7 +191,7 @@ def normalize(array,beta,fun):
     normalized_out = np.array([])
 
     for i in range(0,len(array)):
-        num = array[i][0]
+        num = array[i]
 
         if fun == 'exp':
             normalized_out = np.append(normalized_out,1 / (1 + m.exp(- 2 * beta * num)))
