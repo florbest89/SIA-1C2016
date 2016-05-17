@@ -10,14 +10,11 @@ import matplotlib.pyplot as plt
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun,norm):
+def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun):
 
-    np_input = np.array(input)
-
-    if norm == 1:
-        np_output = normalize(output, beta, fun)
-    else:
-        np_output = np.array(output)
+    np_input = normalize(input,beta,fun)
+    np_output = normalize(output,beta,fun)
+    #np_output = normalize_out(output, beta, fun)
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
@@ -27,9 +24,9 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
     # Array que lleva los valores de los errores cuadrático medios para cada patron
     errors = []
 
-    it = 1
+    epoch = 1
     while error > error_cuad:
-        print('COMIENZO DE CICLO')
+        print('COMIENZO DE EPOCA')
         out = np.array([])
 
         # u : patron que estoy analizando
@@ -50,20 +47,10 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
                 hs.append(h(np.append(np.array(vs[m-1]),bias),weights[m-1]))
 
                 # Si estoy normalizando, los V de la capa final son g(h)
-                if norm == 1:
-                    if fun == 'exp':
-                        vs.append(exp(hs[m], beta))
-                    else:
-                        vs.append(tan(hs[m], beta))
-                # Si no estoy normalizando, los V de la capa final son h
+                if fun == 'exp':
+                    vs.append(exp(hs[m], beta))
                 else:
-                    if m == (len(arquitecture) - 1):
-                        vs.append(hs[m])
-                    else:
-                        if fun == 'exp':
-                            vs.append(exp(hs[m], beta))
-                        else:
-                            vs.append(tan(hs[m], beta))
+                    vs.append(tan(hs[m], beta))
 
                 m += 1
 
@@ -99,12 +86,6 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
 
             new_weights = [None] * len(weights)
 
-            #while m >= 0:
-                #rows, cols = weights[m].shape
-                #vs_copy = create_vs_transpose(vs[m], bias, cols)
-                #deltas_copy = create_deltas_matrix(deltas[m],eta,rows)
-                #new_weights[m] = get_new_weights(weights[m],vs_copy,deltas_copy)
-                #m-=1
             for i in range(0,M):
                 rows, cols = weights[i].shape
                 vs_copy = create_vs_transpose(vs[i], bias, cols)
@@ -115,8 +96,9 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
 
         errors.append(ecm)
         error = ecm
-        print('ECM de corrida ' + str(it) + ': ' + str(ecm))
-        it += 1
+        print('ECM de corrida ' + str(epoch) + ': ' + str(ecm))
+        print('Cantidad de patrones ' + str(u + 1))
+        epoch += 1
 
     #print('Expected output')
     #print(np_output)
@@ -127,7 +109,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
     print('Salidas esperadas: ' + str(output))
     print('Salidas obtenidas: ' + str(out))
 
-    plt.plot(range(1,it),errors)
+    plt.plot(range(1,epoch),errors)
     plt.xlabel('Iteración')
     plt.ylabel('Error cuadrático medio')
     plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: 20, función de activación: ' + fun)
@@ -152,18 +134,24 @@ def h(vs,weights):
     return np.dot(vs, weights)
 
 def normalize(array,beta,fun):
-    normalized_out = np.array([])
+    normalized_input = np.array([])
 
-    for i in range(0,len(array)):
-        num = array[i][0]
+    num = array[0]
+
+    if fun == 'exp':
+        normalized_input = np.append(normalized_input, [(1 / (1 + m.exp(- 2 * beta * x))) for x in num])
+    else:
+        normalized_input = np.append(normalized_input, [(1 / (1 + m.tanh(beta * x))) for x in num])
+
+    for i in range(1,len(array)):
+        num = array[i]
 
         if fun == 'exp':
-            normalized_out = np.append(normalized_out,1 / (1 + m.exp(- 2 * beta * num)))
+            normalized_input = np.vstack([normalized_input,[(1 / (1 + m.exp(- 2 * beta * x))) for x in num]])
         else:
-            normalized_out = np.append(normalized_out, 1 / (1 + m.tanh(beta * num)))
+            normalized_input = np.vstack([normalized_input, [(1 / (1 + m.tanh(beta * x))) for x in num]])
 
-    normalized_out = np.mat(normalized_out).transpose()
-    return np.asarray(normalized_out)
+    return normalized_input
 
 def exp(hs,beta):
     return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
@@ -251,7 +239,7 @@ def neuronal_network():
    plt.show()
 
 
-multilayer_perceptron([2,5,1],[[0.8010,0.8794],
+multilayer_perceptron([2,10,1],[[0.8010,0.8794],
                                [0.8010,-0.1999],
                                [-0.6339,-1.9764],
                                [1.9191,0],
@@ -271,4 +259,4 @@ multilayer_perceptron([2,5,1],[[0.8010,0.8794],
                                [-1.0969, 1.9573],
                                [-1.4482, 1.0199],
                                [0.6109, -0.3841]],
-                            [[0.3579],[-0.2113],[-0.0256],[0],[0.0501],[-0.0394],[0.0624],[-0.0072],[-0.0535],[-0.0338],[-0.1049],[0.0145],[-0.6051],[-0.7215],[-0.3549],[-0.0621],[0.3555],[0.0127],[0.0675],[-0.4310]],-1,0.5,0.3,0.001,'tan',0)
+                            [[0.3579],[-0.2113],[-0.0256],[0],[0.0501],[-0.0394],[0.0624],[-0.0072],[-0.0535],[-0.0338],[-0.1049],[0.0145],[-0.6051],[-0.7215],[-0.3549],[-0.0621],[0.3555],[0.0127],[0.0675],[-0.4310]],-1,0.5,0.3,0.001,'exp')
