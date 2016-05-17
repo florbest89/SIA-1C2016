@@ -3,6 +3,7 @@ import numpy as np
 import numpy.matlib
 import math as m
 import matplotlib.pyplot as plt
+import time
 
 # arquitecture : Arquitectura de la red -> Cantidad de nodos
 # input : Array con valores de entrada
@@ -11,6 +12,8 @@ import matplotlib.pyplot as plt
 # error_cuad : error cuadrático medio
 # beta = 0.5
 def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun):
+
+    start_time = time.time()
 
     np_input = normalize(input,beta,fun)
     np_output = normalize(output,beta,fun)
@@ -105,6 +108,9 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
     #print('Obtained output')
     #print(out)
     print(errors)
+    end_time = time.time()
+
+    print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + 'segundos.')
 
     print('Salidas esperadas: ' + str(output))
     print('Salidas obtenidas: ' + str(out))
@@ -141,7 +147,7 @@ def normalize(array,beta,fun):
     if fun == 'exp':
         normalized_input = np.append(normalized_input, [(1 / (1 + m.exp(- 2 * beta * x))) for x in num])
     else:
-        normalized_input = np.append(normalized_input, [(1 / (1 + m.tanh(beta * x))) for x in num])
+        normalized_input = np.append(normalized_input, [(m.tanh(beta * x)) for x in num])
 
     for i in range(1,len(array)):
         num = array[i]
@@ -149,7 +155,7 @@ def normalize(array,beta,fun):
         if fun == 'exp':
             normalized_input = np.vstack([normalized_input,[(1 / (1 + m.exp(- 2 * beta * x))) for x in num]])
         else:
-            normalized_input = np.vstack([normalized_input, [(1 / (1 + m.tanh(beta * x))) for x in num]])
+            normalized_input = np.vstack([normalized_input, [(m.tanh(beta * x)) for x in num]])
 
     return normalized_input
 
@@ -239,7 +245,7 @@ def neuronal_network():
    plt.show()
 
 
-multilayer_perceptron([2,10,1],[[0.8010,0.8794],
+multilayer_perceptron([2,10,5,1],[[0.8010,0.8794],
                                [0.8010,-0.1999],
                                [-0.6339,-1.9764],
                                [1.9191,0],
@@ -259,4 +265,4 @@ multilayer_perceptron([2,10,1],[[0.8010,0.8794],
                                [-1.0969, 1.9573],
                                [-1.4482, 1.0199],
                                [0.6109, -0.3841]],
-                            [[0.3579],[-0.2113],[-0.0256],[0],[0.0501],[-0.0394],[0.0624],[-0.0072],[-0.0535],[-0.0338],[-0.1049],[0.0145],[-0.6051],[-0.7215],[-0.3549],[-0.0621],[0.3555],[0.0127],[0.0675],[-0.4310]],-1,0.5,0.3,0.001,'exp')
+                            [[0.3579],[-0.2113],[-0.0256],[0],[0.0501],[-0.0394],[0.0624],[-0.0072],[-0.0535],[-0.0338],[-0.1049],[0.0145],[-0.6051],[-0.7215],[-0.3549],[-0.0621],[0.3555],[0.0127],[0.0675],[-0.4310]],-1,0.5,0.5,0.001,'tan')
