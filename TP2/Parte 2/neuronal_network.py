@@ -6,13 +6,13 @@ import numpy as np
 
 def learn():
 
-    inputs, outputs = fp.parse_file('terrain/terrain5-1.txt', -1)
+    inputs, outputs = fp.parse_file('terrain/terrain5-1.txt', 50)
 
     #Para graficar terreno
-    x, y = get_x_y(inputs)
-    z = get_z(outputs)
+    #x, y = get_x_y(inputs)
+    #z = get_z(outputs)
 
-    errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.001, 'tan')
+    errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.005, 'exp')
 
     plt.plot(range(1, epoch), errors)
     plt.xlabel('Iteración')

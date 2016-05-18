@@ -15,9 +15,9 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
     start_time = time.time()
 
-    np_input = normalize(input, beta, fun)
-    np_output = normalize(output, beta, fun)
-    #np_output = normalize_out(output, beta, fun)
+    #np_input = normalize(input, beta, fun)
+    #np_output = normalize(output, beta, fun)
+    np_input, np_output = normalize(input,output,fun)
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
@@ -134,25 +134,31 @@ def h(vs, weights):
     return np.dot(vs, weights)
 
 
-def normalize(array, beta, fun):
-    normalized_input = np.array([])
+def normalize(inputs, outputs, fun):
+   max_x, max_y , max_z = get_max_values(inputs,outputs)
 
-    num = array[0]
+   norm_in = []
+   norm_out = []
 
-    if fun == 'exp':
-        normalized_input = np.append(normalized_input, [(1 / (1 + m.exp(- 2 * beta * x))) for x in num])
-    else:
-        normalized_input = np.append(normalized_input, [(m.tanh(beta * x)) for x in num])
+   limit = len(outputs)
 
-    for i in range(1, len(array)):
-        num = array[i]
+   for i in range(0,limit):
 
-        if fun == 'exp':
-            normalized_input = np.vstack([normalized_input,[(1 / (1 + m.exp(- 2 * beta * x))) for x in num]])
-        else:
-            normalized_input = np.vstack([normalized_input, [(m.tanh(beta * x)) for x in num]])
+       x = inputs[i][0] / max_x
+       y = inputs[i][0] / max_y
+       z = outputs[i][0] / max_z
 
-    return normalized_input
+       if fun == 'exp' :
+           x = x * np.sign(x)
+           y = y * np.sign(y)
+           z = z * np.sign(z)
+
+       norm_in.append([x,y])
+       norm_out.append([z])
+
+   return np.array(norm_in), np.array(norm_out)
+
+
 
 
 def exp(hs,beta):
@@ -241,3 +247,28 @@ def get_new_weights(weights, vs, deltas):
     vs_deltas_m = np.multiply(vs, deltas)
     #return np.add(weights, vs_deltas_m)
     return np.asarray(weights + vs_deltas_m)
+
+def get_max_values(inputs,outputs):
+    max_x = 0.0
+    max_y = 0.0
+    max_z = 0
+
+    limit = len(outputs)
+
+    for i in range(0,limit):
+
+        x = inputs[i][0]
+        y = inputs[i][1]
+        z = outputs[i][0]
+
+        if x > max_x :
+            max_x = x
+
+        if y > max_y :
+            max_y = y
+
+        if z > max_z :
+            max_z = z
+
+    # | x | , | y | , | z |
+    return abs(max_x), abs(max_y) , abs(max_z)
