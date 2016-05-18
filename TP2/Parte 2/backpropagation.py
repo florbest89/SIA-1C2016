@@ -158,11 +158,7 @@ def normalize(inputs, outputs, fun):
    return np.array(norm_in), np.array(norm_out)
 
 def exp(hs,beta):
-   try:
-       return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
-   except OverflowError:
-       print('HS que causan error')
-       print(hs)
+    return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
 
 
 
