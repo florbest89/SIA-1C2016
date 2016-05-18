@@ -11,12 +11,12 @@ import time
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun):
+def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun):
 
     start_time = time.time()
 
-    np_input = normalize(input,beta,fun)
-    np_output = normalize(output,beta,fun)
+    np_input = normalize(input, beta, fun)
+    np_output = normalize(output, beta, fun)
     #np_output = normalize_out(output, beta, fun)
 
     #1. Inicializo las matrices de pesos con valores random pequeños
@@ -34,7 +34,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
 
         # u : patron que estoy analizando
         limit,col = np_input.shape
-        for u in range(0,limit):
+        for u in range(0, limit):
 
             # 2. El patron de entrada seran los primeros V
             vs = []
@@ -47,7 +47,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
             # m : capa de la red
             m = 1
             while m < len(arquitecture):
-                hs.append(h(np.append(np.array(vs[m-1]),bias),weights[m-1]))
+                hs.append(h(np.append(np.array(vs[m-1]), bias), weights[m-1]))
 
                 # Si estoy normalizando, los V de la capa final son g(h)
                 if fun == 'exp':
@@ -60,10 +60,10 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
             # M : Ultima capa -> Capa de salida
             M = m - 1
 
-            out = np.insert(out,u,vs[M])
+            out = np.insert(out, u, vs[M])
 
             # Calculo del error
-            deltas_error, ecm = error_quad(vs[M],np_output[u])
+            deltas_error = calc_delta(vs[M], np_output[u])
             #print('ECM del patron ' + str(u) + ': ' + str(ecm))
 
             # 4. Calculo los delta para la capa de salida
@@ -75,13 +75,13 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
             else:
                 gs_derived = tan_derived(hs[M], beta)
 
-            deltas_output = [a * b for a,b in zip(gs_derived,deltas_error)]
+            deltas_output = [a * b for a, b in zip(gs_derived,deltas_error)]
             deltas[m] = deltas_output
 
             # 5. Calculo los deltas para capas anteriores
             while m - 1 >= 0:
                 wt = weights_trans(weights[m])
-                deltas[m-1] = get_deltas(hs[m],beta,deltas[m],wt,fun)
+                deltas[m-1] = get_deltas(hs[m], beta, deltas[m], wt, fun)
                 m -= 1
 
             # 6. Actualizo los pesos
@@ -89,15 +89,15 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
 
             new_weights = [None] * len(weights)
 
-            for i in range(0,M):
+            for i in range(0, M):
                 rows, cols = weights[i].shape
                 vs_copy = create_vs_transpose(vs[i], bias, cols)
-                deltas_copy = create_deltas_matrix(deltas[i],eta,rows)
-                new_weights[i] = get_new_weights(weights[i],vs_copy,deltas_copy)
+                deltas_copy = create_deltas_matrix(deltas[i], eta, rows)
+                new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
 
             weights = new_weights
 
-        dt, ecm_epoch = error_quad(out, np_output[u])
+        dt, ecm_epoch = error_quad(out, np_output)
         errors.append(ecm_epoch)
         error = ecm_epoch
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
@@ -122,9 +122,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
     plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: 20, función de activación: ' + fun)
     plt.show()
 
-
-    return errors,epoch
-
+    return errors, epoch
 
 
 def initialize_weights(arquitecture):
@@ -137,10 +135,12 @@ def initialize_weights(arquitecture):
 
     return weights
 
-def h(vs,weights):
+
+def h(vs, weights):
     return np.dot(vs, weights)
 
-def normalize(array,beta,fun):
+
+def normalize(array, beta, fun):
     normalized_input = np.array([])
 
     num = array[0]
@@ -150,7 +150,7 @@ def normalize(array,beta,fun):
     else:
         normalized_input = np.append(normalized_input, [(m.tanh(beta * x)) for x in num])
 
-    for i in range(1,len(array)):
+    for i in range(1, len(array)):
         num = array[i]
 
         if fun == 'exp':
@@ -160,33 +160,49 @@ def normalize(array,beta,fun):
 
     return normalized_input
 
+
 def exp(hs,beta):
     return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
 
-def exp_derived(hs,beta):
+
+def exp_derived(hs, beta):
     #g'(h) = 2βg(1 − g).
     gs = exp(hs,beta)
     gs_g = exp([(1 - x) for x in gs],beta)
     return np.array([(2 * beta * g) for g in gs_g])
 
+
 def tan(hs,beta):
     return np.array([(m.tanh(beta * x)) for x in hs])
 
-def tan_derived(hs,beta):
-    gs = tan(hs,beta)
-    gs_pow = [( x ** 2) for x in gs]
+
+def tan_derived(hs, beta):
+    gs = tan(hs, beta)
+    gs_pow = [(x ** 2) for x in gs]
     return np.array([(beta * (1 - x)) for x in gs_pow])
 
-def error_quad(out_obtained,out_expected):
+
+def calc_delta(out_obtained, out_expected):
     deltas_error = np.subtract(out_expected, out_obtained)
+    return deltas_error
+
+
+def error_quad(out_obtained, out_expected):
+    out_expected_copy = out_expected.copy()
+    out_expected_copy = np.mat(out_expected_copy).transpose()
+    deltas_error = np.subtract(out_expected_copy, out_obtained)
+    deltas_error = np.asarray(deltas_error)
+    deltas_error = deltas_error[0]
     pow_deltas = [(d ** 2) for d in deltas_error]
     sum_pow_deltas = np.sum(pow_deltas)
     return deltas_error, (1/2) * sum_pow_deltas
+
 
 def weights_trans(weights):
     rows,cols = weights.shape
     aux = numpy.delete(weights, (rows - 1), axis=0)
     return aux.transpose()
+
 
 def get_deltas(hs,beta,delta_upper,weights,fun):
     if fun == 'exp':
@@ -196,6 +212,7 @@ def get_deltas(hs,beta,delta_upper,weights,fun):
 
     dterm = np.dot(delta_upper, weights)
     return [a * b for a,b in zip(gs,dterm)]
+
 
 def create_vs_transpose(vs, bias, cols):
     vs_copy = vs.copy()
@@ -211,6 +228,7 @@ def create_vs_transpose(vs, bias, cols):
 
     return np.mat(vs_copy).transpose()
 
+
 def create_deltas_matrix(deltas,eta,rows):
     deltas_copy = deltas.copy()
     deltas_copy = [(d * eta) for d in deltas_copy]
@@ -224,7 +242,8 @@ def create_deltas_matrix(deltas,eta,rows):
 
     return deltas_copy
 
-def get_new_weights(weights,vs,deltas):
-    vs_deltas_m = np.multiply(vs,deltas)
+
+def get_new_weights(weights, vs, deltas):
+    vs_deltas_m = np.multiply(vs, deltas)
     #return np.add(weights, vs_deltas_m)
     return np.asarray(weights + vs_deltas_m)
