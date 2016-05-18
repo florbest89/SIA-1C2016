@@ -133,7 +133,6 @@ def initialize_weights(arquitecture):
 def h(vs, weights):
     return np.dot(vs, weights)
 
-
 def normalize(inputs, outputs, fun):
    max_x, max_y , max_z = get_max_values(inputs,outputs)
 
@@ -158,18 +157,18 @@ def normalize(inputs, outputs, fun):
 
    return np.array(norm_in), np.array(norm_out)
 
-
-
-
 def exp(hs,beta):
-    return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
+   try:
+       return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
+   except OverflowError:
+       print('HS que causan error')
+       print(hs)
+
 
 
 def exp_derived(hs, beta):
-    #g'(h) = 2βg(1 − g).
     gs = exp(hs,beta)
-    gs_g = exp([(1 - x) for x in gs],beta)
-    return np.array([(2 * beta * g) for g in gs_g])
+    return np.array([(2 * beta * g * (1 - g)) for g in gs])
 
 
 def tan(hs,beta):
