@@ -1,9 +1,6 @@
 import file_parser as fp
 import backpropagation as bp
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
-from matplotlib import cm
 import numpy as np
 
 
@@ -11,21 +8,9 @@ def learn():
 
     inputs, outputs = fp.parse_file('terrain/terrain5-1.txt', -1)
 
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    x, y = getXandY(inputs)
-    x, y = np.meshgrid(x, y)
-    z = getZ(outputs)
-    surf = ax.plot_surface(x, y, z, rstride=1, cstride=1, cmap=cm.coolwarm,
-                           linewidth=0, antialiased=False)
-    ax.set_zlim(-1.01, 1.01)
-
-    ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-
-    plt.show()
+    #Para graficar terreno
+    x, y = get_x_y(inputs)
+    z = get_z(outputs)
 
     errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.001, 'tan')
 
@@ -36,7 +21,7 @@ def learn():
     plt.show()
 
 
-def getXandY(input):
+def get_x_y(input):
     x = []
     y = []
     size = len(input)
@@ -50,7 +35,7 @@ def getXandY(input):
     return x, y
 
 
-def getZ(input):
+def get_z(input):
     z = []
     size = len(input)
 
