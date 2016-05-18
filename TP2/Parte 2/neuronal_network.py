@@ -8,6 +8,7 @@ import numpy as np
 
 
 def learn():
+
     inputs, outputs = fp.parse_file('terrain/terrain5-1.txt', -1)
 
     fig = plt.figure()
@@ -31,7 +32,7 @@ def learn():
     plt.plot(range(1, epoch), errors)
     plt.xlabel('Iteración')
     plt.ylabel('Error cuadrático medio')
-    plt.title('Red neuronal con arquitectura ' + str([2, 10, 5, 1]) + ', cantidad de patrones: 20, función de activación: ' + 'tan')
+    plt.title('Red neuronal con arquitectura ' + str([2, 10, 5, 1]) + ', cantidad de patrones: 20, función de activación: ' + 'exp')
     plt.show()
 
 
