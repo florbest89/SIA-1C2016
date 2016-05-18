@@ -97,9 +97,10 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
 
             weights = new_weights
 
-        errors.append(ecm)
-        error = ecm
-        print('ECM de corrida ' + str(epoch) + ': ' + str(ecm))
+        dt, ecm_epoch = error_quad(out, np_output[u])
+        errors.append(ecm_epoch)
+        error = ecm_epoch
+        print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         print('Cantidad de patrones ' + str(u + 1))
         epoch += 1
 
@@ -122,7 +123,7 @@ def multilayer_perceptron(arquitecture,input,output,bias,beta,eta,error_cuad,fun
     plt.show()
 
 
-    return errors
+    return errors,epoch
 
 
 
@@ -227,42 +228,3 @@ def get_new_weights(weights,vs,deltas):
     vs_deltas_m = np.multiply(vs,deltas)
     #return np.add(weights, vs_deltas_m)
     return np.asarray(weights + vs_deltas_m)
-
-def neuronal_network():
-   errors_tan = multilayer_perceptron([2,5,1],[[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],[9,1],[10,1]],[[2],[3],[4],[5],[6],[7],[8],[9],[10],[11]],-1,0.5,0.3,0.0005,'tan',1)
-   errors_exp = multilayer_perceptron([2, 5, 1], [[1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1]],[[2], [3], [4], [5], [6], [7], [8], [9], [10], [11]], -1, 0.5, 0.3, 0.0005, 'exp',1)
-
-   plt.plot(range(1,len(errors_tan) +1),errors_tan, 'magenta')
-   plt.xlabel('Iteraciones')
-   plt.ylabel('Error cuadratico medio')
-   plt.title('Funcion de activacion: tanh')
-   plt.show()
-
-   plt.plot(range(1,len(errors_exp) +1),errors_exp, 'magenta')
-   plt.xlabel('Iteraciones')
-   plt.ylabel('Error cuadratico medio')
-   plt.title('Funcion de activacion: exp')
-   plt.show()
-
-
-multilayer_perceptron([2,10,5,1],[[0.8010,0.8794],
-                               [0.8010,-0.1999],
-                               [-0.6339,-1.9764],
-                               [1.9191,0],
-                               [-1.4482,1.2694],
-                               [-0.9249,-1.7458],
-                               [1.3614,1.2694],
-                               [-1.9888,-0.1999],
-                               [0.4345,-1.8447],
-                               [-0.1989,-1.9764],
-                               [1.3085, -1.0446],
-                               [1.9191, 0.3689],
-                               [-0.1989, -0.3841],
-                               [0, -0.6568],
-                               [-0.6339, -1.1440],
-                               [1.5867, -0.6568],
-                               [-0.1989, 1.2694],
-                               [-1.0969, 1.9573],
-                               [-1.4482, 1.0199],
-                               [0.6109, -0.3841]],
-                            [[0.3579],[-0.2113],[-0.0256],[0],[0.0501],[-0.0394],[0.0624],[-0.0072],[-0.0535],[-0.0338],[-0.1049],[0.0145],[-0.6051],[-0.7215],[-0.3549],[-0.0621],[0.3555],[0.0127],[0.0675],[-0.4310]],-1,0.5,0.5,0.001,'tan')

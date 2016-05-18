@@ -1,10 +1,9 @@
 import re
-
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 
-def parserFile(infile, number_of_values):
+def parse_file(infile, number_of_values):
 
     values = []
     out_expected = []
@@ -16,11 +15,11 @@ def parserFile(infile, number_of_values):
         val = re.findall('[a-zA-Z0-9\.-]+', line)
         if i == 1 and count < limit:
             values.append([float(val[0]), float(val[1])])
-            out_expected.append(float(val[2]))
+            out_expected.append([float(val[2])])
             count += 1
         if i == 1 and limit == -1:
             values.append([float(val[0]), float(val[1])])
-            out_expected.append(float(val[2]))
+            out_expected.append([float(val[2])])
         else:
             i = 1
     return values, out_expected
