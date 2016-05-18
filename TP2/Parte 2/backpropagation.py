@@ -116,12 +116,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     print('Salidas esperadas: ' + str(output))
     print('Salidas obtenidas: ' + str(out))
 
-    plt.plot(range(1,epoch),errors)
-    plt.xlabel('Iteración')
-    plt.ylabel('Error cuadrático medio')
-    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: 20, función de activación: ' + fun)
-    plt.show()
-
     return errors, epoch
 
 
