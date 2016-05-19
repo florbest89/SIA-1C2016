@@ -18,13 +18,8 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
     start_time = time.time()
 
-    #np_input = normalize(input, beta, fun)
-    #np_output = normalize(output, beta, fun)
     np_input, np_output = normalize(input,output,fun)
-    # np_input = input
-    # np_output = output
 
-    # fp.plotX1X2Z(np_input,np_output)
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
 
@@ -164,8 +159,13 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
     print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + 'segundos.')
 
-    print('Salidas esperadas: ' + str(output))
-    print('Salidas obtenidas: ' + str(out))
+    # print('Salidas esperadas: ' + str(output))
+    # print('Salidas obtenidas: ' + str(out))
+    print('Salidas obtenida | Salidas esperada')
+    for j in range(len(out)):
+        print(str(out[j]),'||', str(np_output[j]))
+
+    fp.plotX1X2Z(np_input, out)
 
     return errors, epoch
 
@@ -195,10 +195,6 @@ def normalize(inputs, outputs, fun):
    max_val = max([max_x,max_y,max_z])
 
    for i in range(0,limit):
-
-       # x = inputs[i][0] / max_x
-       # y = inputs[i][0] / max_y
-       # z = outputs[i][0] / max_z
        x = inputs[i][0] / max_val
        y = inputs[i][1] / max_val
        z = outputs[i][0] / max_val

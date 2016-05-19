@@ -9,18 +9,18 @@ def learn():
 
     inputs, outputs = fp.parse_file('terrain/terrain4.txt', -1)
 
-    #Para graficar terreno
-    #x, y = get_x_y(inputs)
-    #z = get_z(outputs)
+    # Para graficar terreno
+    x, y = get_x_y(inputs)
+    z = get_z(outputs)
 
     #multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
-    errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs, outputs, 1, 0.5, 0.5, 0.005, 'tan', 0.9, 0,0,0)
+    errors, epoch = bp.multilayer_perceptron([2, 15, 10, 1], inputs, outputs, -1, 0.5, 0.5, 0.02, 'tan', 0, 0,0,0)
 
     plt.plot(range(1, epoch), errors)
     plt.xlabel('Iteración')
     plt.ylabel('Error cuadrático medio')
 
-    plt.title('Red neuronal con arquitectura ' + str([2, 10, 5, 1]) + ', cantidad de patrones: 20, función de activación: ' + 'exp')
+    plt.title('Red neuronal con arquitectura ' + str([2, 15, 10, 1]) + ', cantidad de patrones: 20, función de activación: ' + 'exp')
     plt.show()
 
 
