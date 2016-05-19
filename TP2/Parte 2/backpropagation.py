@@ -11,8 +11,8 @@ import time
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-
-def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun):
+# alfa = 0.9
+def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa):
 
     start_time = time.time()
 
@@ -22,6 +22,9 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
+
+    # esta es la lista de deltas previos que utilizo para el MOMENTUM
+    deltas_prev = [0] * len(weights)
 
     error = 1
 
@@ -95,8 +98,8 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
                 rows, cols = weights[i].shape
                 vs_copy = create_vs_transpose(vs[i], bias, cols)
                 deltas_copy = create_deltas_matrix(deltas[i], eta, rows)
-                new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
-
+                # new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
+                new_weights[i], deltas_prev[i] = get_new_weights(weights[i], vs_copy, deltas_copy, deltas_prev[i], alfa)
 
             weights = new_weights
 
@@ -239,10 +242,13 @@ def create_deltas_matrix(deltas,eta,rows):
 
     return deltas_copy
 
-def get_new_weights(weights, vs, deltas):
+# def get_new_weights(weights, vs, deltas):
+def get_new_weights(weights, vs, deltas, deltas_prev, alfa):
     vs_deltas_m = np.multiply(vs, deltas)
-    #return np.add(weights, vs_deltas_m)
-    return np.asarray(weights + vs_deltas_m)
+    delta_alfa = np.multiply(deltas_prev,alfa)
+    # el termino delta_alfa es el termino de momentum
+    return np.asarray(weights + vs_deltas_m + delta_alfa), vs_deltas_m
+    # return np.asarray(weights + vs_deltas_m)
 
 def get_max_values(inputs,outputs):
     max_x = 0.0

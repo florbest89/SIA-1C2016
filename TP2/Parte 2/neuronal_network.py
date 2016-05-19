@@ -13,7 +13,8 @@ def learn():
     #x, y = get_x_y(inputs)
     #z = get_z(outputs)
 
-    errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.005, 'exp')
+    # multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun):
+    errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.8, 0.005, 'exp', 0.9)
 
     plt.plot(range(1, epoch), errors)
     plt.xlabel('Iteración')
