@@ -4,6 +4,8 @@ import numpy.matlib
 import math as m
 import matplotlib.pyplot as plt
 import time
+import file_parser as fp
+
 
 # arquitecture : Arquitectura de la red -> Cantidad de nodos
 # input : Array con valores de entrada
@@ -12,19 +14,31 @@ import time
 # error_cuad : error cuadrático medio
 # beta = 0.5
 # alfa = 0.9
-def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa):
+def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa,a,b,k):
 
     start_time = time.time()
 
     #np_input = normalize(input, beta, fun)
     #np_output = normalize(output, beta, fun)
     np_input, np_output = normalize(input,output,fun)
+    # np_input = input
+    # np_output = output
 
+    # fp.plotX1X2Z(np_input,np_output)
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
 
     # esta es la lista de deltas previos que utilizo para el MOMENTUM
     deltas_prev = [0] * len(weights)
+    deltas_good_epoch = [0] * len(weights)
+    ecm_good_epoch = 0
+    # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
+    # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
+    ecm_prev = 0
+    # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
+    k_counter = 0
+    # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
+    alfa_value_backup = alfa
 
     error = 1
 
@@ -107,6 +121,35 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
         errors.append(ecm_epoch)
         error = ecm_epoch
 
+        # if ecm_prev == 0:
+        #     ecm_prev = ecm_epoch
+        #     ecm_good_epoch = ecm_prev
+        #     deltas_good_epoch = deltas_prev
+        #     # good_step = 1
+        # else:
+        #     if ((ecm_epoch - ecm_prev) < 0):
+        #         k_counter = k_counter + 1
+        #         alfa = alfa_value_backup
+        #         ecm_prev = ecm_epoch
+        #         ecm_good_epoch = ecm_prev
+        #         deltas_good_epoch = deltas_prev
+        #         if (k_counter >= k):
+        #             k_counter = 0
+        #             eta = eta + a
+        #         # good_step = 1
+        #         not_reduce_eta = 1
+        #     elif ((ecm_epoch - ecm_prev) > 0 and not_reduce_eta):
+        #         eta = eta - b * eta
+        #         alfa = 0
+        #         k_counter = 0
+        #         # good_step = 0
+        #         not_reduce_eta = 0
+        #         deltas_prev = deltas_good_epoch
+        #         ecm_prev = ecm_good_epoch
+        #     # else:
+        #     #     eta = 0
+        #     # ecm_prev = ecm_epoch
+
 
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         print('Cantidad de patrones ' + str(u + 1))
@@ -149,12 +192,16 @@ def normalize(inputs, outputs, fun):
 
    limit = len(outputs)
 
+   max_val = max([max_x,max_y,max_z])
+
    for i in range(0,limit):
 
-       x = inputs[i][0] / max_x
-       y = inputs[i][0] / max_y
-       z = outputs[i][0] / max_z
-
+       # x = inputs[i][0] / max_x
+       # y = inputs[i][0] / max_y
+       # z = outputs[i][0] / max_z
+       x = inputs[i][0] / max_val
+       y = inputs[i][1] / max_val
+       z = outputs[i][0] / max_val
        if fun == 'exp' :
            x = x * np.sign(x)
            y = y * np.sign(y)
@@ -253,15 +300,15 @@ def get_new_weights(weights, vs, deltas, deltas_prev, alfa):
 def get_max_values(inputs,outputs):
     max_x = 0.0
     max_y = 0.0
-    max_z = 0
+    max_z = 0.0
 
     limit = len(outputs)
 
     for i in range(0,limit):
 
-        x = inputs[i][0]
-        y = inputs[i][1]
-        z = outputs[i][0]
+        x = abs(inputs[i][0])
+        y = abs(inputs[i][1])
+        z = abs(outputs[i][0])
 
         if x > max_x :
             max_x = x

@@ -7,14 +7,14 @@ import numpy as np
 
 def learn():
 
-    inputs, outputs = fp.parse_file('terrain/terrain4.txt', 100)
+    inputs, outputs = fp.parse_file('terrain/terrain4.txt', -1)
 
     #Para graficar terreno
     #x, y = get_x_y(inputs)
     #z = get_z(outputs)
 
-    # multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun):
-    errors, epoch = bp.multilayer_perceptron([2, 10, 10, 1], inputs, outputs, -1, 0.5, 0.8, 0.005, 'exp', 0.9)
+    #multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
+    errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs, outputs, 1, 0.5, 0.5, 0.005, 'tan', 0.9, 0,0,0)
 
     plt.plot(range(1, epoch), errors)
     plt.xlabel('Iteración')
