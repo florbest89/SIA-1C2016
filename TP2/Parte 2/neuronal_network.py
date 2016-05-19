@@ -1,19 +1,50 @@
 import file_parser as fp
 import backpropagation as bp
 import matplotlib.pyplot as plt
-import time
+
+import numpy as np
+
 
 def learn():
+
     inputs, outputs = fp.parse_file('terrain/terrain5-1.txt', 50)
-    start_time = time.time()
-    print('INICIO DE ENTRENAMIENTO: ', start_time)
-    errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs,outputs, -1, 0.5, 0.6, 0.001, 'tan',0.9, 0.002, 0.005,10)
-    print('FIN DE ENTRENAMIENTO: ', (time.time()-start_time))
+
+    #Para graficar terreno
+    #x, y = get_x_y(inputs)
+    #z = get_z(outputs)
+
+    errors, epoch = bp.multilayer_perceptron([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.005, 'exp')
 
     plt.plot(range(1, epoch), errors)
     plt.xlabel('Iteración')
     plt.ylabel('Error cuadrático medio')
-    plt.title('Red neuronal con arquitectura ' + str([2, 10, 5, 1]) + ', cantidad de patrones: 20, función de activación: ' + 'tan')
+
+    plt.title('Red neuronal con arquitectura ' + str([2, 10, 5, 1]) + ', cantidad de patrones: 20, función de activación: ' + 'exp')
     plt.show()
+
+
+def get_x_y(input):
+    x = []
+    y = []
+    size = len(input)
+
+    for i in range(0, size):
+        x.append(input[i][0])
+        y.append(input[i][1])
+
+    x = np.array(x)
+    y = np.array(y)
+    return x, y
+
+
+def get_z(input):
+    z = []
+    size = len(input)
+
+    for i in range(0, size):
+        z.append(input[i][0])
+
+    z = np.array(z)
+    return z
 
 learn()

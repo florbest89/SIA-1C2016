@@ -11,34 +11,17 @@ import time
 # bias : -1
 # error_cuad : error cuadrático medio
 # beta = 0.5
-# alfa = 0.9
-# a = 0.5
-# b = 0.2
-# k = racha
-def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun,alfa,a,b,k):
+
+def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun):
 
     start_time = time.time()
 
-    np_input = normalize(input, beta, fun)
-    np_output = normalize(output, beta, fun)
-    #np_output = normalize_out(output, beta, fun)
+    #np_input = normalize(input, beta, fun)
+    #np_output = normalize(output, beta, fun)
+    np_input, np_output = normalize(input,output,fun)
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
-
-    # esta es la lista de deltas previos que utilizo para el MOMENTUM
-    deltas_prev = [0] * len(weights)
-    deltas_good_epoch = deltas_prev
-    # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
-    # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
-    ecm_prev = 0
-    # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
-    k_counter = 0
-    # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
-    alfa_value_backup = alfa
-
-    # esta es la lista de deltas previos auxiliar que utilizo para el eta adaptativo
-    weights_prev_aux = [0] * len(weights)
 
     error = 1
 
@@ -46,11 +29,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     errors = []
 
     epoch = 1
-    not_reduce_eta = 1
-
-    # me guardo los pesos para luego cuando tenga que reducir el eta, coloco el peso
-    # de la epoca anterior
-    weights_prev_aux = weights
 
     while error > error_cuad:
         print('COMIENZO DE EPOCA')
@@ -59,6 +37,7 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
         # u : patron que estoy analizando
         limit,col = np_input.shape
         for u in range(0, limit):
+
             # 2. El patron de entrada seran los primeros V
             vs = []
             hs = []
@@ -89,7 +68,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
             deltas_error = calc_delta(vs[M], np_output[u])
             #print('ECM del patron ' + str(u) + ': ' + str(ecm))
 
-
             # 4. Calculo los delta para la capa de salida
             m = M - 1
             deltas = [None] * M
@@ -117,44 +95,14 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
                 rows, cols = weights[i].shape
                 vs_copy = create_vs_transpose(vs[i], bias, cols)
                 deltas_copy = create_deltas_matrix(deltas[i], eta, rows)
-                # new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
-                new_weights[i], deltas_prev[i] = get_new_weights(weights[i], vs_copy, deltas_copy, deltas_good_epoch[i], alfa)
+                new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
+
 
             weights = new_weights
 
         dt, ecm_epoch = error_quad(out, np_output)
         errors.append(ecm_epoch)
         error = ecm_epoch
-
-        if ecm_prev == 0:
-            ecm_prev = ecm_epoch
-            # good_step = 1
-        else:
-            if ((ecm_epoch - ecm_prev) < 0):
-                k_counter = k_counter + 1
-                alfa = alfa_value_backup
-                not_reduce_eta = 1
-                weights_prev_aux = weights
-                ecm_prev = ecm_epoch
-                deltas_good_epoch = deltas_prev
-                if (k_counter >= k):
-                    eta = eta + a
-                    print('k_counter: ', k_counter, ' valor eta: ', eta)
-                # good_step = 1
-            elif ((ecm_epoch - ecm_prev) > 0):
-            # elif ((ecm_epoch - ecm_prev) > 0 and not_reduce_eta):
-                eta = eta - b * eta
-                print('valor de eta:', eta)
-                alfa = 0
-                k_counter = 0
-                # good_step = 0
-                weights = weights_prev_aux
-                not_reduce_eta = 0
-            elif (ecm_epoch - ecm_prev) > 0.000001:
-                print('errores iguales')
-            # else:
-            #     eta = 0
-            # ecm_prev = ecm_epoch
 
 
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
@@ -173,12 +121,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     print('Salidas esperadas: ' + str(output))
     print('Salidas obtenidas: ' + str(out))
 
-    plt.plot(range(1,epoch),errors)
-    plt.xlabel('Iteración')
-    plt.ylabel('Error cuadrático medio')
-    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: 20, función de activación: ' + fun)
-    plt.show()
-
     return errors, epoch
 
 
@@ -196,38 +138,36 @@ def initialize_weights(arquitecture):
 def h(vs, weights):
     return np.dot(vs, weights)
 
+def normalize(inputs, outputs, fun):
+   max_x, max_y , max_z = get_max_values(inputs,outputs)
 
-def normalize(array, beta, fun):
-    normalized_input = np.array([])
+   norm_in = []
+   norm_out = []
 
-    num = array[0]
+   limit = len(outputs)
 
-    if fun == 'exp':
-        normalized_input = np.append(normalized_input, [(1 / (1 + m.exp(- 2 * beta * x))) for x in num])
-    else:
-        normalized_input = np.append(normalized_input, [(m.tanh(beta * x)) for x in num])
+   for i in range(0,limit):
 
-    for i in range(1, len(array)):
-        num = array[i]
+       x = inputs[i][0] / max_x
+       y = inputs[i][0] / max_y
+       z = outputs[i][0] / max_z
 
-        if fun == 'exp':
-            normalized_input = np.vstack([normalized_input,[(1 / (1 + m.exp(- 2 * beta * x))) for x in num]])
-        else:
-            normalized_input = np.vstack([normalized_input, [(m.tanh(beta * x)) for x in num]])
+       if fun == 'exp' :
+           x = x * np.sign(x)
+           y = y * np.sign(y)
+           z = z * np.sign(z)
 
-    return normalized_input
+       norm_in.append([x,y])
+       norm_out.append([z])
 
+   return np.array(norm_in), np.array(norm_out)
 
 def exp(hs,beta):
     return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
 
-
 def exp_derived(hs, beta):
-    #g'(h) = 2βg(1 − g).
     gs = exp(hs,beta)
-    gs_g = exp([(1 - x) for x in gs],beta)
-    return np.array([(2 * beta * g) for g in gs_g])
-
+    return np.array([(2 * beta * g * (1 - g)) for g in gs])
 
 def tan(hs,beta):
     return np.array([(m.tanh(beta * x)) for x in hs])
@@ -299,8 +239,32 @@ def create_deltas_matrix(deltas,eta,rows):
 
     return deltas_copy
 
-def get_new_weights(weights,vs,deltas, deltas_prev, alfa):
-    vs_deltas_m = np.multiply(vs,deltas)
-    delta_alfa = np.multiply(deltas_prev,alfa)
-    # el termino delta_alfa es el termino de momentum
-    return np.asarray(weights + vs_deltas_m + delta_alfa), vs_deltas_m
+def get_new_weights(weights, vs, deltas):
+    vs_deltas_m = np.multiply(vs, deltas)
+    #return np.add(weights, vs_deltas_m)
+    return np.asarray(weights + vs_deltas_m)
+
+def get_max_values(inputs,outputs):
+    max_x = 0.0
+    max_y = 0.0
+    max_z = 0
+
+    limit = len(outputs)
+
+    for i in range(0,limit):
+
+        x = inputs[i][0]
+        y = inputs[i][1]
+        z = outputs[i][0]
+
+        if x > max_x :
+            max_x = x
+
+        if y > max_y :
+            max_y = y
+
+        if z > max_z :
+            max_z = z
+
+    # | x | , | y | , | z |
+    return abs(max_x), abs(max_y) , abs(max_z)
