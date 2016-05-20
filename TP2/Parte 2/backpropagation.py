@@ -18,7 +18,7 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
     start_time = time.time()
 
-    np_input, np_output = normalize(input,output,fun)
+    np_input, np_output, max = normalize(input,output,fun)
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
@@ -180,7 +180,6 @@ def initialize_weights(arquitecture):
 
     return weights
 
-
 def h(vs, weights):
     return np.dot(vs, weights)
 
@@ -206,7 +205,16 @@ def normalize(inputs, outputs, fun):
        norm_in.append([x,y])
        norm_out.append([z])
 
-   return np.array(norm_in), np.array(norm_out)
+   return np.array(norm_in), np.array(norm_out), max_val
+
+def unnormalize(obtained,expected,max):
+    out_unnorm = []
+
+    for i in range(0,len(expected)):
+        o = obtained.item(i,0) * max * np.sign(expected[i][0])
+        out_unnorm.append(o)
+
+    return out_unnorm
 
 def exp(hs,beta):
     return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
@@ -218,17 +226,14 @@ def exp_derived(hs, beta):
 def tan(hs,beta):
     return np.array([(m.tanh(beta * x)) for x in hs])
 
-
 def tan_derived(hs, beta):
     gs = tan(hs, beta)
     gs_pow = [(x ** 2) for x in gs]
     return np.array([(beta * (1 - x)) for x in gs_pow])
 
-
 def calc_delta(out_obtained, out_expected):
     deltas_error = np.subtract(out_expected, out_obtained)
     return deltas_error
-
 
 def error_quad(out_obtained, out_expected):
     out_expected_copy = out_expected.copy()
@@ -240,12 +245,10 @@ def error_quad(out_obtained, out_expected):
     sum_pow_deltas = np.sum(pow_deltas)
     return deltas_error, (1/2) * sum_pow_deltas
 
-
 def weights_trans(weights):
     rows,cols = weights.shape
     aux = numpy.delete(weights, (rows - 1), axis=0)
     return aux.transpose()
-
 
 def get_deltas(hs,beta,delta_upper,weights,fun):
     if fun == 'exp':
@@ -255,7 +258,6 @@ def get_deltas(hs,beta,delta_upper,weights,fun):
 
     dterm = np.dot(delta_upper, weights)
     return [a * b for a,b in zip(gs,dterm)]
-
 
 def create_vs_transpose(vs, bias, cols):
     vs_copy = vs.copy()
@@ -270,7 +272,6 @@ def create_vs_transpose(vs, bias, cols):
         cols_count += 1
 
     return np.mat(vs_copy).transpose()
-
 
 def create_deltas_matrix(deltas,eta,rows):
     deltas_copy = deltas.copy()
