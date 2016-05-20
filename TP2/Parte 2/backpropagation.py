@@ -207,11 +207,15 @@ def normalize(inputs, outputs, fun):
 
    return np.array(norm_in), np.array(norm_out), max_val
 
-def unnormalize(obtained,expected,max):
+def unnormalize(obtained,expected,max,fun):
     out_unnorm = []
 
     for i in range(0,len(expected)):
-        o = obtained.item(i,0) * max * np.sign(expected[i][0])
+        o = obtained.item(i,0) * max
+
+        if fun == 'exp':
+            o = o * np.sign(expected[i][0])
+
         out_unnorm.append(o)
 
     return out_unnorm

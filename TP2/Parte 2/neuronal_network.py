@@ -14,13 +14,13 @@ def learn():
     #z = get_z(outputs)
 
     #multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
-    errors, epoch = bp.multilayer_perceptron([2, 15, 10, 1], inputs, outputs, -1, 0.5, 0.5, 0.02, 'exp', 0, 0,0,0)
+    errors, epoch = bp.multilayer_perceptron([2, 20, 15, 1], inputs, outputs, -1, 0.5, 0.5, 0.03, 'exp', 0.9, 0,0,0)
 
     plt.plot(range(1, epoch), errors)
     plt.xlabel('Iteración')
     plt.ylabel('Error cuadrático medio')
 
-    plt.title('Red neuronal con arquitectura ' + str([2, 15, 10, 1]) + ', cantidad de patrones: 20, función de activación: ' + 'exp')
+    plt.title('Red neuronal con arquitectura ' + str([2, 20, 15, 1]) + ', cantidad de patrones: 150, función de activación: ' + 'tan')
     plt.show()
 
 
