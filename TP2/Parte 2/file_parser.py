@@ -38,11 +38,10 @@ def plotX1X2Z(array_values, out_values):
         x1_vals.append(row[0])
         x2_vals.append(row[1])
 
-    for r in out_values:
-        z_vals.append(r[0])
-    # fig = plt.figure()
-    # ax = fig.add_subplot(111, projection='3d')
+    for r in range(0,len(out_values)):
+        z_vals.append(out_values[r])
     fig = plt.figure()
+    fig.canvas.draw()
     ax = fig.gca(projection='3d')
     ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
     # ax.scatter(x1_vals, x2_vals, z_vals, c='r', marker='o')
@@ -50,7 +49,7 @@ def plotX1X2Z(array_values, out_values):
     # ax.set_ylabel('X2')
     # ax.set_zlabel('Z')
     plt.show()
-    return
+    # return
 
 # print('archivo de entrada:', sys.argv[1])
 # valores, expected = parserFile(sys.argv[1], -1)

@@ -3,8 +3,15 @@ import numpy as np
 import numpy.matlib
 import math as m
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
 import time
 import file_parser as fp
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
+
+import drawnow as dn
+
 
 
 # arquitecture : Arquitectura de la red -> Cantidad de nodos
@@ -14,13 +21,22 @@ import file_parser as fp
 # error_cuad : error cuadrático medio
 # beta = 0.5
 # alfa = 0.9
-def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa,a,b,k):
 
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+x1_vals = []
+x2_vals = []
+z_vals = []
+
+
+def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa,a,b,k):
+    trisurf_frame = None
     start_time = time.time()
 
+    plt.ion()
+
     np_input, np_output, max = normalize(input,output,fun)
-    # esta linea la puse para probar el arfico 3d
-    # fp.plotX1X2Z(np_input, np_output)
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
@@ -121,62 +137,71 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
         error = ecm_epoch
 
 # INICIO eta_adaptativo //////////////////////////////////////////////
-        if ecm_prev == 0:
-            ecm_prev = ecm_epoch
-            weights_good_epoch = weights
-        else:
-            if ((ecm_epoch - ecm_prev) < 0):
-                k_counter = k_counter + 1
-                alfa = alfa_value_backup
-                ecm_prev = ecm_epoch
-
-                if (k_counter == k):
-                    k_counter = 0
-                    eta = eta + a
-                    print('valor eta SUBE:', eta)
-                    weights_good_epoch = weights
-                    # ecm_prev = 0
-                    k_reduce_counter = 0
-                    # reduce_eta = 1
-
-            elif ((ecm_epoch - ecm_prev) > 0):
-                # k_reduce_counter = k_reduce_counter + 1
-                # reduce_eta = 0
-            # if(k_reduce_counter == k):
-                eta = eta - b * eta
-                print('valor eta BAJA:', eta)
-                alfa = 0
-                k_counter = 0
-                k_reduce_counter = 0
-                ecm_epoch = ecm_prev
-                weights = weights_good_epoch
-
-            # if k_counter == 0:
-            #     ecm_prev = 0
-            # else:
-            # ecm_prev = ecm_epoch
-# FIN eta_adaptativo /////////////////////////////////////////////////
+#         if ecm_prev == 0:
+#             ecm_prev = ecm_epoch
+#             weights_good_epoch = weights
+#         else:
+#             if ((ecm_epoch - ecm_prev) < 0):
+#                 k_counter = k_counter + 1
+#                 alfa = alfa_value_backup
+#                 ecm_prev = ecm_epoch
 #
+#                 if (k_counter == k):
+#                     k_counter = 0
+#                     eta = eta + a
+#                     print('valor eta SUBE:', eta)
+#                     weights_good_epoch = weights
+#                     # ecm_prev = 0
+#                     k_reduce_counter = 0
+#                     # reduce_eta = 1
+#
+#             elif ((ecm_epoch - ecm_prev) > 0):
+#                 # k_reduce_counter = k_reduce_counter + 1
+#                 # reduce_eta = 0
+#             # if(k_reduce_counter == k):
+#                 eta = eta - b * eta
+#                 print('valor eta BAJA:', eta)
+#                 alfa = 0
+#                 k_counter = 0
+#                 k_reduce_counter = 0
+#                 ecm_epoch = ecm_prev
+#                 weights = weights_good_epoch
+#
+#             # if k_counter == 0:
+#             #     ecm_prev = 0
+#             # else:
+#             # ecm_prev = ecm_epoch
+# FIN eta_adaptativo /////////////////////////////////////////////////
+
+        x1_vals = []
+        x2_vals = []
+        z_vals = []
+
+        for row in np_input:
+            x1_vals.append(row[0])
+            x2_vals.append(row[1])
+
+        for r in out:
+            z_vals.append(r)
+
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         print('Cantidad de patrones ' + str(u + 1))
         epoch += 1
 
-    #print('Expected output')
-    #print(np_output)
-    #print('Obtained output')
-    #print(out)
+        oldcol = trisurf_frame
+        trisurf_frame = ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
+        # Remove old line collection before drawing
+        if oldcol is not None:
+            ax.collections.remove(oldcol)
+        plt.pause(.01)
+
     print(errors)
     end_time = time.time()
 
     print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + 'segundos.')
-
-    # print('Salidas esperadas: ' + str(output))
-    # print('Salidas obtenidas: ' + str(out))
     print('Salidas obtenida | Salidas esperada')
     for j in range(len(out)):
         print(str(out[j]),'||', str(np_output[j]))
-
-    fp.plotX1X2Z(np_input, out)
 
     return errors, epoch
 
@@ -329,3 +354,4 @@ def get_max_values(inputs,outputs):
 
     # | x | , | y | , | z |
     return abs(max_x), abs(max_y) , abs(max_z)
+
