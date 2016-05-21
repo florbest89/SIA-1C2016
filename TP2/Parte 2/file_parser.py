@@ -1,6 +1,9 @@
 import re
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from drawnow import drawnow
+
 
 
 def parse_file(infile, number_of_values):
@@ -28,18 +31,24 @@ def parse_file(infile, number_of_values):
 def plotX1X2Z(array_values, out_values):
     x1_vals = []
     x2_vals = []
-    z_vals = out_values
+    z_vals = []
+    # z_vals = out_values
 
     for row in array_values:
         x1_vals.append(row[0])
         x2_vals.append(row[1])
 
+    for r in out_values:
+        z_vals.append(r[0])
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(x1_vals, x2_vals, z_vals, c='r', marker='o')
-    ax.set_xlabel('X1')
-    ax.set_ylabel('X2')
-    ax.set_zlabel('Z')
+    ax = fig.gca(projection='3d')
+    ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
+    # ax.scatter(x1_vals, x2_vals, z_vals, c='r', marker='o')
+    # ax.set_xlabel('X1')
+    # ax.set_ylabel('X2')
+    # ax.set_zlabel('Z')
     plt.show()
     return
 

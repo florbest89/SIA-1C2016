@@ -19,6 +19,8 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     start_time = time.time()
 
     np_input, np_output, max = normalize(input,output,fun)
+    # esta linea la puse para probar el arfico 3d
+    # fp.plotX1X2Z(np_input, np_output)
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
@@ -32,8 +34,10 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     ecm_prev = 0
     # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
     k_counter = 0
+    k_reduce_counter = 0
     # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
     alfa_value_backup = alfa
+    reduce_eta = 1
 
     error = 1
 
@@ -43,7 +47,7 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     epoch = 1
 
     while error > error_cuad:
-        print('COMIENZO DE EPOCA')
+        # print('COMIENZO DE EPOCA')
         out = np.array([])
 
         # u : patron que estoy analizando
@@ -116,36 +120,43 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
         errors.append(ecm_epoch)
         error = ecm_epoch
 
-        # if ecm_prev == 0:
-        #     ecm_prev = ecm_epoch
-        #     ecm_good_epoch = ecm_prev
-        #     deltas_good_epoch = deltas_prev
-        #     # good_step = 1
-        # else:
-        #     if ((ecm_epoch - ecm_prev) < 0):
-        #         k_counter = k_counter + 1
-        #         alfa = alfa_value_backup
-        #         ecm_prev = ecm_epoch
-        #         ecm_good_epoch = ecm_prev
-        #         deltas_good_epoch = deltas_prev
-        #         if (k_counter >= k):
-        #             k_counter = 0
-        #             eta = eta + a
-        #         # good_step = 1
-        #         not_reduce_eta = 1
-        #     elif ((ecm_epoch - ecm_prev) > 0 and not_reduce_eta):
-        #         eta = eta - b * eta
-        #         alfa = 0
-        #         k_counter = 0
-        #         # good_step = 0
-        #         not_reduce_eta = 0
-        #         deltas_prev = deltas_good_epoch
-        #         ecm_prev = ecm_good_epoch
-        #     # else:
-        #     #     eta = 0
-        #     # ecm_prev = ecm_epoch
+# INICIO eta_adaptativo //////////////////////////////////////////////
+        if ecm_prev == 0:
+            ecm_prev = ecm_epoch
+            weights_good_epoch = weights
+        else:
+            if ((ecm_epoch - ecm_prev) < 0):
+                k_counter = k_counter + 1
+                alfa = alfa_value_backup
+                ecm_prev = ecm_epoch
 
+                if (k_counter == k):
+                    k_counter = 0
+                    eta = eta + a
+                    print('valor eta SUBE:', eta)
+                    weights_good_epoch = weights
+                    # ecm_prev = 0
+                    k_reduce_counter = 0
+                    # reduce_eta = 1
 
+            elif ((ecm_epoch - ecm_prev) > 0):
+                # k_reduce_counter = k_reduce_counter + 1
+                # reduce_eta = 0
+            # if(k_reduce_counter == k):
+                eta = eta - b * eta
+                print('valor eta BAJA:', eta)
+                alfa = 0
+                k_counter = 0
+                k_reduce_counter = 0
+                ecm_epoch = ecm_prev
+                weights = weights_good_epoch
+
+            # if k_counter == 0:
+            #     ecm_prev = 0
+            # else:
+            # ecm_prev = ecm_epoch
+# FIN eta_adaptativo /////////////////////////////////////////////////
+#
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         print('Cantidad de patrones ' + str(u + 1))
         epoch += 1
