@@ -57,7 +57,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
     while error > error_cuad:
         out = np.array([])
-        weights_good_epoch = weights
+        weights_prev = weights
         # u : patron que estoy analizando
         limit,col = np_input.shape
         for u in range(0, limit):
@@ -129,92 +129,29 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
         error = ecm_epoch
 
         # INICIO eta_adaptativo
-        aux = 0
-        if ecm_prev == 0:
-            ecm_prev = ecm_epoch
-            # ecm_good_epoch = ecm_epoch
-            # weights_good_epoch = weights
-            # # deltas_good_epoch = deltas_prev
-        else:
-            deltaError = ecm_epoch - ecm_prev
-            if deltaError < 0:
-                # weights_good_epoch = weights
-                # ecm_good_epoch = ecm_epoch
-                # deltas_good_epoch = deltas_prev
+        if(a > 0 and b > 0 and k > 0):
+            if ecm_prev == 0:
                 ecm_prev = ecm_epoch
-                aux = 0
-                k_counter += 1
-                if(reduce_eta_max == 0):
-                    reduce_eta_max = 1
-                if (k_counter == k):
+            else:
+                deltaError = ecm_epoch - ecm_prev
+                if deltaError < 0:
+                    ecm_prev = ecm_epoch
+                    k_counter += 1
+                    if (k_counter == k):
+                        k_counter = 0
+                        eta += a
+                        alfa = alfa_value_backup
+                        print('valor eta SUBE:', eta)
+                elif deltaError > 0:
+                    eta += - b * eta
+
+                    alfa = 0
                     k_counter = 0
-                    eta += a
-                    print('valor eta SUBE:', eta)
-                    # weights_good_epoch = weights
-                    alfa = alfa_value_backup
-                    ecm_good_epoch = ecm_epoch
-                    deltas_good_epoch = deltas_prev
+                    weights = weights_prev
+                    print('valor eta BAJA:', eta)
 
-            elif deltaError > 0 and eta > 0.1 and reduce_eta_max > 0:
-                # errors.pop(len(errors) - 1)
-                reduce_eta_max -= 1
-                eta += - b * eta
-                alfa = 0
-                k_counter = 0
-                weights = weights_good_epoch
-                deltas_prev = deltas_good_epoch
-                ecm_prev = ecm_good_epoch
-
-                if eta < 0.1:
-                    eta = 0.1
-
-                print('valor eta BAJA:', eta)
-
-            # ecm_prev = ecm_epoch
+            ecm_prev = ecm_epoch
         # FIN eta_adaptativo
-
-
-        #     if (network.adaptive)
-        #         if (length(totalErr) > 1)
-        #             deltaError = logging.currentError - logging.lastError;
-        #             currE = logging.currentError;
-        #             lastE = logging.lastError;
-        #             eta = network.eta;
-        #             if (deltaError > 0 & & network.eta > 0.001)
-        #                 deltaEta = -0.5 * network.eta;
-        #                 network.eta = network.eta + deltaEta;
-        #                 eta = network.eta;
-        #                 network.weights = weightsBeforeIteration;
-        #                 network.errorRepeats = 0;
-        #                 logging.errorIndexes = logging.errorIndexes - 1;
-        #                 logging.currentError = logging.lastError;
-        #                 logging.lastError = oldLastError;
-        #                 % network.inputForLayer(:, 2, 3) = oldOutputs;
-        #                 i = i - 1;
-        #                 totalErr(end) = totalErr(length(totalErr) - 1);
-        #                 network.lastDeltaWeights = oldDeltaWeights;
-        #                 cancelAlpha = 1;
-        #
-        #                 if (network.eta < 0.001)
-        #                     network.eta = 0.001;
-        #                 end
-        #             else
-        #                 network.errorRepeats = network.errorRepeats + 1;
-        #                 if (network.errorRepeats > 3)
-        #                     deltaEta = 0.1;
-        #                     network.eta = network.eta + deltaEta;
-        #                     eta = network.eta;
-        #                     network.errorRepeats = 0;
-        #                     % noEtaUpdateTime = 10;
-        #                 end
-        #                 cancelAlpha = 0;
-        #             end
-        #
-        #             deltaErrors = [deltaErrors deltaError];
-        #     end
-        #     noEtaUpdateTime = noEtaUpdateTime - 1;
-        # end
-
 
 
         x1_vals = []
