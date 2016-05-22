@@ -27,11 +27,14 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     deltas_prev = [0] * len(weights)
     deltas_good_epoch = [0] * len(weights)
     ecm_good_epoch = 0
+
     # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
     # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
     ecm_prev = 0
+
     # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
     k_counter = 0
+
     # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
     alfa_value_backup = alfa
 
@@ -43,7 +46,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     epoch = 1
 
     while error > error_cuad:
-        print('COMIENZO DE EPOCA')
         out = np.array([])
 
         # u : patron que estoy analizando
@@ -78,7 +80,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
             # Calculo del error
             deltas_error = calc_delta(vs[M], np_output[u])
-            #print('ECM del patron ' + str(u) + ': ' + str(ecm))
 
             # 4. Calculo los delta para la capa de salida
             m = M - 1
@@ -112,62 +113,21 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
             weights = new_weights
 
-        dt, ecm_epoch = error_quad(out, np_output)
+        dt, ecm_epoch = error_quad(out, np_output,u)
         errors.append(ecm_epoch)
         error = ecm_epoch
 
-        # if ecm_prev == 0:
-        #     ecm_prev = ecm_epoch
-        #     ecm_good_epoch = ecm_prev
-        #     deltas_good_epoch = deltas_prev
-        #     # good_step = 1
-        # else:
-        #     if ((ecm_epoch - ecm_prev) < 0):
-        #         k_counter = k_counter + 1
-        #         alfa = alfa_value_backup
-        #         ecm_prev = ecm_epoch
-        #         ecm_good_epoch = ecm_prev
-        #         deltas_good_epoch = deltas_prev
-        #         if (k_counter >= k):
-        #             k_counter = 0
-        #             eta = eta + a
-        #         # good_step = 1
-        #         not_reduce_eta = 1
-        #     elif ((ecm_epoch - ecm_prev) > 0 and not_reduce_eta):
-        #         eta = eta - b * eta
-        #         alfa = 0
-        #         k_counter = 0
-        #         # good_step = 0
-        #         not_reduce_eta = 0
-        #         deltas_prev = deltas_good_epoch
-        #         ecm_prev = ecm_good_epoch
-        #     # else:
-        #     #     eta = 0
-        #     # ecm_prev = ecm_epoch
-
-
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
-        print('Cantidad de patrones ' + str(u + 1))
         epoch += 1
 
-    #print('Expected output')
-    #print(np_output)
-    #print('Obtained output')
-    #print(out)
     print(errors)
     end_time = time.time()
 
     print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + 'segundos.')
 
-    # print('Salidas esperadas: ' + str(output))
-    # print('Salidas obtenidas: ' + str(out))
-    print('Salidas obtenida | Salidas esperada')
-    for j in range(len(out)):
-        print(str(out[j]),'||', str(np_output[j]))
+    out_un = unnormalize(out,output,max,fun)
 
-    fp.plotX1X2Z(np_input, out)
-
-    return errors, epoch
+    return errors, epoch, out_un
 
 
 def initialize_weights(arquitecture):
@@ -211,7 +171,7 @@ def unnormalize(obtained,expected,max,fun):
     out_unnorm = []
 
     for i in range(0,len(expected)):
-        o = obtained.item(i,0) * max
+        o = obtained[i] * max
 
         if fun == 'exp':
             o = o * np.sign(expected[i][0])
@@ -239,7 +199,7 @@ def calc_delta(out_obtained, out_expected):
     deltas_error = np.subtract(out_expected, out_obtained)
     return deltas_error
 
-def error_quad(out_obtained, out_expected):
+def error_quad(out_obtained, out_expected, N):
     out_expected_copy = out_expected.copy()
     out_expected_copy = np.mat(out_expected_copy).transpose()
     deltas_error = np.subtract(out_expected_copy, out_obtained)
@@ -247,7 +207,7 @@ def error_quad(out_obtained, out_expected):
     deltas_error = deltas_error[0]
     pow_deltas = [(d ** 2) for d in deltas_error]
     sum_pow_deltas = np.sum(pow_deltas)
-    return deltas_error, (1/2) * sum_pow_deltas
+    return deltas_error, sum_pow_deltas / (2 * N)
 
 def weights_trans(weights):
     rows,cols = weights.shape
@@ -290,7 +250,6 @@ def create_deltas_matrix(deltas,eta,rows):
 
     return deltas_copy
 
-# def get_new_weights(weights, vs, deltas):
 def get_new_weights(weights, vs, deltas, deltas_prev, alfa):
     vs_deltas_m = np.multiply(vs, deltas)
     delta_alfa = np.multiply(deltas_prev,alfa)
