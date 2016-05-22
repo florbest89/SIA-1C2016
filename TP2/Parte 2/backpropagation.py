@@ -137,40 +137,28 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
         error = ecm_epoch
 
 # INICIO eta_adaptativo //////////////////////////////////////////////
-#         if ecm_prev == 0:
-#             ecm_prev = ecm_epoch
-#             weights_good_epoch = weights
-#         else:
-#             if ((ecm_epoch - ecm_prev) < 0):
-#                 k_counter = k_counter + 1
-#                 alfa = alfa_value_backup
-#                 ecm_prev = ecm_epoch
-#
-#                 if (k_counter == k):
-#                     k_counter = 0
-#                     eta = eta + a
-#                     print('valor eta SUBE:', eta)
-#                     weights_good_epoch = weights
-#                     # ecm_prev = 0
-#                     k_reduce_counter = 0
-#                     # reduce_eta = 1
-#
-#             elif ((ecm_epoch - ecm_prev) > 0):
-#                 # k_reduce_counter = k_reduce_counter + 1
-#                 # reduce_eta = 0
-#             # if(k_reduce_counter == k):
-#                 eta = eta - b * eta
-#                 print('valor eta BAJA:', eta)
-#                 alfa = 0
-#                 k_counter = 0
-#                 k_reduce_counter = 0
-#                 ecm_epoch = ecm_prev
-#                 weights = weights_good_epoch
-#
-#             # if k_counter == 0:
-#             #     ecm_prev = 0
-#             # else:
-#             # ecm_prev = ecm_epoch
+        if ecm_prev == 0:
+            ecm_prev = ecm_epoch
+            weights_good_epoch = weights
+        else:
+            if ((ecm_epoch - ecm_prev) < 0):
+                k_counter = k_counter + 1
+                alfa = alfa_value_backup
+                ecm_prev = ecm_epoch
+                if (k_counter == k):
+                    k_counter = 0
+                    eta = eta + a
+                    print('valor eta SUBE:', eta)
+                    weights_good_epoch = weights
+                    ecm_good_epoch = ecm_epoch
+            elif ((ecm_epoch - ecm_prev) > 0 and eta > 0.1):
+                eta = eta - b * eta
+                print('valor eta BAJA:', eta)
+                alfa = 0
+                k_counter = 0
+                weights = weights_good_epoch
+                ecm_prev = ecm_good_epoch
+
 # FIN eta_adaptativo /////////////////////////////////////////////////
 
         x1_vals = []
@@ -184,8 +172,8 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
         for r in out:
             z_vals.append(r)
 
-        print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
-        print('Cantidad de patrones ' + str(u + 1))
+        # print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
+        # print('Cantidad de patrones ' + str(u + 1))
         epoch += 1
 
         oldcol = trisurf_frame
