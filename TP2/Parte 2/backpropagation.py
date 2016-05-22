@@ -3,14 +3,12 @@ import numpy as np
 import numpy.matlib
 import math as m
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
 import time
 import file_parser as fp
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
-import drawnow as dn
 
 
 
@@ -23,18 +21,14 @@ import drawnow as dn
 # alfa = 0.9
 
 
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-x1_vals = []
-x2_vals = []
-z_vals = []
 
 
 def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa,a,b,k):
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
     trisurf_frame = None
-    start_time = time.time()
 
-    plt.ion()
+    start_time = time.time()
 
     np_input, np_output, max = normalize(input,output,fun)
 
@@ -55,6 +49,8 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     alfa_value_backup = alfa
     reduce_eta = 1
 
+    number_of_patterns = len(np_input)
+
     error = 1
 
     # Array que lleva los valores de los errores cuadrático medios para cada patron
@@ -63,7 +59,7 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     epoch = 1
 
     while error > error_cuad:
-        # print('COMIENZO DE EPOCA')
+        print('COMIENZO DE EPOCA')
         out = np.array([])
 
         # u : patron que estoy analizando
@@ -143,7 +139,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
         else:
             if ((ecm_epoch - ecm_prev) < 0):
                 k_counter = k_counter + 1
-                alfa = alfa_value_backup
                 ecm_prev = ecm_epoch
                 if (k_counter == k):
                     k_counter = 0
@@ -151,13 +146,19 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
                     print('valor eta SUBE:', eta)
                     weights_good_epoch = weights
                     ecm_good_epoch = ecm_epoch
+                    deltas_good_epoch = deltas_prev
+                    alfa = alfa_value_backup
+
             elif ((ecm_epoch - ecm_prev) > 0 and eta > 0.1):
                 eta = eta - b * eta
+                if eta < 0.1:
+                    eta = 0.1
                 print('valor eta BAJA:', eta)
                 alfa = 0
                 k_counter = 0
                 weights = weights_good_epoch
                 ecm_prev = ecm_good_epoch
+                deltas_prev = deltas_good_epoch
 
 # FIN eta_adaptativo /////////////////////////////////////////////////
 
@@ -169,12 +170,8 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
             x1_vals.append(row[0])
             x2_vals.append(row[1])
 
-        for r in out:
-            z_vals.append(r)
-
-        # print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
-        # print('Cantidad de patrones ' + str(u + 1))
-        epoch += 1
+        for r in np_output:
+            z_vals.append(r[0])
 
         oldcol = trisurf_frame
         trisurf_frame = ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
@@ -182,6 +179,10 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
         if oldcol is not None:
             ax.collections.remove(oldcol)
         plt.pause(.01)
+
+        print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
+        print('Cantidad de patrones ' + str(u + 1))
+        epoch += 1
 
     print(errors)
     end_time = time.time()
