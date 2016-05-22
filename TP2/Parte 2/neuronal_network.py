@@ -7,12 +7,14 @@ import numpy as np
 def learn():
 
     # 1. Obtengo los patrones de entrenamiento
-    inputs, outputs = fp.parse_file('terrains/terrain4.txt', -1)
+    inputs, outputs = fp.parse_file('terrains/terrain4-train-1.txt', -1)
 
     # 2. Entreno la red
     #multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
-    errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.0005, 'tan', 0.9, 0.001,0.01,10)
-    # errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.0005, 'tan', 0.9, 0.001,0.01,10)
+    errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.01, 0.0005, 'tan', 0.9, 0.0001,0.05,2)
+    # errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.0005, 'tan', 0.9, 0,0,0)
+    # errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.0005, 'tan', 0, 0,0,0)
+
     fp.plotX1X2Z(inputs, out)
     fp.plotOriginals(inputs,outputs)
 

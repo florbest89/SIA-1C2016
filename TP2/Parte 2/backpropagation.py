@@ -16,7 +16,10 @@ from mpl_toolkits.mplot3d import Axes3D
 # alfa = 0.9
 
 def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
-
+    # variables necesarias para plot en realtime
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    trisurf_frame = None
 
     start_time = time.time()
 
@@ -25,24 +28,25 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
     out_weights = weights
-
+    weights_good_epoch = weights
     # esta es la lista de deltas previos que utilizo para el MOMENTUM
     deltas_prev = [0] * len(weights)
     deltas_good_epoch = [0] * len(weights)
-    ecm_good_epoch = 0
 
     # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
     # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
     ecm_prev = 0
+
+    reduce_eta_max = 5
+
+    # error cuadratico previo de la epoca buena
+    ecm_good_epoch = 0
 
     # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
     k_counter = 0
 
     # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
     alfa_value_backup = alfa
-    reduce_eta = 1
-
-    number_of_patterns = len(np_input)
 
     error = 1
 
@@ -53,7 +57,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
     while error > error_cuad:
         out = np.array([])
-
+        weights_good_epoch = weights
         # u : patron que estoy analizando
         limit,col = np_input.shape
         for u in range(0, limit):
@@ -124,36 +128,112 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
         errors.append(ecm_epoch)
         error = ecm_epoch
 
-        # INICIO eta_adaptativo //////////////////////////////////////////////
-        # if ecm_prev == 0:
-        #     ecm_prev = ecm_epoch
-        #     weights_good_epoch = weights
-        # else:
-        #     if ((ecm_epoch - ecm_prev) < 0):
-        #         k_counter = k_counter + 1
-        #         ecm_prev = ecm_epoch
-        #         if (k_counter == k):
-        #             k_counter = 0
-        #             eta = eta + a
-        #             print('valor eta SUBE:', eta)
-        #             weights_good_epoch = weights
-        #             ecm_good_epoch = ecm_epoch
-        #             deltas_good_epoch = deltas_prev
-        #             alfa = alfa_value_backup
+        # INICIO eta_adaptativo
+        aux = 0
+        if ecm_prev == 0:
+            ecm_prev = ecm_epoch
+            # ecm_good_epoch = ecm_epoch
+            # weights_good_epoch = weights
+            # # deltas_good_epoch = deltas_prev
+        else:
+            deltaError = ecm_epoch - ecm_prev
+            if deltaError < 0:
+                # weights_good_epoch = weights
+                # ecm_good_epoch = ecm_epoch
+                # deltas_good_epoch = deltas_prev
+                ecm_prev = ecm_epoch
+                aux = 0
+                k_counter += 1
+                if(reduce_eta_max == 0):
+                    reduce_eta_max = 1
+                if (k_counter == k):
+                    k_counter = 0
+                    eta += a
+                    print('valor eta SUBE:', eta)
+                    # weights_good_epoch = weights
+                    alfa = alfa_value_backup
+                    ecm_good_epoch = ecm_epoch
+                    deltas_good_epoch = deltas_prev
+
+            elif deltaError > 0 and eta > 0.1 and reduce_eta_max > 0:
+                # errors.pop(len(errors) - 1)
+                reduce_eta_max -= 1
+                eta += - b * eta
+                alfa = 0
+                k_counter = 0
+                weights = weights_good_epoch
+                deltas_prev = deltas_good_epoch
+                ecm_prev = ecm_good_epoch
+
+                if eta < 0.1:
+                    eta = 0.1
+
+                print('valor eta BAJA:', eta)
+
+            # ecm_prev = ecm_epoch
+        # FIN eta_adaptativo
+
+
+        #     if (network.adaptive)
+        #         if (length(totalErr) > 1)
+        #             deltaError = logging.currentError - logging.lastError;
+        #             currE = logging.currentError;
+        #             lastE = logging.lastError;
+        #             eta = network.eta;
+        #             if (deltaError > 0 & & network.eta > 0.001)
+        #                 deltaEta = -0.5 * network.eta;
+        #                 network.eta = network.eta + deltaEta;
+        #                 eta = network.eta;
+        #                 network.weights = weightsBeforeIteration;
+        #                 network.errorRepeats = 0;
+        #                 logging.errorIndexes = logging.errorIndexes - 1;
+        #                 logging.currentError = logging.lastError;
+        #                 logging.lastError = oldLastError;
+        #                 % network.inputForLayer(:, 2, 3) = oldOutputs;
+        #                 i = i - 1;
+        #                 totalErr(end) = totalErr(length(totalErr) - 1);
+        #                 network.lastDeltaWeights = oldDeltaWeights;
+        #                 cancelAlpha = 1;
         #
-        #     elif ((ecm_epoch - ecm_prev) > 0 and eta > 0.1):
-        #         eta = eta - b * eta
-        #         if eta < 0.1:
-        #             eta = 0.1
-        #         print('valor eta BAJA:', eta)
-        #         alfa = 0
-        #         k_counter = 0
-        #         weights = weights_good_epoch
-        #         ecm_prev = ecm_good_epoch
-        #         deltas_prev = deltas_good_epoch
+        #                 if (network.eta < 0.001)
+        #                     network.eta = 0.001;
+        #                 end
+        #             else
+        #                 network.errorRepeats = network.errorRepeats + 1;
+        #                 if (network.errorRepeats > 3)
+        #                     deltaEta = 0.1;
+        #                     network.eta = network.eta + deltaEta;
+        #                     eta = network.eta;
+        #                     network.errorRepeats = 0;
+        #                     % noEtaUpdateTime = 10;
+        #                 end
+        #                 cancelAlpha = 0;
+        #             end
+        #
+        #             deltaErrors = [deltaErrors deltaError];
+        #     end
+        #     noEtaUpdateTime = noEtaUpdateTime - 1;
+        # end
 
-        # FIN eta_adaptativo /////////////////////////////////////////////////
 
+
+        x1_vals = []
+        x2_vals = []
+        z_vals = []
+
+        for row in np_input:
+            x1_vals.append(row[0])
+            x2_vals.append(row[1])
+
+        for r in out:
+            z_vals.append(r)
+
+        oldcol = trisurf_frame
+        trisurf_frame = ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
+        # Borra el grafico anterior
+        if oldcol is not None:
+            ax.collections.remove(oldcol)
+        plt.pause(.01)
 
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         epoch += 1
