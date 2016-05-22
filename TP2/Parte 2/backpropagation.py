@@ -3,14 +3,9 @@ import numpy as np
 import numpy.matlib
 import math as m
 import matplotlib.pyplot as plt
-
 import time
-import file_parser as fp
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
-
-
-
 
 # arquitecture : Arquitectura de la red -> Cantidad de nodos
 # input : Array con valores de entrada
@@ -20,13 +15,8 @@ from mpl_toolkits.mplot3d import Axes3D
 # beta = 0.5
 # alfa = 0.9
 
+def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
 
-
-
-def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa,a,b,k):
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    trisurf_frame = None
 
     start_time = time.time()
 
@@ -34,17 +24,20 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
+    out_weights = weights
 
     # esta es la lista de deltas previos que utilizo para el MOMENTUM
     deltas_prev = [0] * len(weights)
     deltas_good_epoch = [0] * len(weights)
     ecm_good_epoch = 0
+
     # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
     # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
     ecm_prev = 0
+
     # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
     k_counter = 0
-    k_reduce_counter = 0
+
     # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
     alfa_value_backup = alfa
     reduce_eta = 1
@@ -59,7 +52,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
     epoch = 1
 
     while error > error_cuad:
-        print('COMIENZO DE EPOCA')
         out = np.array([])
 
         # u : patron que estoy analizando
@@ -94,7 +86,6 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
             # Calculo del error
             deltas_error = calc_delta(vs[M], np_output[u])
-            #print('ECM del patron ' + str(u) + ': ' + str(ecm))
 
             # 4. Calculo los delta para la capa de salida
             m = M - 1
@@ -126,74 +117,75 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
                 # new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
                 new_weights[i], deltas_prev[i] = get_new_weights(weights[i], vs_copy, deltas_copy, deltas_prev[i], alfa)
 
+            out_weights = weights
             weights = new_weights
 
         dt, ecm_epoch = error_quad(out, np_output)
         errors.append(ecm_epoch)
         error = ecm_epoch
 
-# INICIO eta_adaptativo //////////////////////////////////////////////
-        if ecm_prev == 0:
-            ecm_prev = ecm_epoch
-            weights_good_epoch = weights
-        else:
-            if ((ecm_epoch - ecm_prev) < 0):
-                k_counter = k_counter + 1
-                ecm_prev = ecm_epoch
-                if (k_counter == k):
-                    k_counter = 0
-                    eta = eta + a
-                    print('valor eta SUBE:', eta)
-                    weights_good_epoch = weights
-                    ecm_good_epoch = ecm_epoch
-                    deltas_good_epoch = deltas_prev
-                    alfa = alfa_value_backup
-
-            elif ((ecm_epoch - ecm_prev) > 0 and eta > 0.1):
-                eta = eta - b * eta
-                if eta < 0.1:
-                    eta = 0.1
-                print('valor eta BAJA:', eta)
-                alfa = 0
-                k_counter = 0
-                weights = weights_good_epoch
-                ecm_prev = ecm_good_epoch
-                deltas_prev = deltas_good_epoch
-
-# FIN eta_adaptativo /////////////////////////////////////////////////
-
-        x1_vals = []
-        x2_vals = []
-        z_vals = []
-
-        for row in np_input:
-            x1_vals.append(row[0])
-            x2_vals.append(row[1])
-
-        for r in np_output:
-            z_vals.append(r[0])
-
-        oldcol = trisurf_frame
-        trisurf_frame = ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
-        # Remove old line collection before drawing
-        if oldcol is not None:
-            ax.collections.remove(oldcol)
-        plt.pause(.01)
-
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
-        print('Cantidad de patrones ' + str(u + 1))
         epoch += 1
 
-    print(errors)
+    end_time = time.time()
+    print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + ' segundos.')
+
+    # Desnormalizo
+    out_un = unnormalize(out,output,max,fun)
+
+    return errors, epoch, out_un, out_weights
+
+# TESTEO
+def test(arquitecture, input, output, bias, beta, eta, error_cuad, fun,trained_weights):
+    start_time = time.time()
+
+    np_input, np_output, max = normalize(input, output, fun)
+
+    # 1. Inicializo las matrices de pesos con valores random pequeños
+    weights = trained_weights
+
+    out = np.array([])
+
+    # u : patron que estoy calculando
+    limit, col = np_input.shape
+    for u in range(0, limit):
+
+        # 2. El patron de entrada seran los primeros V
+        vs = []
+        hs = []
+
+        vs.append(np_input[u])
+        hs.append(np_input[u])
+
+        # 3. Feed Forward
+        # m : capa de la red
+        m = 1
+        while m < len(arquitecture):
+            hs.append(h(np.append(np.array(vs[m - 1]), bias), weights[m - 1]))
+
+            if fun == 'exp':
+                vs.append(exp(hs[m], beta))
+            else:
+                vs.append(tan(hs[m], beta))
+
+            m += 1
+
+        # M : Ultima capa -> Capa de salida
+        M = m - 1
+
+        # Agrego la salida obtenida al conjunto de salida
+        out = np.insert(out, u, vs[M])
+
     end_time = time.time()
 
-    print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + 'segundos.')
-    print('Salidas obtenida | Salidas esperada')
-    for j in range(len(out)):
-        print(str(out[j]),'||', str(np_output[j]))
 
-    return errors, epoch
 
+    print('TIEMPO DE TESTEO: ' + str(end_time - start_time) + ' segundos.')
+
+    # Desnormalizo
+    out_un = unnormalize(out, output, max, fun)
+
+    return out_un
 
 def initialize_weights(arquitecture):
     weights = []
@@ -232,11 +224,15 @@ def normalize(inputs, outputs, fun):
 
    return np.array(norm_in), np.array(norm_out), max_val
 
-def unnormalize(obtained,expected,max):
+def unnormalize(obtained,expected,max,fun):
     out_unnorm = []
 
     for i in range(0,len(expected)):
-        o = obtained.item(i,0) * max * np.sign(expected[i][0])
+        o = obtained[i] * max
+
+        if fun == 'exp':
+            o = o * np.sign(expected[i][0])
+
         out_unnorm.append(o)
 
     return out_unnorm
@@ -261,6 +257,9 @@ def calc_delta(out_obtained, out_expected):
     return deltas_error
 
 def error_quad(out_obtained, out_expected):
+
+    N = len(out_expected)
+
     out_expected_copy = out_expected.copy()
     out_expected_copy = np.mat(out_expected_copy).transpose()
     deltas_error = np.subtract(out_expected_copy, out_obtained)
@@ -268,7 +267,7 @@ def error_quad(out_obtained, out_expected):
     deltas_error = deltas_error[0]
     pow_deltas = [(d ** 2) for d in deltas_error]
     sum_pow_deltas = np.sum(pow_deltas)
-    return deltas_error, (1/2) * sum_pow_deltas
+    return deltas_error, sum_pow_deltas / (2 * N)
 
 def weights_trans(weights):
     rows,cols = weights.shape
@@ -311,7 +310,6 @@ def create_deltas_matrix(deltas,eta,rows):
 
     return deltas_copy
 
-# def get_new_weights(weights, vs, deltas):
 def get_new_weights(weights, vs, deltas, deltas_prev, alfa):
     vs_deltas_m = np.multiply(vs, deltas)
     delta_alfa = np.multiply(deltas_prev,alfa)
