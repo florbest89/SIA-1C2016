@@ -14,7 +14,7 @@ import file_parser as fp
 # error_cuad : error cuadrático medio
 # beta = 0.5
 # alfa = 0.9
-def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa,a,b,k):
+def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
 
     start_time = time.time()
 
@@ -113,22 +113,72 @@ def multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cu
 
             weights = new_weights
 
-        dt, ecm_epoch = error_quad(out, np_output,u)
+        dt, ecm_epoch = error_quad(out, np_output)
         errors.append(ecm_epoch)
         error = ecm_epoch
 
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         epoch += 1
 
-    print(errors)
+
     end_time = time.time()
+    print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + ' segundos.')
 
-    print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + 'segundos.')
-
+    # Desnormalizo
     out_un = unnormalize(out,output,max,fun)
 
-    return errors, epoch, out_un
+    return errors, epoch, out_un, weights
 
+# TESTEO
+def test(arquitecture, input, output, bias, beta, eta, error_cuad, fun,trained_weights):
+    start_time = time.time()
+
+    np_input, np_output, max = normalize(input, output, fun)
+
+    # 1. Inicializo las matrices de pesos con valores random pequeños
+    weights = trained_weights
+
+    out = np.array([])
+
+    # u : patron que estoy calculando
+    limit, col = np_input.shape
+    for u in range(0, limit):
+
+        # 2. El patron de entrada seran los primeros V
+        vs = []
+        hs = []
+
+        vs.append(np_input[u])
+        hs.append(np_input[u])
+
+        # 3. Feed Forward
+        # m : capa de la red
+        m = 1
+        while m < len(arquitecture):
+            hs.append(h(np.append(np.array(vs[m - 1]), bias), weights[m - 1]))
+
+            if fun == 'exp':
+                vs.append(exp(hs[m], beta))
+            else:
+                vs.append(tan(hs[m], beta))
+
+            m += 1
+
+        # M : Ultima capa -> Capa de salida
+        M = m - 1
+
+        # Agrego la salida obtenida al conjunto de salida
+        out = np.insert(out, u, vs[M])
+
+    end_time = time.time()
+
+
+    print('TIEMPO DE TESTEO: ' + str(end_time - start_time) + ' segundos.')
+
+    # Desnormalizo
+    out_un = unnormalize(out, output, max, fun)
+
+    return out_un
 
 def initialize_weights(arquitecture):
     weights = []
@@ -199,7 +249,10 @@ def calc_delta(out_obtained, out_expected):
     deltas_error = np.subtract(out_expected, out_obtained)
     return deltas_error
 
-def error_quad(out_obtained, out_expected, N):
+def error_quad(out_obtained, out_expected):
+
+    N = len(out_expected)
+
     out_expected_copy = out_expected.copy()
     out_expected_copy = np.mat(out_expected_copy).transpose()
     deltas_error = np.subtract(out_expected_copy, out_obtained)
