@@ -7,8 +7,6 @@ import numpy as np
 
 def learn():
 
-    #inputs, outputs = fp.parse_file('terrain/terrain4.txt', -1)
-
     # 1. Obtengo los patrones de entrenamiento
     inputs, outputs = fp.parse_file('terrains/terrain4-train-1.txt', -1)
 

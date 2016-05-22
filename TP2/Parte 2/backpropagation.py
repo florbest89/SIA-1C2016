@@ -22,6 +22,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
+    out_weights = weights
 
     # esta es la lista de deltas previos que utilizo para el MOMENTUM
     deltas_prev = [0] * len(weights)
@@ -111,6 +112,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
                 # new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
                 new_weights[i], deltas_prev[i] = get_new_weights(weights[i], vs_copy, deltas_copy, deltas_prev[i], alfa)
 
+            out_weights = weights
             weights = new_weights
 
         dt, ecm_epoch = error_quad(out, np_output)
@@ -127,7 +129,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     # Desnormalizo
     out_un = unnormalize(out,output,max,fun)
 
-    return errors, epoch, out_un, weights
+    return errors, epoch, out_un, out_weights
 
 # TESTEO
 def test(arquitecture, input, output, bias, beta, eta, error_cuad, fun,trained_weights):
