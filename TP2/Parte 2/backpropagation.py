@@ -124,6 +124,37 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
         errors.append(ecm_epoch)
         error = ecm_epoch
 
+        # INICIO eta_adaptativo //////////////////////////////////////////////
+        # if ecm_prev == 0:
+        #     ecm_prev = ecm_epoch
+        #     weights_good_epoch = weights
+        # else:
+        #     if ((ecm_epoch - ecm_prev) < 0):
+        #         k_counter = k_counter + 1
+        #         ecm_prev = ecm_epoch
+        #         if (k_counter == k):
+        #             k_counter = 0
+        #             eta = eta + a
+        #             print('valor eta SUBE:', eta)
+        #             weights_good_epoch = weights
+        #             ecm_good_epoch = ecm_epoch
+        #             deltas_good_epoch = deltas_prev
+        #             alfa = alfa_value_backup
+        #
+        #     elif ((ecm_epoch - ecm_prev) > 0 and eta > 0.1):
+        #         eta = eta - b * eta
+        #         if eta < 0.1:
+        #             eta = 0.1
+        #         print('valor eta BAJA:', eta)
+        #         alfa = 0
+        #         k_counter = 0
+        #         weights = weights_good_epoch
+        #         ecm_prev = ecm_good_epoch
+        #         deltas_prev = deltas_good_epoch
+
+        # FIN eta_adaptativo /////////////////////////////////////////////////
+
+
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         epoch += 1
 
