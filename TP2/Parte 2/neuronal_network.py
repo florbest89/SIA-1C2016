@@ -13,8 +13,6 @@ def learn():
     #multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
     # errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.08, 0.0005, 'tan', 0.9, 0.00001,0.0001,3)
     errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.0005, 'tan', 0.9, 0,0,0)
-    # errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.0005, 'tan', 0.9, 0,0,0)
-    # errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.0005, 'tan', 0, 0,0,0)
 
     fp.plotX1X2Z(inputs, out)
     fp.plotOriginals(inputs,outputs)

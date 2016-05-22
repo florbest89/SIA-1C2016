@@ -28,19 +28,13 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
     out_weights = weights
-    weights_good_epoch = weights
+
     # esta es la lista de deltas previos que utilizo para el MOMENTUM
     deltas_prev = [0] * len(weights)
-    deltas_good_epoch = [0] * len(weights)
 
     # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
-    # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
+    # En conjunto con el valor de k, voy determinando si tengo que modificar el valor de eta
     ecm_prev = 0
-
-    reduce_eta_max = 5
-
-    # error cuadratico previo de la epoca buena
-    ecm_good_epoch = 0
 
     # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
     k_counter = 0
@@ -56,8 +50,10 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     epoch = 1
 
     while error > error_cuad:
-        out = np.array([])
+        # valor inicial de los pesos de la epoca
         weights_prev = weights
+        
+        out = np.array([])
         # u : patron que estoy analizando
         limit,col = np_input.shape
         for u in range(0, limit):
@@ -118,7 +114,6 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
                 rows, cols = weights[i].shape
                 vs_copy = create_vs_transpose(vs[i], bias, cols)
                 deltas_copy = create_deltas_matrix(deltas[i], eta, rows)
-                # new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
                 new_weights[i], deltas_prev[i] = get_new_weights(weights[i], vs_copy, deltas_copy, deltas_prev[i], alfa)
 
             out_weights = weights
@@ -129,30 +124,26 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
         error = ecm_epoch
 
         # INICIO eta_adaptativo
-        if(a > 0 and b > 0 and k > 0):
+        if a > 0 and b > 0 and k > 0:
             if ecm_prev == 0:
                 ecm_prev = ecm_epoch
             else:
-                deltaError = ecm_epoch - ecm_prev
-                if deltaError < 0:
-                    ecm_prev = ecm_epoch
+                delta_error = ecm_epoch - ecm_prev
+                if delta_error < 0:
                     k_counter += 1
-                    if (k_counter == k):
+                    if k_counter == k:
                         k_counter = 0
                         eta += a
                         alfa = alfa_value_backup
                         print('valor eta SUBE:', eta)
-                elif deltaError > 0:
+                elif delta_error > 0:
                     eta += - b * eta
-
                     alfa = 0
                     k_counter = 0
                     weights = weights_prev
                     print('valor eta BAJA:', eta)
-
-            ecm_prev = ecm_epoch
+                ecm_prev = ecm_epoch
         # FIN eta_adaptativo
-
 
         x1_vals = []
         x2_vals = []
