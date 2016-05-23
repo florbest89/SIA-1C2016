@@ -33,13 +33,13 @@ ECM: Error cuadratico medio de corte
 
 ETA: Factor de aprendizaje
 
-Alpha:
+Alpha: Constante para Momentum
 
-A:
+A: Constante para incrementar ETA
 
-B:
+B: Constante para reducir ETA
 
-K:
+K: Cantidad de epocas en que el ECM se reduce
 
 *********************************
 EJEMPLOS DE EJECUCION
