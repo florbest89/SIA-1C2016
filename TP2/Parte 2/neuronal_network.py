@@ -9,34 +9,41 @@ def learn():
     # 1. Obtengo los patrones de entrenamiento
     inputs, outputs = fp.parse_file('terrains/terrain4-train-1.txt', -1)
 
+    patterns = len(outputs)
+    arquitecture = [2, 5, 10, 1]
+    fun = 'exp'
+    ecm = 0.0005
+    eta = 0.7
+
     # 2. Entreno la red
     #multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
-    # errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.08, 0.0005, 'tan', 0.9, 0.00001,0.0001,3)
-    errors, epoch, out, weights = bp.train([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.0005, 'tan', 0.9, 0,0,0)
 
+    errors, epoch, out, weights = bp.train(arquitecture, inputs, outputs, -1, 0.5, eta, ecm, fun, 0, 0,0,0)
     fp.plotX1X2Z(inputs, out)
-    fp.plotOriginals(inputs,outputs)
+    #fp.plotOriginals(inputs,outputs)
 
     # 3. Obtengo los patrones de testeo
     inputs, outputs = fp.parse_file('terrains/terrain4-test-1.txt', -1)
 
     # 4. Testeo la red
-    out = bp.test([2, 10, 5, 1], inputs, outputs, -1, 0.5, 0.5, 0.05, 'tan', weights)
+    out = bp.test(arquitecture, inputs, outputs, -1, 0.5, eta, fun, weights)
     # 5. Calculo porcentaje de aciertos y aproximaciones
-    hit_p, apprx_p = percentage(outputs, out, 0.01)
+    hit_p, apprx_p = percentage(outputs, out, ecm)
 
     print('Porcentaje de aciertos: ' + "%.2f" % round(hit_p,2) + '% - Porcentaje de aproximaciones: ' + "%.2f" % round(apprx_p,2) + '%')
 
 
     fp.plotX1X2Z(inputs, out)
-    fp.plotOriginals(inputs, outputs)
+    #fp.plotOriginals(inputs, outputs)
 
     plt.plot(range(1, epoch), errors)
-    plt.xlabel('Iteración')
+    plt.xlabel('Epoca')
     plt.ylabel('Error cuadrático medio')
 
-    plt.title('Red neuronal con arquitectura ' + str([2, 10, 5, 1]) + ', cantidad de patrones: 150, función de activación: ' + 'tan')
+    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: ' + str(patterns) + ', función de activación: ' + fun)
     plt.show()
+
+    return
 
 
 def get_x_y(input):
@@ -73,9 +80,9 @@ def percentage(out_expected, out_obtained, error):
         delta = out_expected[i][0] - out_obtained[i]
 
         if delta < error:
-            approx += 1
-        else:
             hits += 1
+        else:
+            approx += 1
 
     return (hits / total) * 100, (approx / total) * 100
 

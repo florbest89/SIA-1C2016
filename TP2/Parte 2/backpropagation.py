@@ -175,7 +175,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     return errors, epoch, out_un, out_weights
 
 # TESTEO
-def test(arquitecture, input, output, bias, beta, eta, error_cuad, fun,trained_weights):
+def test(arquitecture, input, output, bias, beta, eta, fun,trained_weights):
     start_time = time.time()
 
     np_input, np_output, max = normalize(input, output, fun)

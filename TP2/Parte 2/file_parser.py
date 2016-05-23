@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 # import msvcrt
 
-
-
 def parse_file(infile, number_of_values):
 
     values = []
