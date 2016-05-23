@@ -47,7 +47,7 @@ def learn(args):
     plt.xlabel('Epoca')
     plt.ylabel('Error cuadratico medio')
 
-    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: ' + str(patterns) + ', función de activacion: ' + fun)
+    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: ' + str(patterns) + ', funcion de activacion: ' + fun)
     plt.show()
 
     return
