@@ -17,9 +17,9 @@ from mpl_toolkits.mplot3d import Axes3D
 
 def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
     # variables necesarias para plot en realtime
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    trisurf_frame = None
+    # fig = plt.figure()
+    # ax = fig.gca(projection='3d')
+    # trisurf_frame = None
 
     start_time = time.time()
 
@@ -145,23 +145,23 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
                 ecm_prev = ecm_epoch
         # FIN eta_adaptativo
 
-        x1_vals = []
-        x2_vals = []
-        z_vals = []
-
-        for row in np_input:
-            x1_vals.append(row[0])
-            x2_vals.append(row[1])
-
-        for r in out:
-            z_vals.append(r)
-
-        oldcol = trisurf_frame
-        trisurf_frame = ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
-        # Borra el grafico anterior
-        if oldcol is not None:
-            ax.collections.remove(oldcol)
-        plt.pause(.01)
+        # x1_vals = []
+        # x2_vals = []
+        # z_vals = []
+        #
+        # for row in np_input:
+        #     x1_vals.append(row[0])
+        #     x2_vals.append(row[1])
+        #
+        # for r in out:
+        #     z_vals.append(r)
+        #
+        # oldcol = trisurf_frame
+        # trisurf_frame = ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
+        # # Borra el grafico anterior
+        # if oldcol is not None:
+        #     ax.collections.remove(oldcol)
+        # plt.pause(.01)
 
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         epoch += 1

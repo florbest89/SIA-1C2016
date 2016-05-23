@@ -12,13 +12,18 @@ def learn():
     patterns = len(outputs)
     arquitecture = [2, 5, 10, 1]
     fun = 'exp'
-    ecm = 0.0005
+    ecm = 0.0001
     eta = 0.7
+    alfa = 0.9
+    #los valores a,b,k en cero desactiva el eta adaptativo
+    a = 0
+    b = 0
+    k = 0
 
     # 2. Entreno la red
     #multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
 
-    errors, epoch, out, weights = bp.train(arquitecture, inputs, outputs, -1, 0.5, eta, ecm, fun, 0, 0,0,0)
+    errors, epoch, out, weights = bp.train(arquitecture, inputs, outputs, -1, 0.5, eta, ecm, fun, alfa, a, b, k)
     fp.plotX1X2Z(inputs, out)
     #fp.plotOriginals(inputs,outputs)
 
