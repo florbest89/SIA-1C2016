@@ -2,7 +2,7 @@ import re
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib import cm
-import msvcrt
+# import msvcrt
 
 
 def parse_file(infile, number_of_values):
