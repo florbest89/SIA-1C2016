@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+import copy
 import argparse
 import numpy as np
 import numpy.matlib
@@ -337,9 +339,11 @@ def create_vs_transpose(vs, bias, cols):
     return np.mat(vs_copy).transpose()
 
 def create_deltas_matrix(deltas,eta,rows):
-    deltas_copy = deltas.copy()
+    # deltas_copy = deltas.copy()
+    deltas_copy = copy.copy(deltas)
     deltas_copy = [(d * eta) for d in deltas_copy]
-    aux = deltas_copy.copy()
+    # aux = deltas_copy.copy()
+    aux = copy.copy(deltas_copy)
 
     rows_count = 1
 

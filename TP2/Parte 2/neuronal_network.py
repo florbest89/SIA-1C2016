@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import file_parser as fp
 import backpropagation as bp
 import matplotlib.pyplot as plt
@@ -44,9 +45,9 @@ def learn(args):
 
     plt.plot(range(1, epoch), errors)
     plt.xlabel('Epoca')
-    plt.ylabel('Error cuadrático medio')
+    plt.ylabel('Error cuadratico medio')
 
-    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: ' + str(patterns) + ', función de activación: ' + fun)
+    plt.title('Red neuronal con arquitectura ' + str(arquitecture) + ', cantidad de patrones: ' + str(patterns) + ', función de activacion: ' + fun)
     plt.show()
 
     return

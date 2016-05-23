@@ -17,7 +17,14 @@ Matias L. Rivas (51274)
 INSTRUCCIONES DE EJECUCION
 *********************************
 
-neuronal_network.py -hl1 HL1 -hl2 HL2 -G FUNC -ecm ECM -eta ETA -alpha ALPHA -a A -b B -k K
+En terminal, posicionarse sobre la directorio /TP2/Parte2 y ejecutar el archivo run.sh para ejecutar la red neuronal.
+
+   $ ./run.sh
+
+A continuacion se muestra un ejemplo con datos de ejecucion que se encuantre dentro de dicho archivo.
+Estos parametros pueden ser cambiados segun que se desee realizar.
+
+python neuronal_network.py -hl1 10 -hl2 4 -G tan -ecm 0.001 -eta 0.0005 -alpha 0.9 -a 0 -b 0 -k 0
 
 *********************************
 PARAMETROS
