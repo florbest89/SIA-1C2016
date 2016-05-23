@@ -17,7 +17,7 @@ Matias L. Rivas (51274)
 INSTRUCCIONES DE EJECUCION
 *********************************
 
-En terminal, posicionarse sobre la directorio /TP2/Parte2 y ejecutar el archivo run.sh para ejecutar la red neuronal.
+En terminal, posicionarse sobre la directorio /TP2/Parte 2 y ejecutar el archivo run.sh para ejecutar la red neuronal.
 
    $ ./run.sh
 
@@ -48,8 +48,3 @@ B: Constante para reducir ETA
 
 K: Cantidad de epocas en que el ECM se reduce
 
-*********************************
-EJEMPLOS DE EJECUCION
-*********************************
-
-neuronal_network.py -hl1 10 -hl2 4 -G exp -ecm 0.0005 -eta 0.0005 -alpha 0.9 -a 0.0001 -b 0.0001 -k 25
