@@ -11,10 +11,10 @@ def learn():
     inputs, outputs = fp.parse_file('terrains/terrain4-train-1.txt', -1)
 
     patterns = len(outputs)
-    arquitecture = [2, 12, 4, 1]
+    arquitecture = [2, 9, 4, 1]
     fun = 'exp'
-    ecm = 0.0005
-    eta = 0.3
+    ecm = 0.001
+    eta = 0.7
 
     # 2. Entreno la red
     #multilayer_perceptron(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
@@ -81,9 +81,9 @@ def percentage(out_expected, out_obtained, error):
         delta = out_expected[i][0] - out_obtained[i]
 
         if delta < error:
-            approx += 1
-        else:
             hits += 1
+        else:
+            approx += 1
 
     return (hits / total) * 100, (approx / total) * 100
 
