@@ -6,6 +6,7 @@ import numpy.matlib
 import math as m
 import matplotlib.pyplot as plt
 import time
+import file_parser as fp
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -19,9 +20,13 @@ from mpl_toolkits.mplot3d import Axes3D
 
 def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
     # variables necesarias para plot en realtime
+    fig = plt.figure(figsize=plt.figaspect(.2))
     # fig = plt.figure()
+    ax = fig.add_subplot(1,2,1,projection='3d')
     # ax = fig.gca(projection='3d')
-    # trisurf_frame = None
+    trisurf_frame = None
+    # ax2 = fig.add_subplot(122)
+    ax2 = fig.add_subplot(1, 2, 2)
 
     start_time = time.time()
 
@@ -147,26 +152,12 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
                 ecm_prev = ecm_epoch
         # FIN eta_adaptativo
 
-        # x1_vals = []
-        # x2_vals = []
-        # z_vals = []
-        #
-        # for row in np_input:
-        #     x1_vals.append(row[0])
-        #     x2_vals.append(row[1])
-        #
-        # for r in out:
-        #     z_vals.append(r)
-        #
-        # oldcol = trisurf_frame
-        # trisurf_frame = ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
-        # # Borra el grafico anterior
-        # if oldcol is not None:
-        #     ax.collections.remove(oldcol)
-        # plt.pause(.01)
-
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         epoch += 1
+
+        out_un = unnormalize(out, output, max, fun)
+        trisurf_frame = fp.doThePlot(input, out_un,errors,trisurf_frame,ax,ax2)
+        # fp.plotTerrainAndErrors(input, out_un, errors)
 
     end_time = time.time()
     print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + ' segundos.')
@@ -384,4 +375,3 @@ def get_max_values(inputs,outputs):
 
     # | x | , | y | , | z |
     return abs(max_x), abs(max_y) , abs(max_z)
-
