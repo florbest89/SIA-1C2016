@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+import copy
 import argparse
 import numpy as np
 import numpy.matlib
@@ -5,7 +7,8 @@ import math as m
 import matplotlib.pyplot as plt
 import time
 import file_parser as fp
-
+from matplotlib import cm
+from mpl_toolkits.mplot3d import Axes3D
 
 # arquitecture : Arquitectura de la red -> Cantidad de nodos
 # input : Array con valores de entrada
@@ -14,7 +17,12 @@ import file_parser as fp
 # error_cuad : error cuadrático medio
 # beta = 0.5
 # alfa = 0.9
+
 def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
+    # variables necesarias para plot en realtime
+    # fig = plt.figure()
+    # ax = fig.gca(projection='3d')
+    # trisurf_frame = None
 
     start_time = time.time()
 
@@ -26,11 +34,9 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
     # esta es la lista de deltas previos que utilizo para el MOMENTUM
     deltas_prev = [0] * len(weights)
-    deltas_good_epoch = [0] * len(weights)
-    ecm_good_epoch = 0
 
     # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
-    # en conjunto con el valor de k, voy deperminando si tengo que modificar el valor de eta
+    # En conjunto con el valor de k, voy determinando si tengo que modificar el valor de eta
     ecm_prev = 0
 
     # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
@@ -47,8 +53,10 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     epoch = 1
 
     while error > error_cuad:
+        # valor inicial de los pesos de la epoca
+        weights_prev = weights
+        
         out = np.array([])
-
         # u : patron que estoy analizando
         limit,col = np_input.shape
         for u in range(0, limit):
@@ -109,7 +117,6 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
                 rows, cols = weights[i].shape
                 vs_copy = create_vs_transpose(vs[i], bias, cols)
                 deltas_copy = create_deltas_matrix(deltas[i], eta, rows)
-                # new_weights[i] = get_new_weights(weights[i], vs_copy, deltas_copy)
                 new_weights[i], deltas_prev[i] = get_new_weights(weights[i], vs_copy, deltas_copy, deltas_prev[i], alfa)
 
             out_weights = weights
@@ -119,9 +126,50 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
         errors.append(ecm_epoch)
         error = ecm_epoch
 
+        # INICIO eta_adaptativo
+        if a > 0 and b > 0 and k > 0:
+            if ecm_prev == 0:
+                ecm_prev = ecm_epoch
+            else:
+                delta_error = ecm_epoch - ecm_prev
+                if delta_error < 0:
+                    k_counter += 1
+                    if k_counter == k:
+                        k_counter = 0
+                        eta += a
+                        alfa = alfa_value_backup
+                        print('valor eta SUBE:', eta)
+                elif delta_error > 0:
+                    eta += - b * eta
+                    alfa = 0
+                    k_counter = 0
+                    weights = weights_prev
+                    print('valor eta BAJA:', eta)
+                ecm_prev = ecm_epoch
+        # FIN eta_adaptativo
+
+        # x1_vals = []
+        # x2_vals = []
+        # z_vals = []
+        #
+        # for row in np_input:
+        #     x1_vals.append(row[0])
+        #     x2_vals.append(row[1])
+        #
+        # for r in out:
+        #     z_vals.append(r)
+        #
+        # oldcol = trisurf_frame
+        # trisurf_frame = ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
+        # # Borra el grafico anterior
+        # if oldcol is not None:
+        #     ax.collections.remove(oldcol)
+        # plt.pause(.01)
+
         print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
         epoch += 1
-
+        out_un = unnormalize(out, output, max, fun)
+        fp.plotTerrainAndErrors(input, out_un, errors)
 
     end_time = time.time()
     print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + ' segundos.')
@@ -132,7 +180,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     return errors, epoch, out_un, out_weights
 
 # TESTEO
-def test(arquitecture, input, output, bias, beta, eta, error_cuad, fun,trained_weights):
+def test(arquitecture, input, output, bias, beta, eta, fun,trained_weights):
     start_time = time.time()
 
     np_input, np_output, max = normalize(input, output, fun)
@@ -173,6 +221,7 @@ def test(arquitecture, input, output, bias, beta, eta, error_cuad, fun,trained_w
         out = np.insert(out, u, vs[M])
 
     end_time = time.time()
+
 
 
     print('TIEMPO DE TESTEO: ' + str(end_time - start_time) + ' segundos.')
@@ -293,9 +342,11 @@ def create_vs_transpose(vs, bias, cols):
     return np.mat(vs_copy).transpose()
 
 def create_deltas_matrix(deltas,eta,rows):
-    deltas_copy = deltas.copy()
+    # deltas_copy = deltas.copy()
+    deltas_copy = copy.copy(deltas)
     deltas_copy = [(d * eta) for d in deltas_copy]
-    aux = deltas_copy.copy()
+    # aux = deltas_copy.copy()
+    aux = copy.copy(deltas_copy)
 
     rows_count = 1
 
@@ -336,3 +387,4 @@ def get_max_values(inputs,outputs):
 
     # | x | , | y | , | z |
     return abs(max_x), abs(max_y) , abs(max_z)
+

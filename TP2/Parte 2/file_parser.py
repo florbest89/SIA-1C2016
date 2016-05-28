@@ -28,22 +28,6 @@ def parse_file(infile, number_of_values):
 
 
 def plotX1X2Z(array_values, out_values):
-    #x1_vals = []
-    #x2_vals = []
-    #z_vals = out_values
-
-    #for row in array_values:
-    #    x1_vals.append(row[0])
-    #    x2_vals.append(row[1])
-
-    #fig = plt.figure()
-    #ax = fig.add_subplot(111, projection='3d')
-    #ax.scatter(x1_vals, x2_vals, z_vals, c='r', marker='o')
-    #ax.set_xlabel('X1')
-    #ax.set_ylabel('X2')
-    #ax.set_zlabel('Z')
-    #plt.show()
-    #return
     x1_vals = []
     x2_vals = []
     z_vals = []
@@ -71,22 +55,6 @@ def plotX1X2Z(array_values, out_values):
     return
 
 def plotOriginals(array_values, out_values):
-    #x1_vals = []
-    #x2_vals = []
-    #z_vals = out_values
-
-    #for row in array_values:
-    #    x1_vals.append(row[0])
-    #    x2_vals.append(row[1])
-
-    #fig = plt.figure()
-    #ax = fig.add_subplot(111, projection='3d')
-    #ax.scatter(x1_vals, x2_vals, z_vals, c='r', marker='o')
-    #ax.set_xlabel('X1')
-    #ax.set_ylabel('X2')
-    #ax.set_zlabel('Z')
-    #plt.show()
-    #return
     x1_vals = []
     x2_vals = []
     z_vals = []
@@ -110,5 +78,33 @@ def plotOriginals(array_values, out_values):
     ax.set_xlabel('X1')
     ax.set_ylabel('X2')
     ax.set_zlabel('Z')
+    plt.show()
+    return
+
+def plotTerrainAndErrors(array_values, out_values,errors):
+    x1_vals = []
+    x2_vals = []
+    z_vals = []
+
+    for i in range(0,len(array_values)):
+        x1_vals.append(array_values[i][0])
+        x2_vals.append(array_values[i][1])
+
+    cols = len(out_values)
+
+    for c in range(0,cols):
+        z_vals.append(out_values[c])
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    ax.plot_trisurf(x1_vals, x2_vals, z_vals, cmap=cm.jet, linewidth=0.2)
+    ax.set_xlabel('X1')
+    ax.set_ylabel('X2')
+    ax.set_zlabel('Z')
+
+    ax2 = fig.add_subplot(122)
+    ax2.plot(errors)
+    ax2.set_xlabel('Iteración')
+    ax2.set_ylabel('Error cuadrático medio')
     plt.show()
     return
