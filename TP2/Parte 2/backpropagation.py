@@ -19,6 +19,7 @@ from mpl_toolkits.mplot3d import Axes3D
 # alfa = 0.9
 
 def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
+
     # variables necesarias para plot en realtime
     fig = plt.figure(figsize=plt.figaspect(.2))
     # fig = plt.figure()
@@ -34,17 +35,18 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
     #1. Inicializo las matrices de pesos con valores random pequeños
     weights = initialize_weights(arquitecture)
-    out_weights = weights
+    out_weights = copy.copy(weights)
 
     # esta es la lista de deltas previos que utilizo para el MOMENTUM
     deltas_prev = [0] * len(weights)
 
-    # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
-    # En conjunto con el valor de k, voy determinando si tengo que modificar el valor de eta
-    ecm_prev = 0
 
+    # error cuadratico previo es el error del paso anterior que utilizo para el eta adaptativo.
+
+    # En conjunto con el valor de k, voy determinando si tengo que modificar el valor de eta
     # k_counter es un contador para la CONSISTENCIA de la adaptacion del valor de eta
     k_counter = 0
+    ecm_prev = 0
 
     # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
     alfa_value_backup = alfa
@@ -54,12 +56,16 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     # Array que lleva los valores de los errores cuadrático medios para cada patron
     errors = []
 
-    epoch = 1
+    epoch = 0
 
     while error > error_cuad:
-        # valor inicial de los pesos de la epoca
-        weights_prev = weights
-        
+
+        epoch += 1
+
+        # Guardo los valores de los pesos en caso que hay que hacer backtracking
+        weights_prev = copy.copy(weights)
+        deltas_prev_aux = copy.copy(deltas_prev)
+
         out = np.array([])
         # u : patron que estoy analizando
         limit,col = np_input.shape
@@ -123,38 +129,54 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
                 deltas_copy = create_deltas_matrix(deltas[i], eta, rows)
                 new_weights[i], deltas_prev[i] = get_new_weights(weights[i], vs_copy, deltas_copy, deltas_prev[i], alfa)
 
-            out_weights = weights
+            out_weights = copy.copy(weights)
             weights = new_weights
 
         dt, ecm_epoch = error_quad(out, np_output)
-        errors.append(ecm_epoch)
         error = ecm_epoch
+        # errors.append(ecm_epoch)
 
-        # INICIO eta_adaptativo
-        if a > 0 and b > 0 and k > 0:
-            if ecm_prev == 0:
-                ecm_prev = ecm_epoch
+        if a == 0 or b == 0:
+            errors.append(ecm_epoch)
+
+
+        # inicio eta adaptativo
+        if ecm_prev > 0:
+            derror = error - errors[epoch - 2]
+
+            # En caso de una epoca mala, debo decrementar el eta
+            if derror > 0:
+                eta += - b * eta
+                alfa = 0
+                k_counter = 0
+                print('BAJA ETA. Eta = ' + str(eta))
+
+                # Hago backtracking
+                weights = copy.copy(weights_prev)
+                deltas_prev = deltas_prev_aux
+                epoch -= 1
+
+            # En caso de una epoca buena, analizo si debo aumentar eta
             else:
-                delta_error = ecm_epoch - ecm_prev
-                if delta_error < 0:
-                    k_counter += 1
-                    if k_counter == k:
-                        k_counter = 0
-                        eta += a
-                        alfa = alfa_value_backup
-                        print('valor eta SUBE:', eta)
-                elif delta_error > 0:
-                    eta += - b * eta
-                    alfa = 0
-                    k_counter = 0
-                    weights = weights_prev
-                    print('valor eta BAJA:', eta)
+
+                k_counter += 1
+                alfa = alfa_value_backup
+                errors.append(ecm_epoch)
                 ecm_prev = ecm_epoch
-        # FIN eta_adaptativo
 
-        print('ECM de corrida ' + str(epoch) + ': ' + str(ecm_epoch))
-        epoch += 1
+                if k_counter == k:
+                    eta += a
+                    k_counter = 0
+                    print('SUBE ETA . Eta = ' + str(eta))
+        else:
+            ecm_prev = error
+            errors.append(ecm_epoch)
+        # fin eta adaptativo
 
+        print('ECM de corrida ' + str(epoch) + ': ' + str(error))
+
+
+        # Desnormalizo
         out_un = unnormalize(out, output, max, fun)
         trisurf_frame = fp.doThePlot(input, out_un,errors,trisurf_frame,ax,ax2)
         # fp.plotTerrainAndErrors(input, out_un, errors)
@@ -163,7 +185,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + ' segundos.')
 
     # Desnormalizo
-    out_un = unnormalize(out,output,max,fun)
+    # out_un = unnormalize(out,output,max,fun)
 
     return errors, epoch, out_un, out_weights
 
@@ -347,6 +369,8 @@ def create_deltas_matrix(deltas,eta,rows):
 def get_new_weights(weights, vs, deltas, deltas_prev, alfa):
     vs_deltas_m = np.multiply(vs, deltas)
     delta_alfa = np.multiply(deltas_prev,alfa)
+    # print(deltas_prev)
+    # delta_alfa = np.array([(d * alfa) for d in deltas_prev])
     # el termino delta_alfa es el termino de momentum
     return np.asarray(weights + vs_deltas_m + delta_alfa), vs_deltas_m
     # return np.asarray(weights + vs_deltas_m)
@@ -375,3 +399,30 @@ def get_max_values(inputs,outputs):
 
     # | x | , | y | , | z |
     return abs(max_x), abs(max_y) , abs(max_z)
+
+
+    # INICIO eta_adaptativo
+    # if a > 0 and b > 0 and k > 0:
+    #     if ecm_prev == 0:
+    #         ecm_prev = ecm_epoch
+    #         # deltas_prev_aux = deltas_prev
+    #     else:
+    #         delta_error = ecm_epoch - ecm_prev
+    #         if delta_error < 0:
+    #             k_counter += 1
+    #             ecm_prev = ecm_epoch
+    #             alfa = alfa_value_backup
+    #             # deltas_prev_aux = deltas_prev
+    #             if k_counter > k:
+    #                 k_counter = 0
+    #                 eta += a
+    #                 alfa = alfa_value_backup
+    #                 print('valor eta SUBE:', eta)
+    #         elif delta_error > 0:
+    #             eta += - b * eta
+    #             alfa = 0
+    #             k_counter = 0
+    #             weights = weights_prev
+    #             # deltas_prev = deltas_prev_aux
+    #             print('valor eta BAJA:', eta)
+    # FIN eta_adaptativo
