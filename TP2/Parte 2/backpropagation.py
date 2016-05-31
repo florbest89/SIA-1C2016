@@ -18,13 +18,14 @@ from mpl_toolkits.mplot3d import Axes3D
 # beta = 0.5
 # alfa = 0.9
 
+
 def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
     bad_epoch = k
 
     # variables necesarias para plot en realtime
     fig = plt.figure(figsize=plt.figaspect(.2))
     # fig = plt.figure()
-    ax = fig.add_subplot(1,2,1,projection='3d')
+    ax = fig.add_subplot(1, 2, 1, projection='3d')
     # ax = fig.gca(projection='3d')
     trisurf_frame = None
     # ax2 = fig.add_subplot(122)
@@ -64,8 +65,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
         # Guardo los valores de los pesos en caso que hay que hacer backtracking
         weights_prev = copy.copy(weights)
-        deltas_prev_aux = copy.copy(deltas_prev)
-        deltas_prev_good_epoch = deltas_prev
+        deltas_prev_good_epoch = copy.copy(deltas_prev)
 
         out = np.array([])
         # u : patron que estoy analizando
@@ -221,8 +221,9 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
     return errors, epoch, out_un, out_weights
 
+
 # TESTEO
-def test(arquitecture, input, output, bias, beta, eta, fun,trained_weights):
+def test(arquitecture, input, output, bias, beta, eta, fun, trained_weights):
     start_time = time.time()
 
     np_input, np_output, max = normalize(input, output, fun)
@@ -273,6 +274,7 @@ def test(arquitecture, input, output, bias, beta, eta, fun,trained_weights):
 
     return out_un
 
+
 def initialize_weights(arquitecture):
     weights = []
 
@@ -283,8 +285,10 @@ def initialize_weights(arquitecture):
 
     return weights
 
+
 def h(vs, weights):
     return np.dot(vs, weights)
+
 
 def normalize(inputs, outputs, fun):
    max_x, max_y , max_z = get_max_values(inputs,outputs)
@@ -294,9 +298,9 @@ def normalize(inputs, outputs, fun):
 
    limit = len(outputs)
 
-   max_val = max([max_x,max_y,max_z])
+   max_val = max([max_x, max_y, max_z])
 
-   for i in range(0,limit):
+   for i in range(0, limit):
        x = inputs[i][0] / max_val
        y = inputs[i][1] / max_val
        z = outputs[i][0] / max_val
@@ -310,10 +314,11 @@ def normalize(inputs, outputs, fun):
 
    return np.array(norm_in), np.array(norm_out), max_val
 
-def unnormalize(obtained,expected,max,fun):
+
+def unnormalize(obtained, expected, max, fun):
     out_unnorm = []
 
-    for i in range(0,len(expected)):
+    for i in range(0, len(expected)):
         o = obtained[i] * max
 
         if fun == 'exp':
@@ -323,24 +328,30 @@ def unnormalize(obtained,expected,max,fun):
 
     return out_unnorm
 
+
 def exp(hs,beta):
     return np.array([(1 / (1 + m.exp(- 2 * beta * i))) for i in hs])
+
 
 def exp_derived(hs, beta):
     gs = exp(hs,beta)
     return np.array([(2 * beta * g * (1 - g)) for g in gs])
 
-def tan(hs,beta):
+
+def tan(hs, beta):
     return np.array([(m.tanh(beta * x)) for x in hs])
+
 
 def tan_derived(hs, beta):
     gs = tan(hs, beta)
     gs_pow = [(x ** 2) for x in gs]
     return np.array([(beta * (1 - x)) for x in gs_pow])
 
+
 def calc_delta(out_obtained, out_expected):
     deltas_error = np.subtract(out_expected, out_obtained)
     return deltas_error
+
 
 def error_quad(out_obtained, out_expected):
 
@@ -355,12 +366,14 @@ def error_quad(out_obtained, out_expected):
     sum_pow_deltas = np.sum(pow_deltas)
     return deltas_error, sum_pow_deltas / (2 * N)
 
+
 def weights_trans(weights):
-    rows,cols = weights.shape
+    rows, cols = weights.shape
     aux = numpy.delete(weights, (rows - 1), axis=0)
     return aux.transpose()
 
-def get_deltas(hs,beta,delta_upper,weights,fun):
+
+def get_deltas(hs, beta, delta_upper, weights, fun):
     if fun == 'exp':
         gs = exp_derived(hs, beta)
     else:
@@ -368,6 +381,7 @@ def get_deltas(hs,beta,delta_upper,weights,fun):
 
     dterm = np.dot(delta_upper, weights)
     return [a * b for a,b in zip(gs,dterm)]
+
 
 def create_vs_transpose(vs, bias, cols):
     vs_copy = vs.copy()
@@ -382,6 +396,7 @@ def create_vs_transpose(vs, bias, cols):
         cols_count += 1
 
     return np.mat(vs_copy).transpose()
+
 
 def create_deltas_matrix(deltas,eta,rows):
     # deltas_copy = deltas.copy()
@@ -398,6 +413,7 @@ def create_deltas_matrix(deltas,eta,rows):
 
     return deltas_copy
 
+
 def get_new_weights(weights, vs, deltas, deltas_prev, alfa):
     vs_deltas_m = np.multiply(vs, deltas)
     delta_alfa = np.multiply(deltas_prev, alfa)
@@ -406,6 +422,7 @@ def get_new_weights(weights, vs, deltas, deltas_prev, alfa):
     # el termino delta_alfa es el termino de momentum
     return np.asarray(weights + vs_deltas_m + delta_alfa), vs_deltas_m
     # return np.asarray(weights + vs_deltas_m)
+
 
 def get_max_values(inputs,outputs):
     max_x = 0.0
@@ -430,7 +447,7 @@ def get_max_values(inputs,outputs):
             max_z = z
 
     # | x | , | y | , | z |
-    return abs(max_x), abs(max_y) , abs(max_z)
+    return abs(max_x), abs(max_y), abs(max_z)
 
 
     # INICIO eta_adaptativo
