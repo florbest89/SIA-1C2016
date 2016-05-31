@@ -19,6 +19,7 @@ from mpl_toolkits.mplot3d import Axes3D
 # alfa = 0.9
 
 def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
+    bad_epoch = 6
 
     # variables necesarias para plot en realtime
     fig = plt.figure(figsize=plt.figaspect(.2))
@@ -56,15 +57,15 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     # Array que lleva los valores de los errores cuadrático medios para cada patron
     errors = []
 
-    epoch = 0
+    epoch = 1
 
     while error > error_cuad:
 
-        epoch += 1
 
         # Guardo los valores de los pesos en caso que hay que hacer backtracking
         weights_prev = copy.copy(weights)
         deltas_prev_aux = copy.copy(deltas_prev)
+        deltas_prev_good_epoch = deltas_prev
 
         out = np.array([])
         # u : patron que estoy analizando
@@ -133,48 +134,79 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
             weights = new_weights
 
         dt, ecm_epoch = error_quad(out, np_output)
+        errors.append(ecm_epoch)
         error = ecm_epoch
-        # errors.append(ecm_epoch)
 
-        if a == 0 or b == 0:
-            errors.append(ecm_epoch)
-
-
-        # inicio eta adaptativo
-        if ecm_prev > 0:
-            derror = error - errors[epoch - 2]
-
-            # En caso de una epoca mala, debo decrementar el eta
-            if derror > 0:
-                eta += - b * eta
-                alfa = 0
-                k_counter = 0
-                print('BAJA ETA. Eta = ' + str(eta))
-
-                # Hago backtracking
-                weights = copy.copy(weights_prev)
-                deltas_prev = deltas_prev_aux
-                epoch -= 1
-
-            # En caso de una epoca buena, analizo si debo aumentar eta
-            else:
-
-                k_counter += 1
-                alfa = alfa_value_backup
-                errors.append(ecm_epoch)
+        # INICIO eta_adaptativo
+        if a > 0 and b > 0 and k > 0:
+            if ecm_prev == 0:
                 ecm_prev = ecm_epoch
 
-                if k_counter == k:
-                    eta += a
+            else:
+                delta_error = ecm_epoch - ecm_prev
+                if delta_error < 0:
+                    k_counter += 1
+                    alfa = alfa_value_backup
+                    ecm_prev = ecm_epoch
+                    bad_epoch = 6
+                    if k_counter == k:
+                        k_counter = 0
+                        eta += a
+                        print('valor eta SUBE:', eta)
+                elif delta_error > 0:
+                    bad_epoch -= 1
+                    alfa = 0
                     k_counter = 0
-                    print('SUBE ETA . Eta = ' + str(eta))
-        else:
-            ecm_prev = error
-            errors.append(ecm_epoch)
-        # fin eta adaptativo
+                    if bad_epoch == 0:
+                        # alfa = 0
+                        k_counter = 0
+                        eta += - b * eta
+                        bad_epoch = 6
+                        weights = weights_prev
+                        deltas_prev = deltas_prev_good_epoch
+                        # ecm_prev = ecm_epoch
+                        print('valor eta BAJA:', eta)
+        # FIN eta_adaptativo
+
+        # if a == 0 or b == 0:
+        #     # errors.append(ecm_epoch)
+
+        # CODIGO QUE PROBAMOS CON FLOR/MAX/YO
+        # # inicio eta adaptativo
+        # if ecm_prev > 0:
+        #     derror = error - errors[epoch - 2]
+        #
+        #     # En caso de una epoca mala, debo decrementar el eta
+        #     if derror > 0:
+        #         eta += - b * eta
+        #         alfa = 0
+        #         k_counter = 0
+        #         print('BAJA ETA. Eta = ' + str(eta))
+        #
+        #         # Hago backtracking
+        #         weights = copy.copy(weights_prev)
+        #         deltas_prev = deltas_prev_aux
+        #         epoch -= 1
+        #
+        #     # En caso de una epoca buena, analizo si debo aumentar eta
+        #     else:
+        #
+        #         k_counter += 1
+        #         alfa = alfa_value_backup
+        #         errors.append(ecm_epoch)
+        #         ecm_prev = ecm_epoch
+        #
+        #         if k_counter == k:
+        #             eta += a
+        #             k_counter = 0
+        #             print('SUBE ETA . Eta = ' + str(eta))
+        # else:
+        #     ecm_prev = error
+        #     errors.append(ecm_epoch)
+        # # fin eta adaptativo
 
         print('ECM de corrida ' + str(epoch) + ': ' + str(error))
-
+        epoch += 1
 
         # Desnormalizo
         out_un = unnormalize(out, output, max, fun)

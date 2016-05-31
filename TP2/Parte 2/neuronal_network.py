@@ -30,7 +30,7 @@ def learn(args):
     #fp.plotOriginals(inputs,outputs)
 
     # 3. Obtengo los patrones de testeo
-    inputs, outputs = fp.parse_file('terrains/terrain4.txt', -1)
+    inputs, outputs = fp.parse_file('terrains/terrain4-train-1.txt', -1)
 
     # 4. Testeo la red
     out = bp.test(arquitecture, inputs, outputs, -1, 0.5, eta, fun, weights)
