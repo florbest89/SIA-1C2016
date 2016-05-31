@@ -19,7 +19,7 @@ from mpl_toolkits.mplot3d import Axes3D
 # alfa = 0.9
 
 def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a, b, k):
-    bad_epoch = 6
+    bad_epoch = k
 
     # variables necesarias para plot en realtime
     fig = plt.figure(figsize=plt.figaspect(.2))
@@ -148,7 +148,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
                     k_counter += 1
                     alfa = alfa_value_backup
                     ecm_prev = ecm_epoch
-                    bad_epoch = 6
+                    bad_epoch = k
                     if k_counter == k:
                         k_counter = 0
                         eta += a
@@ -400,7 +400,7 @@ def create_deltas_matrix(deltas,eta,rows):
 
 def get_new_weights(weights, vs, deltas, deltas_prev, alfa):
     vs_deltas_m = np.multiply(vs, deltas)
-    delta_alfa = np.multiply(deltas_prev,alfa)
+    delta_alfa = np.multiply(deltas_prev, alfa)
     # print(deltas_prev)
     # delta_alfa = np.array([(d * alfa) for d in deltas_prev])
     # el termino delta_alfa es el termino de momentum
