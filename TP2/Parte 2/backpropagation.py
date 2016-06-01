@@ -47,6 +47,8 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     k_counter = 0
     ecm_prev = 0
 
+    same = 0
+
     # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
     alfa_value_backup = alfa
 
@@ -141,6 +143,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
                 ecm_prev = ecm_epoch
 
             else:
+
                 delta_error = ecm_epoch - ecm_prev
 
                 if delta_error < 0:
