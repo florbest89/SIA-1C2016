@@ -187,7 +187,7 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
     print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + ' segundos.')
 
     # Desnormalizo
-    # out_un = unnormalize(out,output,max,fun)
+    out_un = unnormalize(out,output,max,fun)
 
     return errors, epoch, out_un, out_weights
 
