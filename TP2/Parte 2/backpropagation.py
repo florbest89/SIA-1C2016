@@ -49,12 +49,12 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
     same = 0
 
-    # guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
+    # Guardo el valor de alfa en otra variable para cuando tenga que volvera su valor a alfa
     alfa_value_backup = alfa
 
     error = 1
 
-    # Array que lleva los valores de los errores cuadrático medios para cada patron
+    # Array que lleva los valores de los errores cuadrático medios para cada época
     errors = []
 
     epoch = 1
@@ -180,14 +180,13 @@ def train(arquitecture, input, output, bias, beta, eta, error_cuad, fun, alfa, a
 
         # Desnormalizo
         out_un = unnormalize(out, output, max, fun)
+
         trisurf_frame = fp.doThePlot(input, out_un,errors,trisurf_frame,ax,ax2)
         # fp.plotTerrainAndErrors(input, out_un, errors)
 
     end_time = time.time()
     print('TIEMPO DE EJECUCION: ' + str(end_time - start_time) + ' segundos.')
 
-    # Desnormalizo
-    out_un = unnormalize(out,output,max,fun)
 
     return errors, epoch, out_un, out_weights
 
@@ -268,13 +267,20 @@ def normalize(inputs, outputs, fun):
 
    limit = len(outputs)
 
-   max_val = max([max_x, max_y, max_z])
+   if fun == 'exp':
+       max_z = max_z + 0.001
+       max_x = max_x + 0.001
+       max_y = max_y + 0.001
 
-   for i in range(0, limit):
-       x = inputs[i][0] / max_val
-       y = inputs[i][1] / max_val
-       z = outputs[i][0] / max_val
-       if fun == 'exp' :
+
+   max_val = max([max_x,max_y,max_z])
+
+   for i in range(0,limit):
+       x = inputs[i][0] / max_x
+       y = inputs[i][1] / max_y
+       z = outputs[i][0] / max_z
+
+       if fun == 'exp':
            x = x * np.sign(x)
            y = y * np.sign(y)
            z = z * np.sign(z)
@@ -282,13 +288,13 @@ def normalize(inputs, outputs, fun):
        norm_in.append([x,y])
        norm_out.append([z])
 
-   return np.array(norm_in), np.array(norm_out), max_val
+   return np.array(norm_in), np.array(norm_out), max_z
 
 
-def unnormalize(obtained, expected, max, fun):
+def unnormalize(obtained,expected,max,fun):
     out_unnorm = []
 
-    for i in range(0, len(expected)):
+    for i in range(0,len(expected)):
         o = obtained[i] * max
 
         if fun == 'exp':
