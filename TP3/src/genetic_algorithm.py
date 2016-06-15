@@ -1,6 +1,7 @@
 from models import *
 from random import uniform
 from cross import *
+from mutation import *
 
 
 def genetic_algorithm():
@@ -35,10 +36,11 @@ def genetic_algorithm():
 
     print('PARENT 2 HEIGHT: ' + str(height2))
 
-    son1, son2 = cross_annular(parent1,parent2)
+    #son1, son2 = cross_annular(parent1,parent2)
 
-    print(son1)
-    print(son2)
+    mut = not_uniform(parent1)
+
+    var = 2
 
 
 genetic_algorithm()

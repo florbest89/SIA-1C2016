@@ -56,10 +56,10 @@ def cross_annular(p1,p2):
 
         return s1,s2
 
-def cross_uniform(p1,p2,pc):
+def cross_uniform(p1,p2):
     L = len(p1.items) + 1
 
-    return cross(p1,p2,0,L,pc)
+    return cross(p1,p2,0,L,0.5)
 
 def cross(p1,p2,locus_from,locus_to,pc):
 
@@ -79,4 +79,24 @@ def cross(p1,p2,locus_from,locus_to,pc):
             s2.set_allele(l, allele1)
 
     return s1, s2
+
+def cross(pc,p1,p2,cross_method):
+    p = uniform(0, 1)
+
+    if p < pc:
+        if cross_method == 'cross_1P':
+            return cross_1P(p1,p2)
+
+        if cross_method == 'cross_2P':
+            return cross_2P(p1,p2)
+
+        if cross_method == 'cross_annular':
+            return cross_annular(p1,p2)
+
+        if cross_method == 'cross_uniform':
+            return cross_uniform(p1,p2)
+    else:
+        return p1,p2
+
+
 

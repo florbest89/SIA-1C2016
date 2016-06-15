@@ -1,3 +1,4 @@
+from models import Defender
 # TODO: IMPLEMENT SELECTION METHODS
 
 # TODO: ROULETTE
@@ -13,3 +14,5 @@
 # TODO: RANKING
 
 # TODO: ELITE
+def elite(N, population):
+    sorted(population, key=lambda individual: individual.fitness, reverse=True)
