@@ -1,13 +1,16 @@
 import math as m
 
 class Item(object):
-    def __init__(self, id, strength, resistance, expertise, dexterity, health):
+    def __init__(self, id, strength, dexterity, expertise,  resistance, health):
         self.id = id
         self.strength = strength
         self.resistance = resistance
         self.expertise = expertise
         self.dexterity = dexterity
         self.health = health
+
+    def copy(self):
+        return Item(self.id,self.strength,self.dexterity,self.expertise,self.resistance,self.health)
 
 
 class Defender(object):
@@ -36,6 +39,15 @@ class Defender(object):
         # Compute fitness of defender
         # TODO: CHECK FOR OTHER POSSIBILITIES
         self.fitness = self.compute_fitness()
+
+    def copy(self):
+        items = []
+
+        for i in range(0,len(self.items)):
+            items.append(self.items[i].copy())
+
+        return Defender(self.items[0],self.items[1],self.items[2],self.items[3],self.items[4],self.height,self.sm,self.rm,self.em,self.dm,self.hm)
+
 
     def ATM(self):
         h = self.height
@@ -109,5 +121,15 @@ class Defender(object):
     def compute_fitness(self):
         return 0.1 * self.attack() + 0.9 * self.defense()
 
+    def get_allele(self,locus):
+        if locus >= 0 and locus <= 4:
+            return self.items[locus]
+        else:
+            return self.height
 
+    def set_allele(self,locus,allele):
+        if locus >= 0 and locus <= 4:
+            self.items[locus] = allele
+        else:
+            self.height = allele
 
