@@ -20,6 +20,8 @@ def genetic_algorithm():
     boots1 = Item(0,2.13,3.23,2.34,1.97,0.31)
     height1 = uniform(1.3,2.0)
 
+    print('PARENT 1 HEIGHT: ' + str(height1))
+
     parent1 = Defender(helmet1,chestplate1,gauntlets1,weapons1,boots1,height1,sm,rm,em,dm,hm)
 
     helmet2 = Item(1,5.37,1.37,9.58,7.52,6.13)
@@ -31,7 +33,12 @@ def genetic_algorithm():
 
     parent2 = Defender(helmet2,chestplate2,gauntlets2,weapons2,boots2,height2,sm,rm,em,dm,hm)
 
+    print('PARENT 2 HEIGHT: ' + str(height2))
+
     son1, son2 = cross_1P(parent1,parent2)
+
+    print(son1)
+    print(son2)
 
 
 genetic_algorithm()
