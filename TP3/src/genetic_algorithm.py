@@ -35,7 +35,7 @@ def genetic_algorithm():
 
     print('PARENT 2 HEIGHT: ' + str(height2))
 
-    son1, son2 = cross_2P(parent1,parent2)
+    son1, son2 = cross_annular(parent1,parent2)
 
     print(son1)
     print(son2)
