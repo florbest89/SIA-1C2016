@@ -1,6 +1,7 @@
 from models import Defender
 from random import uniform
 from random import sample
+from math import exp
 # TODO: IMPLEMENT SELECTION METHODS
 
 def roulette(k,population):
@@ -102,6 +103,53 @@ def prepare_population(population):
 # TODO: UNIVERSAL
 
 # TODO: BOLTZMANN
+# Cada vez que se ingresa, el valor de temperatura T debe ser menor
+# para el correcto funcionamiento del metodo.
+# k cant de individuos
+# T temperatura
+# P presion
+def boltzmann(population, k, T, P):
+    r = prepare_botlzmann(population, T)
+    selected = []
+    idx = 0
+
+    # Si la cantidad de individuos a buscar en mayor a la poblacion
+    if len(population) < k:
+        return population
+
+    while k > 0 and idx > len(r):
+        qi = r[idx][0]
+
+        # Si es mayor al valor de presion, se selecciona individuo
+        if P < qi:
+            ind = r.pop(idx)
+            selected.append(ind[2])
+            k -= 1
+            idx += 1
+            break
+        else:
+            idx += 1
+
+    # en caso de no llegar a los k individuos, returno toda la poblacion
+    if idx > len(r):
+        return population
+
+    return selected
+
+def prepare_botlzmann(population, T):
+    # 0 - exp_val, 1 - acum, 2 - individual
+    r = []
+    acum = 0.0
+
+    for i in range(0, len(population)):
+        acum = acum + exp(population[i].fitness / T);
+
+    for i in range(0, len(population)):
+        exp_val = exp(population[i].fitness / T) / acum;
+        r.append([exp_val, acum, population[i].copy()])
+        print('exp_val: ' + str(exp_val) + ' acum: ' + str(acum) + ' fitness: ' + str(population[i].fitness))
+
+    return r
 
 # TODO: DETERMINISTIC TOURNAMENT
 def deterministic_Tournament(population, k, m):
