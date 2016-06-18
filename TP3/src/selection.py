@@ -4,6 +4,10 @@ from random import uniform
 
 def roulette(k,population):
     # 0 - fitness , 1 - relative , 2 - acum, 3 - individual
+
+    if k == len(population):
+        return population
+
     r = prepare_population(population)
 
     selected = []
