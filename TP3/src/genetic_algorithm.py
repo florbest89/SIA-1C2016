@@ -27,15 +27,14 @@ def genetic_algorithm():
         parents.append(Defender(helmets[i],chestplates[i],gauntlets[i],weapons[i],boots[i],uniform(1.3,2.0),sm,rm,em,dm,hm))
         print('Parent - fitness : ' + str(parents[i].fitness))
 
-
-    selected = universal(2,parents)
+    # selected = universal(2,parents)
     # selected = ranking(3, parents, 1.5)
     # selected = deterministicTournament(parents, 3, 2)
-    #selected = probabilisticTournament(parents, 3)
+    # selected = probabilisticTournament(parents, 3)
+    selected = boltzmann(parents, 1, 2, 0.5)
 
     for p in range(0,len(selected)):
         print('Parent ' + str(p) + ' - fitness : ' + str(selected[p].fitness))
-
 
     #print('PARENT 2 HEIGHT: ' + str(height2))
     #son1, son2 = cross_annular(parent1,parent2)
