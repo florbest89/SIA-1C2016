@@ -13,6 +13,11 @@ from models import Defender
 
 # TODO: RANKING
 
-# TODO: ELITE
 def elite(N, population):
-    sorted(population, key=lambda individual: individual.fitness, reverse=True)
+
+    if N < len(population):
+        population.sort(key=lambda p: p.fitness, reverse=True)
+        return population[0:N]
+    elif N == len(population):
+        return population
+
