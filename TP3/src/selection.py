@@ -104,7 +104,7 @@ def prepare_population(population):
 # TODO: BOLTZMANN
 
 # TODO: DETERMINISTIC TOURNAMENT
-def deterministicTournament(population, k, m):
+def deterministic_Tournament(population, k, m):
     # k repeticiones, m individuos en torneo
     selected = []
 
@@ -121,7 +121,7 @@ def deterministicTournament(population, k, m):
     return selected
 
 # TODO: PROBABILISTIC TOURNAMENT
-def probabilisticTournament(population, k):
+def probabilistic_Tournament(population, k):
     # k repeticiones
     selected = []
 
