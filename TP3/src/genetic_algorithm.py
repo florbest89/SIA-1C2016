@@ -38,7 +38,7 @@ def genetic_algorithm():
 
     #son1, son2 = cross_annular(parent1,parent2)
 
-    mut = not_uniform(parent1)
+    mut = mutation(parent1, parent2, 0.5, 'classic')
 
     var = 2
 
