@@ -27,7 +27,7 @@ def genetic_algorithm():
         print('Parent - fitness : ' + str(parents[i].fitness))
 
 
-    selected = elite(3,parents)
+    selected = roulette(2,parents)
 
     for p in range(0,len(selected)):
         print('Parent ' + str(p) + ' - fitness : ' + str(selected[p].fitness))
