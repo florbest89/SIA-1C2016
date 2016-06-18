@@ -107,11 +107,10 @@ def prepare_population(population):
 def deterministicTournament(population, k, m):
     # k repeticiones, m individuos en torneo
     selected = []
-    population_size = len(population) - 1
 
     while k > 0:
         best_fitness = 0
-        selected_ind = sample(range(0,population_size), m)
+        selected_ind = sample(range(0, len(population) - 1), m)
         for p in selected_ind:
             if best_fitness < population[p].fitness:
                 best_fitness = population[p].fitness
@@ -125,13 +124,12 @@ def deterministicTournament(population, k, m):
 def probabilisticTournament(population, k):
     # k repeticiones
     selected = []
-    population_size = len(population) - 1
 
     while k > 0:
         r = uniform(0, 1)
 
         # selecciono siempre de a 2
-        selected_ind = sample(range(0,population_size), 2)
+        selected_ind = sample(range(0, len(population) - 1), 2)
 
         if population[selected_ind[0]].fitness < population[selected_ind[1]].fitness:
             best_fitness = population[selected_ind[1]]
