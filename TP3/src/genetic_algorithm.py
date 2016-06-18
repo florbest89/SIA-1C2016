@@ -15,13 +15,12 @@ def genetic_algorithm():
     rm = 1.2
     hm = 1.1
 
-    count = 10
+    helmets = parse_helmets(3)
+    chestplates = parse_chestplates(3)
+    gauntlets = parse_gauntlets(3)
+    weapons = parse_weapons(3)
+    boots = parse_boots(3)
 
-    helmets = parse_helmets(count)
-    chestplates = parse_chestplates(count)
-    gauntlets = parse_gauntlets(count)
-    weapons = parse_weapons(count)
-    boots = parse_boots(count)
     parents = []
 
     for i in range(0,len(helmets)):
