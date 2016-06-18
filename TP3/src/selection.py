@@ -117,7 +117,7 @@ def boltzmann(population, k, T, P):
     if len(population) < k:
         return population
 
-    while k > 0 and idx > len(r):
+    while k > 0 and idx < len(r):
         qi = r[idx][0]
 
         # Si es mayor al valor de presion, se selecciona individuo
@@ -125,13 +125,10 @@ def boltzmann(population, k, T, P):
             ind = r.pop(idx)
             selected.append(ind[2])
             k -= 1
-            idx += 1
-            break
-        else:
-            idx += 1
+        idx += 1
 
     # en caso de no llegar a los k individuos, returno toda la poblacion
-    if idx > len(r):
+    if k > 0:
         return population
 
     return selected

@@ -32,7 +32,7 @@ def genetic_algorithm():
     # selected = ranking(3, parents, 1.5)
     # selected = deterministicTournament(parents, 3, 2)
     # selected = probabilisticTournament(parents, 3)
-    selected = boltzmann(parents, 3, 2, 0.5)
+    selected = boltzmann(parents, 1, 2, 0.5)
 
     for p in range(0,len(selected)):
         print('Parent ' + str(p) + ' - fitness : ' + str(selected[p].fitness))
