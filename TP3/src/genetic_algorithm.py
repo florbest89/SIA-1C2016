@@ -15,11 +15,13 @@ def genetic_algorithm():
     rm = 1.2
     hm = 1.1
 
-    helmets = parse_helmets(3)
-    chestplates = parse_chestplates(3)
-    gauntlets = parse_gauntlets(3)
-    weapons = parse_weapons(3)
-    boots = parse_boots(3)
+    count = 10
+
+    helmets = parse_helmets(count)
+    chestplates = parse_chestplates(count)
+    gauntlets = parse_gauntlets(count)
+    weapons = parse_weapons(count)
+    boots = parse_boots(count)
     parents = []
 
     for i in range(0,len(helmets)):
@@ -27,7 +29,10 @@ def genetic_algorithm():
         print('Parent - fitness : ' + str(parents[i].fitness))
 
 
-    selected = roulette(3,parents)
+    # selected = roulette(3,parents)
+    # selected = ranking(3, parents, 1.5)
+    # selected = deterministicTournament(parents, 3, 2)
+    selected = probabilisticTournament(parents, 3)
 
     for p in range(0,len(selected)):
         print('Parent ' + str(p) + ' - fitness : ' + str(selected[p].fitness))
