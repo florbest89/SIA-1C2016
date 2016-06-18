@@ -28,19 +28,17 @@ def genetic_algorithm():
         print('Parent - fitness : ' + str(parents[i].fitness))
 
 
-    # selected = roulette(3,parents)
+    selected = universal(2,parents)
     # selected = ranking(3, parents, 1.5)
     # selected = deterministicTournament(parents, 3, 2)
-    selected = probabilisticTournament(parents, 3)
+    #selected = probabilisticTournament(parents, 3)
 
     for p in range(0,len(selected)):
         print('Parent ' + str(p) + ' - fitness : ' + str(selected[p].fitness))
 
 
     #print('PARENT 2 HEIGHT: ' + str(height2))
-
     #son1, son2 = cross_annular(parent1,parent2)
-
     #son1, son2 = mutation(parent1, parent2, 0.5, 'classic')
 
     var = 2

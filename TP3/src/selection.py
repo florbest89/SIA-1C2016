@@ -98,12 +98,50 @@ def prepare_population(population):
 
     return r
 
+def universal(k,population):
+    pop_fit = prepare_population(population)
+    r = uniform(0,1)
 
-# TODO: UNIVERSAL
+    rjs = universal_r(r,k)
+
+    selected = []
+
+    while k > 0:
+
+        q = 0
+
+        L = len(pop_fit)
+
+        for j in range(0,len(rjs)):
+
+            rj = rjs[j]
+
+            for i in range(0, L):
+
+                qi = pop_fit[i][2]
+
+                if q < rj < qi:
+                    #ind = pop_fit.pop(i)
+                    selected.append(pop_fit[i][3])
+                    k -= 1
+                    break
+                else:
+                    q = pop_fit[i][2]
+
+    return selected
+
+
+
+def universal_r(r,k):
+    rj = []
+
+    for j in range(1,k + 1):
+        rj.append((r + j - 1)/k)
+
+    return rj
 
 # TODO: BOLTZMANN
 
-# TODO: DETERMINISTIC TOURNAMENT
 def deterministicTournament(population, k, m):
     # k repeticiones, m individuos en torneo
     selected = []
@@ -120,7 +158,6 @@ def deterministicTournament(population, k, m):
 
     return selected
 
-# TODO: PROBABILISTIC TOURNAMENT
 def probabilisticTournament(population, k):
     # k repeticiones
     selected = []
