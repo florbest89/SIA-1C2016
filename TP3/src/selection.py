@@ -131,8 +131,6 @@ def universal(k,population):
 
     return selected
 
-
-
 def universal_r(r,k):
     rj = []
 
@@ -186,7 +184,6 @@ def prepare_botlzmann(population, T):
         print('exp_val: ' + str(exp_val) + ' acum: ' + str(acum) + ' fitness: ' + str(population[i].fitness))
 
     return r
-
 
 # TODO: DETERMINISTIC TOURNAMENT
 def deterministic_Tournament(population, k, m):
