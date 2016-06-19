@@ -41,5 +41,50 @@ def parse_items(lot,file):
 
     return items
 
+def parse_config():
+    # 0 - N , 1 - pm, 2 - pc, 3 - G
+    parameters = [None] * 4
+    # 0 - sm, 1 - dm, 2 - em, 3 - rm, 4 - hm
+    multipliers = [None] * 5
 
-parse_gauntlets(100)
+    file = './config.txt'
+
+    with open(file, 'r') as f:
+        lines = f.readlines()
+    f.close()
+
+    L = len(lines)
+
+    for l in range(0,L):
+
+        first_char = lines[l][0]
+
+        if first_char != '#' and first_char != '*' and first_char != '\n':
+            line = lines[l].replace('\n', '')
+            param = line.split(' ', 1)
+
+            key = param[0]
+            value = param[1]
+
+            if key == 'N':
+                parameters[0] = int(value)
+            elif key == 'pm':
+                parameters[1] = float(value)
+            elif key == 'pc':
+                parameters[2] = float(value)
+            elif key == 'G':
+                parameters[3] = float(value)
+            elif key == 'sm':
+                multipliers[0] = float(value)
+            elif key == 'dm':
+                multipliers[1] = float(value)
+            elif key == 'em':
+                multipliers[2] = float(value)
+            elif key == 'rm':
+                multipliers[3] = float(value)
+            elif key == 'hm':
+                multipliers[4] = float(value)
+
+    return parameters, multipliers
+
+parse_config()
