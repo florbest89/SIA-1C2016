@@ -11,6 +11,11 @@
 #	pc: [0.6, 0.95]
 # 	G : [0.6, 1]
 #
+# Methods
+selection universal
+cross cross_1P
+mutation not_uniform
+replacement replacement_one
 # Parametros
 N 10
 pm 0.01

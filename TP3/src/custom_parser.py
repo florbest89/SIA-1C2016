@@ -1,9 +1,6 @@
 from random import randint
 from models import Item
 
-# TODO: PARSE ITEMS AND CONFIG DOCUMENT
-
-
 def parse_helmets(lot):
     return parse_items(lot,'./items/cascos.tsv')
 

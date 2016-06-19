@@ -2,8 +2,6 @@ from random import randint, uniform
 from models import *
 import math as m
 
-# TODO: IMPLEMENT CROSSES METHODS
-
 def cross_1P(p1, p2):
     L = len(p1.items) + 1
 
