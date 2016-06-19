@@ -3,7 +3,7 @@ from random import uniform
 from cross import *
 from mutation import *
 from selection import *
-
+from replacement import *
 
 def genetic_algorithm():
     #(self, id, strength, resistance, expertise, dexterity, health)
@@ -15,11 +15,13 @@ def genetic_algorithm():
     rm = 1.2
     hm = 1.1
 
-    helmets = parse_helmets(3)
-    chestplates = parse_chestplates(3)
-    gauntlets = parse_gauntlets(3)
-    weapons = parse_weapons(3)
-    boots = parse_boots(3)
+    number = 100
+
+    helmets = parse_helmets(number)
+    chestplates = parse_chestplates(number)
+    gauntlets = parse_gauntlets(number)
+    weapons = parse_weapons(number)
+    boots = parse_boots(number)
 
     parents = []
 
@@ -31,7 +33,12 @@ def genetic_algorithm():
     # selected = ranking(3, parents, 1.5)
     # selected = deterministicTournament(parents, 3, 2)
     # selected = probabilisticTournament(parents, 3)
-    selected = boltzmann(parents, 1, 2, 0.5)
+
+    # def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc,
+    #                          mutation, pm):
+    selected = replacement_method_2(parents, 'universal', 20, 0, 0, 0, 0, 'cross_1P', 0.5, 'not_uniform', 0.5)
+
+    # selected = boltzmann(parents, 1, 2, 0.5)
 
     for p in range(0,len(selected)):
         print('Parent ' + str(p) + ' - fitness : ' + str(selected[p].fitness))

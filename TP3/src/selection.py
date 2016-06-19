@@ -241,7 +241,7 @@ def elite(N, population):
         return population
 
 # este metodo pienso que es necesario para luego usarlo en los de reemplazo
-def selection_method(population, selection, k, m, SP, T, P):
+def selection(population, selection, k, m, SP, T, P):
     if selection == 'universal':
         return universal(k, population)
     if selection == 'boltzmann':
