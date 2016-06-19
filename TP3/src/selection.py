@@ -240,3 +240,20 @@ def elite(N, population):
     elif N == len(population):
         return population
 
+# este metodo pienso que es necesario para luego usarlo en los de reemplazo
+def selection_method(population, selection, k, m, SP, T, P):
+    if selection == 'universal':
+        return universal(k, population)
+    if selection == 'boltzmann':
+        return boltzmann(population, k, T, P)
+    if selection == 'ranking':
+        return ranking(k, population, SP)
+    if selection == 'deterministic_tournament':
+        return  deterministic_Tournament(population, k, m)
+    if selection == 'probabilistic_tournament':
+        return probabilistic_Tournament(population, k)
+    if selection == 'roulette':
+        return roulette(k, population)
+    if selection == 'elite':
+        return elite(N, population)
+
