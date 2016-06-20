@@ -43,6 +43,8 @@ def parse_config():
     parameters = [None] * 4
     # 0 - sm, 1 - dm, 2 - em, 3 - rm, 4 - hm
     multipliers = [None] * 5
+    # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement
+    methods = [None] * 4
 
     file = './config.txt'
 
@@ -81,7 +83,17 @@ def parse_config():
                 multipliers[3] = float(value)
             elif key == 'hm':
                 multipliers[4] = float(value)
+            elif key == 'selection':
+                methods[0] = value
+            elif key == 'cross':
+                methods[1] = value
+            elif key == 'mutation':
+                methods[2] = value
+            elif key == 'replacement':
+                methods[3] = value
+            elif key == 'replacement':
+                methods[4] = value
 
-    return parameters, multipliers
+    return parameters, multipliers, methods
 
 parse_config()

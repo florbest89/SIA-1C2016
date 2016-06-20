@@ -6,7 +6,7 @@ from selection import *
 
 
 def genetic_algorithm():
-    parameters, multipliers = parse_config()
+    parameters, multipliers, methods = parse_config()
 
 
 genetic_algorithm()
