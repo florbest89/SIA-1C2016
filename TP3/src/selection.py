@@ -140,7 +140,7 @@ def universal_r(r,k):
 # para el correcto funcionamiento del metodo.
 # k cant de individuos
 # T temperatura
-# P presion
+# P presion NO NECESARIO
 def boltzmann(population, k, T, P):
     r = prepare_botlzmann(population, T)
     selected = []
@@ -150,11 +150,13 @@ def boltzmann(population, k, T, P):
     if len(population) < k:
         return population
 
+    r = uniform(0, 1)
+
     while k > 0 and idx < len(r):
         qi = r[idx][0]
 
         # Si es mayor al valor de presion, se selecciona individuo
-        if P < qi:
+        if r < qi:
             ind = r.pop(idx)
             selected.append(ind[2])
             k -= 1

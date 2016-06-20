@@ -36,10 +36,11 @@ N 10
 pm 0.01
 pc 0.6
 G 0.6
-T 0.5
-P 0.5
+T 0
+P 0
+SP 0
 m 2
-SP 1.5
+a 1.5
 #
 # Multipliers
 sm 1.3

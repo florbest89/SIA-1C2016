@@ -5,7 +5,7 @@ from random import sample
 from math import floor
 
 
-def replacement_method_1(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+def replacement_method_1(population, selection_method, m, SP, T, P, cross_method, pc, mutation_method, pm):
     new_generation = []
 
     if selection_method == 'elite':
@@ -29,7 +29,8 @@ def replacement_method_1(population, selection_method, k, m, SP, T, P, cross_met
 def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
     print ("valor de k: " + str(k))
 
-    children = do_replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
+    selected = select(k,m,T,P,SP,population,selection_method)
+    children = transform(selected,cross_method,pc,mutation_method,pm)
 
     # Se crea la nueva generacion
     new_generation = []
@@ -107,59 +108,57 @@ def transform(selected_population,cross_method, pc, mutation_method, pm):
 
     return transformed
 
-
 # metodo de reemplazo 2 con generation gap
 # para este metodo, el valor de G = k/N
-def replacement_method_2_GG(selection_method0, k0, m0, SP0, T0, P0, population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
-    print ("valor de k: " + str(k))
-
-    N = len(population)
-    G = k0/N
-
-    population_to_next_generation, population_to_be_evaluated = generation_gap(G, selection_method0, m0, SP0, T0, P0, population)
-    children = do_replacement_method_2(population_to_be_evaluated, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
-
-    # Se crea la nueva generacion
-    for i in range(0, len(children)):
-        population_to_next_generation.append(children[i].copy())
-
-    # Se devuelve la nuega generacion
-    return population_to_next_generation
+# def replacement_method_2_GG(selection_method0, k0, m0, SP0, T0, P0, population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+#     print ("valor de k: " + str(k))
+#
+#     N = len(population)
+#     G = k0/N
+#
+#     population_to_next_generation, population_to_be_evaluated = generation_gap(G, selection_method0, m0, SP0, T0, P0, population)
+#     children = do_replacement_method_2(population_to_be_evaluated, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
+#
+#     # Se crea la nueva generacion
+#     for i in range(0, len(children)):
+#         population_to_next_generation.append(children[i].copy())
+#
+#     # Se devuelve la nuega generacion
+#     return population_to_next_generation
 
 # retorna los hijos mutados
-def do_replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
-    # Se realiza la seleccion
-    selected_result = select(population, selection_method, k, m, SP, T, P)
-
-    print ("tamano de selected: " + str(len(selected_result)))
-
-    cross_result = []
-
-    # Se realiza el cross
-    for i in range(0, int(len(selected_result) / 2)):
-        s1, s2 = cross(pc, selected_result[i], selected_result[len(selected_result) - 1 - i], cross_method)
-        cross_result.append(s1)
-        cross_result.append(s2)
-
-    print ("tamano de cross: " + str(len(cross_result)))
-
-    # Se realiza la mutacion
-    children_result = []
-    children = 0
-    while children != k:
-        idx = sample(range(0, len(cross_result)), 2)
-        c1, c2 = mutation(cross_result[idx[0]], cross_result[idx[1]], pm, mutation_method)
-        children_result.append(c1)
-        children_result.append(c2)
-        children += 2
-
-    return children_result
+# def do_replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+#     # Se realiza la seleccion
+#     selected_result = select(population, selection_method, k, m, SP, T, P)
+#
+#     print ("tamano de selected: " + str(len(selected_result)))
+#
+#     cross_result = []
+#
+#     # Se realiza el cross
+#     for i in range(0, int(len(selected_result) / 2)):
+#         s1, s2 = cross(pc, selected_result[i], selected_result[len(selected_result) - 1 - i], cross_method)
+#         cross_result.append(s1)
+#         cross_result.append(s2)
+#
+#     print ("tamano de cross: " + str(len(cross_result)))
+#
+#     # Se realiza la mutacion
+#     children_result = []
+#     children = 0
+#     while children != k:
+#         idx = sample(range(0, len(cross_result)), 2)
+#         c1, c2 = mutation(cross_result[idx[0]], cross_result[idx[1]], pm, mutation_method)
+#         children_result.append(c1)
+#         children_result.append(c2)
+#         children += 2
+#
+#     return children_result
 
 # G entre [0, 1]. Me indica cuantos padres de la generacion t pasan a t + 1
 # Se pasa un selection_method0 para la seleccion de individuos que pasan de la generacion
 # t a t+1 sin sufrir cambios
-# def generation_gap(G, selection_method0, m0, SP0, T0, P0, population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
-def generation_gap(G, selection_method0, m0, SP0, T0, P0, population):
+def generation_gap(G, population, selection_method, m, SP, T, P, cross_method, pc, mutation_method, pm):
 
     population_to_be_evaluated = []
 
@@ -170,15 +169,18 @@ def generation_gap(G, selection_method0, m0, SP0, T0, P0, population):
         next_generation = []
     elif 0 < G and G < 1:
         number_of_people = int((1 - G) * len(population))
-
-        # Se realiza la seleccion
-        next_generation = selection(population, selection_method0, number_of_people, m0, SP0, T0, P0)
+        next_generation = select(number_of_people, m, T, P, SP, population, selection_method)
 
     for i in range(0, len(population)):
         if population[i] in next_generation:
-            population_to_be_evaluated.append(population[i])
+            population_to_be_evaluated.append(population[i].copy())
 
-    return next_generation, population_to_be_evaluated
+    children = transform(selected,cross_method,pc,mutation_method,pm)
+
+    for i in range(0, len(children)):
+        next_generation.append(children[i].copy())
+
+    return next_generation
 
 def copy_population(population):
     pop_copy = []
@@ -189,3 +191,16 @@ def copy_population(population):
         pop_copy.append(population[p].copy())
 
     return pop_copy
+
+def replace(population, replacement_method, selection_method,selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm):
+
+    k = G * len(population)
+
+    if replacement_method == 'replacement_one':
+        return replacement_method_1(population, selection_method, m, SP, T, P, cross_method, pc, mutation_method, pm)
+    elif replacement_method == 'replacement_two':
+        return replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
+    elif replacement_method == 'replacement_three':
+        return replacement_method_3(population, selection_method, selection_for_replacement_a, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
+    elif replacement_method == 'replacement_mixed':
+        replacement_mix(population, selection_method, selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm)
