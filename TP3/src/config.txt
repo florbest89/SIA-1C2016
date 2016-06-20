@@ -1,15 +1,21 @@
-** PARAMETERS **
-# N: amount of individuals in population
-# T: Temperature (Bolztmann)
-# m : parameter for selection methods (value = 2 or 3)
-# L : length of chromosome (Our case: L = 6)
-# pm : mutation probability
-# pc : cross probability
+** PARAMETROS DE CONFIGURACION **
+# N: Cantidad de individuos de la población
+# T: Temperatura (Bolztmann)
+# m : Parámetro para métodos de Selección (Torneo Determinístico).usalmente toma el valor 2 o 3
+# L : Longitud del cromosoma (En nuestro caso es 6. Indices de 0 a 5)
+# pm : probabilidad de mutación
+# pc : probabilidad de cruza
+# T : Temperatura
+# P : Presion
+# m : Individuos en torneo
+# SP : Presion selectiva
 #
+# En general :
 #	N : [20 , 200]
 #	pm : [0.001, 0.01]
 #	pc: [0.6, 0.95]
 # 	G : [0.6, 1]
+#   SP : [1.0, 2.0]
 #
 # Selection methods: elite, universal, roulette, ranking, boltzmann, deterministic_tournament, probabilistic_tournament
 # Cross methods: cross_1P, cross_2P, cross_annular, cross_uniform
@@ -30,8 +36,8 @@ N 50
 pm 0.01
 pc 0.6
 G 0.6
-T 0
-P 0
+T 1.0
+P 0.0
 SP 0
 m 2
 a 1.5

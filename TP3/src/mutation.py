@@ -51,7 +51,8 @@ def mutation(c1, c2, pm, mutation_method):
 
     p = uniform(0,1)
 
-    if p < pm and  not (c2 is None):
+    if p < pm and c2 is not None:
+
         c2 = mutate(c2,mutation_method)
 
     return c1,c2

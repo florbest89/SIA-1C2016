@@ -106,7 +106,6 @@ def genetic_algorithm():
 
     return best_fitness, fitness_avg, best_defender
 
-
 def create_population(N, multipliers):
 
     helmets = parse_helmets(N)
