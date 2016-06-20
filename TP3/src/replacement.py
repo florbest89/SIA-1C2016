@@ -1,9 +1,36 @@
-from selection import selection
+from selection import *
 from cross import *
 from mutation import *
 from random import sample
 
-# TODO: REPLACEMENT METHODS
+
+def replacement_method_1(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+    new_generation = []
+    old_generation = []
+
+    population_copy = copy_population(population)
+
+    while len(new_generation) < len(population):
+        selected = select(2,m,T,P,SP,population_copy,selection_method)
+
+        p1 = selected[0]
+        p2 = selected[1]
+
+        population_copy.remove(p1)
+        population_copy.remove(p2)
+
+        old_generation.append(p1)
+        old_generation.append(p2)
+
+        c1, c2 = cross(pc,p1,p2,cross_method)
+        c1, c2 = mutation(c1,c2,pm,mutation_method)
+
+        new_generation.append(c1)
+        new_generation.append(c2)
+
+    return new_generation
+
+def replacement_method_3(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
 
 # k padres
 def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
@@ -45,7 +72,7 @@ def replacement_method_2_GG(selection_method0, k0, m0, SP0, T0, P0, population, 
 # retorna los hijos mutados
 def do_replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
     # Se realiza la seleccion
-    selected_result = selection(population, selection_method, k, m, SP, T, P)
+    selected_result = select(population, selection_method, k, m, SP, T, P)
 
     print ("tamano de selected: " + str(len(selected_result)))
 
@@ -71,8 +98,6 @@ def do_replacement_method_2(population, selection_method, k, m, SP, T, P, cross_
 
     return children_result
 
-
-# TODO: GENERATION GAP
 # G entre [0, 1]. Me indica cuantos padres de la generacion t pasan a t + 1
 # Se pasa un selection_method0 para la seleccion de individuos que pasan de la generacion
 # t a t+1 sin sufrir cambios
@@ -97,3 +122,13 @@ def generation_gap(G, selection_method0, m0, SP0, T0, P0, population):
             population_to_be_evaluated.append(population[i])
 
     return next_generation, population_to_be_evaluated
+
+def copy_population(population):
+    pop_copy = []
+
+    N = len(population)
+
+    for p in range(0,N):
+        pop_copy.append(population[p].copy())
+
+    return pop_copy

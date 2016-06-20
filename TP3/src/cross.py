@@ -38,9 +38,9 @@ def cross_annular(p1,p2):
     print('l : ' + str(l))
 
     if locus + l <= L:
-        return cross(p1,p2,locus,locus + l,2)
+        return do_cross(p1,p2,locus,locus + l,2)
     else:
-        s1, s2 = cross(p1,p2,locus,L,2)
+        s1, s2 = do_cross(p1,p2,locus,L,2)
 
         rest = locus + l - L
         for i in range(0, rest):
@@ -57,7 +57,7 @@ def cross_annular(p1,p2):
 def cross_uniform(p1,p2):
     L = len(p1.items) + 1
 
-    return cross_(p1,p2,0,L,0.5)
+    return do_cross(p1,p2,0,L,0.5)
 
 def do_cross(p1,p2,locus_from,locus_to,pc):
 
