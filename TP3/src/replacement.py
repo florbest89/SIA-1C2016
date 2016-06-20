@@ -2,64 +2,30 @@ from selection import *
 from cross import *
 from mutation import *
 from random import sample
+from math import floor
 
 
 def replacement_method_1(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
     new_generation = []
-    old_generation = []
 
-    population_copy = copy_population(population)
-
-    while len(new_generation) < len(population):
-        selected = select(2,m,T,P,SP,population_copy,selection_method)
-
-        p1 = selected[0]
-        p2 = selected[1]
-
-        population_copy.remove(p1)
-        population_copy.remove(p2)
-
-        old_generation.append(p1)
-        old_generation.append(p2)
-
-        c1, c2 = cross(pc,p1,p2,cross_method)
-        c1, c2 = mutation(c1,c2,pm,mutation_method)
-
-        new_generation.append(c1)
-        new_generation.append(c2)
-
-    return new_generation
-
-def replacement_method_3(population, selection_method,selection_for_replacement, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
-    population_copy = copy_population(population)
-    new_generation = copy_population(population)
-
-    N = len(population)
-
-    count = k
-    while count > 0:
-        selected = select(k, m, T, P, SP, population_copy, selection_method)
-
-        while len(selected) > 0:
+    if selection_method == 'elite':
+        selected = select(len(population),m,T,P,SP,population,selection_method)
+        new_generation = transform(selected,cross_method,pc,mutation_method,pm)
+    else:
+        while len(new_generation) < len(population):
+            selected = select(2,m,T,P,SP,population,selection_method)
 
             p1 = selected[0]
             p2 = selected[1]
 
-            c1, c2 = cross(pc, p1, p2, cross_method)
-            c1, c2 = mutation(c1, c2, pm, mutation_method)
+            c1, c2 = cross(pc,p1,p2,cross_method)
+            c1, c2 = mutation(c1,c2,pm,mutation_method)
 
             new_generation.append(c1)
             new_generation.append(c2)
 
-            selected.pop(0)
-            selected.pop(1)
+    return new_generation
 
-        count -= 1
-
-    return select(N, m, T, P, SP, new_generation, selection_for_replacement)
-
-
-# k padres
 def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
     print ("valor de k: " + str(k))
 
@@ -77,6 +43,70 @@ def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_met
 
     # Se devuelve la nuega generacion
     return new_generation
+
+def replacement_method_3(population, selection_method, selection_for_replacement, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+
+    new_generation = copy_population(population)
+
+    N = len(population)
+
+    selected = select(k,m,T,P,SP,population,selection_method)
+    transformed = transform(selected,cross_method,pc,mutation_method,pm)
+
+    return select(N, m, T, P, SP, new_generation + transformed, selection_for_replacement)
+
+def replacement_mix(population, selection_method,selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm):
+
+    selected_old = []
+    selected_a = []
+    selected_b = []
+
+    N = len(population)
+
+    k_old = floor(N * (1 - G))
+
+    k_a = floor((G / a) * N)
+
+    #To assure that the population keeps being of size N
+    k_b = N - k_old - k_a
+
+    selected_old = select(k_old,m,T,P,SP,population,selection_method)
+    selected_a = select(k_a,m,T,P,SP,population,selection_for_replacement_a)
+    selected_b = select(k_b,m,T,P,SP,population,selection_for_replacement_b)
+
+    transformed_a = transform(selected_a,cross_method,pc,mutation_method,pm)
+    transformed_b = transform(selected_b, cross_method, pc, mutation_method, pm)
+
+    return selected_old + transformed_a + transformed_b
+
+def transform(selected_population,cross_method, pc, mutation_method, pm):
+
+    transformed = []
+
+    while len(selected_population) > 0:
+
+        if len(selected_population) >= 2:
+            p1 = selected_population[0]
+            p2 = selected_population[1]
+
+            c1, c2 = cross(pc, p1, p2, cross_method)
+            c1, c2 = mutation(c1, c2, pm, mutation_method)
+
+            transformed.append(c1)
+            transformed.append(c2)
+
+            selected_population.pop(0)
+            selected_population.pop(1)
+        else:
+            p1 = selected_population[0]
+
+            c1,c2 = mutation(p1.copy(),None,pm,mutation_method)
+            transformed.append(c1)
+
+            selected_population.pop(0)
+
+    return transformed
+
 
 # metodo de reemplazo 2 con generation gap
 # para este metodo, el valor de G = k/N

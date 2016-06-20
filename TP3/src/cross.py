@@ -94,7 +94,7 @@ def cross(pc,p1,p2,cross_method):
         if cross_method == 'cross_uniform':
             return cross_uniform(p1,p2)
     else:
-        return p1,p2
+        return p1.copy(),p2.copy()
 
 
 

@@ -43,8 +43,8 @@ def parse_config():
     parameters = [None] * 4
     # 0 - sm, 1 - dm, 2 - em, 3 - rm, 4 - hm
     multipliers = [None] * 5
-    # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement, 4 - rep_selection
-    methods = [None] * 4
+    # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement, 4 - rep_selection [if replacement == replacement_mixed, there is a 5 - rep_selection_2]
+    methods = [None] * 6
 
     file = './config.txt'
 
@@ -92,10 +92,24 @@ def parse_config():
             elif key == 'replacement':
                 methods[3] = value
             elif key == 'rep_selection':
-                methods[4] = value
+                if methods[3] == 'replacement_mixed':
+                    rep_selections = value.split(' ',1)
+                    methods[4] = rep_selections[0]
+                    methods[5] = rep_selections[1]
+                else:
+                    methods[4] = value
             elif key == 'generations':
                 stop_criteria = key
                 stop_value = int(value)
+            elif key == 'structure':
+                stop_criteria = key
+                stop_value = float(value)
+            elif key == 'optimum':
+                stop_criteria = key
+                stop_value = int(value)
+            elif key == 'content':
+                stop_criteria = key
+                stop_value = float(value)
 
     return parameters, multipliers, methods, stop_criteria, stop_value
 
