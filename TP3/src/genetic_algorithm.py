@@ -10,18 +10,14 @@ import matplotlib.pyplot as plt
 def genetic_algorithm():
     parameters, multipliers, methods, stop_criteria, stop_value = parse_config()
 
-    population = create_population(parameters[0],multipliers)
+    continue_algorithm = True
 
-    if stop_criteria == 'generations':
-        best_fitness, fitness_avg, best_defender = genetic_algorithm_generations(parameters,multipliers,methods,population,stop_value)
-
-def genetic_algorithm_generations(parameters,multipliers,methods,population,generations):
     # 0 - N , 1 - pm, 2 - pc, 3 - G, 4 - T, 5 - P, 6 - SP, 7 - m, 8 - a
     # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement, 4 - rep_selection [if replacement == replacement_mixed, there is a 5 - rep_selection_2]
 
-    new_generation = copy_population(population)
+    new_generation = create_population(parameters[0],multipliers)
 
-    #Parameters
+    # Parameters
     N = parameters[0]
     pm = parameters[1]
     pc = parameters[2]
@@ -32,7 +28,7 @@ def genetic_algorithm_generations(parameters,multipliers,methods,population,gene
     m = parameters[7]
     a = parameters[8]
 
-    #Methods
+    # Methods
     selection_method = methods[0]
     cross_method = methods[1]
     mutation_method = methods[2]
@@ -62,21 +58,28 @@ def genetic_algorithm_generations(parameters,multipliers,methods,population,gene
     fitness_avg = sum(individual.fitness for individual in new_generation) / N
     fit_avg.append(fitness_avg)
 
-    while generations > 0:
-        new_generation = replace(new_generation,replacement_method,selection_method,replace_sel_a,replace_sel_b,a,G,m,SP,T,P,cross_method,pc,mutation_method,pm)
+
+    while continue_algorithm:
+        new_generation = replace(new_generation, replacement_method, selection_method, replace_sel_a, replace_sel_b, a,
+                                 G, m, SP, T, P, cross_method, pc, mutation_method, pm)
         best_defender = max(new_generation, key=attrgetter('fitness'))
         fitness_avg = sum(individual.fitness for individual in new_generation) / N
         best_fitness.append(best_defender.fitness)
         fit_avg.append(fitness_avg)
 
-    plt.plot(range(1, generations), best_fitness)
+        if stop_criteria == 'generations':
+            continue_algorithm = len(best_fitness) - 1 < stop_value
+        elif stop_criteria == 'optimum':
+            continue_algorithm = best_defender.fitness < stop_value
+
+    plt.plot(range(1, len(best_fitness)), best_fitness)
     plt.xlabel('Generación')
     plt.ylabel('Mejor fitness')
 
     plt.title('Mejor fitness por generacion')
     plt.show()
 
-    plt.plot(range(1, generations), fitness_avg)
+    plt.plot(range(1, len(fit_avg)), fit_avg)
     plt.xlabel('Generación')
     plt.ylabel('Promedio de fitness')
 
