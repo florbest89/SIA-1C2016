@@ -25,14 +25,14 @@
 # If replacement method is "replacement_mixed", then values are two selection methods
 #
 # Methods
-selection universal
+selection roulette
 cross cross_annular
 mutation classic
-replacement replacement_three
-rep_selection roulette
+replacement replacement_mixed
+rep_selection elite universal
 #
 # Parameters
-N 50
+N 100
 pm 0.01
 pc 0.6
 G 0.6
@@ -50,5 +50,5 @@ rm 1.2
 hm 1.1
 # Stop criterias: generations, structure, optimum, content
 # Stop
-content 3
+generations 10
 

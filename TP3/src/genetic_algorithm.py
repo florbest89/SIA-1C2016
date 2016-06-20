@@ -35,7 +35,7 @@ def genetic_algorithm():
     mutation_method = methods[2]
     replacement_method = methods[3]
     replace_sel_a = methods[4]
-    replace_sel_b = None
+    replace_sel_b = methods[5]
 
     print('Metodo de seleccion: ' + selection_method)
     print('Metodo de cruza: ' + cross_method)
@@ -46,9 +46,6 @@ def genetic_algorithm():
         print('Metodos de seleccion para reemplazo: ' + replace_sel_a + ' + ' + replace_sel_b)
     else:
         print('Metodo de seleccion para reemplazo: ' + replace_sel_a)
-
-    if methods[5] != None:
-        replace_sel_b = methods[5]
 
     best_fitness = []
     fit_avg = []
@@ -74,7 +71,6 @@ def genetic_algorithm():
         if abs(best - best_defender.fitness) < epsilon:
             same += 1
         else:
-
             same = 0
 
             if best - best_defender.fitness < 0:

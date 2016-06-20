@@ -201,4 +201,4 @@ def replace(population, replacement_method, selection_method,selection_for_repla
     elif replacement_method == 'replacement_three':
         return replacement_method_3(population, selection_method, selection_for_replacement_a, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
     elif replacement_method == 'replacement_mixed':
-        replacement_mix(population, selection_method, selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm)
+        return replacement_mix(population, selection_method, selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm)
