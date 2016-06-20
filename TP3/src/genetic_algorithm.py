@@ -36,7 +36,16 @@ def genetic_algorithm():
 
     # def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc,
     #                          mutation, pm):
-    selected = replacement_method_2(parents, 'universal', 20, 0, 0, 0, 0, 'cross_1P', 0.5, 'not_uniform', 0.5)
+    # selected = replacement_method_2(parents, 'universal', 20, 0, 0, 0, 0, 'cross_1P', 0.5, 'not_uniform', 0.5)
+
+    # def replacement_method_2_GG(selection_method0, k0, m0, SP0, T0, P0, population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+
+    selected = parents
+    for i in range(500):
+        # selected = replacement_method_2_GG('universal', 2, 0, 0, 0, 0, selected, 'universal', 2, 0, 0, 0, 0, 'cross_1P', 0.5, 'not_uniform', 0.5)
+        # def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+        selected = replacement_method_2(selected,'universal', 20, 0, 0, 0, 0, 'cross_1P', 0.5, 'not_uniform', 0.5)
+
 
     # selected = boltzmann(parents, 1, 2, 0.5)
 
