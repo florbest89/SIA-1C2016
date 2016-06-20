@@ -39,7 +39,7 @@ def parse_items(lot,file):
     return items
 
 def parse_config():
-    # 0 - N , 1 - pm, 2 - pc, 3 - G
+    # 0 - N , 1 - pm, 2 - pc, 3 - G, 4 - T, 5 - P, 6 - SP, 7 - m, 8 - a
     parameters = [None] * 4
     # 0 - sm, 1 - dm, 2 - em, 3 - rm, 4 - hm
     multipliers = [None] * 5
@@ -73,6 +73,16 @@ def parse_config():
                 parameters[2] = float(value)
             elif key == 'G':
                 parameters[3] = float(value)
+            elif key == 'T':
+                parameters[4] = float(value)
+            elif key == 'P':
+                parameters[5] = float(value)
+            elif key == 'SP':
+                parameters[6] = float(value)
+            elif key == 'm':
+                parameters[7] = int(value)
+            elif key == 'a':
+                parameters[8] = float(value)
             elif key == 'sm':
                 multipliers[0] = float(value)
             elif key == 'dm':

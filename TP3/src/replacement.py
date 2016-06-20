@@ -5,7 +5,7 @@ from random import sample
 from math import floor
 
 
-def replacement_method_1(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+def replacement_method_1(population, selection_method, m, SP, T, P, cross_method, pc, mutation_method, pm):
     new_generation = []
 
     if selection_method == 'elite':
@@ -107,7 +107,6 @@ def transform(selected_population,cross_method, pc, mutation_method, pm):
 
     return transformed
 
-
 # metodo de reemplazo 2 con generation gap
 # para este metodo, el valor de G = k/N
 def replacement_method_2_GG(selection_method0, k0, m0, SP0, T0, P0, population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
@@ -189,3 +188,16 @@ def copy_population(population):
         pop_copy.append(population[p].copy())
 
     return pop_copy
+
+def replace(population, replacement_method, selection_method,selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm):
+
+    k = G * len(population)
+
+    if replacement_method == 'replacement_one':
+        return replacement_method_1(population, selection_method, m, SP, T, P, cross_method, pc, mutation_method, pm)
+    elif replacement_method == 'replacement_two':
+        return replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
+    elif replacement_method == 'replacement_three':
+        return replacement_method_3(population, selection_method, selection_for_replacement_a, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
+    elif replacement_method == 'replacement_mixed':
+        replacement_mix(population, selection_method, selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm)
