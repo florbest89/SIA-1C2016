@@ -11,6 +11,7 @@ def genetic_algorithm():
     parameters, multipliers, methods, stop_criteria, stop_value = parse_config()
 
     continue_algorithm = True
+    epsilon = 0.0001
 
     # 0 - N , 1 - pm, 2 - pc, 3 - G, 4 - T, 5 - P, 6 - SP, 7 - m, 8 - a
     # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement, 4 - rep_selection [if replacement == replacement_mixed, there is a 5 - rep_selection_2]
@@ -46,11 +47,14 @@ def genetic_algorithm():
     else:
         print('Metodo de seleccion para reemplazo: ' + replace_sel_a)
 
-    if len(methods) == 6:
+    if methods[5] != None:
         replace_sel_b = methods[5]
 
     best_fitness = []
     fit_avg = []
+
+    best = 0
+    same = 0
 
     best_defender = max(new_generation, key=attrgetter('fitness'))
     best_fitness.append(best_defender.fitness)
@@ -63,23 +67,37 @@ def genetic_algorithm():
         new_generation = replace(new_generation, replacement_method, selection_method, replace_sel_a, replace_sel_b, a,
                                  G, m, SP, T, P, cross_method, pc, mutation_method, pm)
         best_defender = max(new_generation, key=attrgetter('fitness'))
-        fitness_avg = sum(individual.fitness for individual in new_generation) / N
+        fitness_avg = sum(x.fitness for x in new_generation) / N
         best_fitness.append(best_defender.fitness)
         fit_avg.append(fitness_avg)
+
+        if abs(best - best_defender.fitness) < epsilon:
+            same += 1
+        else:
+
+            same = 0
+
+            if best - best_defender.fitness < 0:
+                best = best_defender.fitness
 
         if stop_criteria == 'generations':
             continue_algorithm = len(best_fitness) - 1 < stop_value
         elif stop_criteria == 'optimum':
             continue_algorithm = best_defender.fitness < stop_value
+        elif stop_criteria == 'content':
+            continue_algorithm = same < stop_value
 
-    plt.plot(range(1, len(best_fitness)), best_fitness)
+
+    print('Termino')
+
+    plt.plot(best_fitness)
     plt.xlabel('Generación')
     plt.ylabel('Mejor fitness')
 
     plt.title('Mejor fitness por generacion')
     plt.show()
 
-    plt.plot(range(1, len(fit_avg)), fit_avg)
+    plt.plot(fit_avg)
     plt.xlabel('Generación')
     plt.ylabel('Promedio de fitness')
 
@@ -114,4 +132,6 @@ def copy_population(population):
         pop_copy.append(population[p].copy())
 
     return pop_copy
+
+
 genetic_algorithm()

@@ -20,13 +20,13 @@
 #
 # Methods
 selection universal
-cross cross_1P
-mutation not_uniform
-replacement replacement_one
+cross cross_annular
+mutation classic
+replacement replacement_three
 rep_selection roulette
 #
 # Parameters
-N 10
+N 50
 pm 0.01
 pc 0.6
 G 0.6
@@ -44,5 +44,5 @@ rm 1.2
 hm 1.1
 # Stop criterias: generations, structure, optimum, content
 # Stop
-generations 10
+content 3
 
