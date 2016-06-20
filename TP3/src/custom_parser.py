@@ -93,7 +93,10 @@ def parse_config():
                 methods[3] = value
             elif key == 'replacement':
                 methods[4] = value
+            elif key == 'generations':
+                stop_criteria = key
+                stop_value = int(value)
 
-    return parameters, multipliers, methods
+    return parameters, multipliers, methods, stop_criteria, stop_value
 
 parse_config()

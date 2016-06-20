@@ -29,4 +29,6 @@ dm 0.6
 em 0.6
 rm 1.2
 hm 1.1
+# Stop
+generations 10
 
