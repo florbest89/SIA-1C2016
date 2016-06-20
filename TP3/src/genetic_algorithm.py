@@ -10,13 +10,13 @@ def genetic_algorithm():
 
     population = create_population(parameters[0],multipliers)
 
-    number = 100
-
-    helmets = parse_helmets(number)
-    chestplates = parse_chestplates(number)
-    gauntlets = parse_gauntlets(number)
-    weapons = parse_weapons(number)
-    boots = parse_boots(number)
+    # number = 10
+    #
+    # helmets = parse_helmets(number)
+    # chestplates = parse_chestplates(number)
+    # gauntlets = parse_gauntlets(number)
+    # weapons = parse_weapons(number)
+    # boots = parse_boots(number)
 
     if stop_criteria == 'generations':
         result = genetic_algorithm_generations(parameters,multipliers,methods,population,stop_value)
@@ -27,10 +27,16 @@ def genetic_algorithm_generations(parameters,multipliers,methods,population,gene
 
     generation = population
 
-    while generations > 0:
+    # while generations > 0:
 
-        selected = select(2,0,0,0,0,generation,methods[0])
-        # selected = replacement_method_2(selected,'universal', 20, 0, 0, 0, 0, 'cross_1P', 0.5, 'not_uniform', 0.5)
+    for i in range(100000):
+        # selected = select(2,0,0,0,0,generation,methods[0])
+        generation = replacement_method_2(generation,'universal', 4, 0, 0, 0, 0, 'cross_1P', 0.5, 'not_uniform', 0.5)
+        print("ITERACION " + str(i))
+
+    for i in range(0, len(generation)):
+        print('nro: '+ str(i) + ' fitness: ' + str(population[i].fitness))
+
 
 def create_population(N, multipliers):
 

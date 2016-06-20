@@ -1,4 +1,4 @@
-from selection import selection
+from selection import select
 from cross import *
 from mutation import *
 from random import sample
@@ -16,10 +16,10 @@ def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_met
     index_individual_for_next_generation = sample(range(0, len(population)), len(population) - k)
 
     for i in index_individual_for_next_generation:
-        new_generation.append(population[i])
+        new_generation.append(population[i].copy())
 
     for i in range(0, len(children)):
-        new_generation.append(children[i])
+        new_generation.append(children[i].copy())
 
     # Se devuelve la nuega generacion
     return new_generation
@@ -37,7 +37,7 @@ def replacement_method_2_GG(selection_method0, k0, m0, SP0, T0, P0, population, 
 
     # Se crea la nueva generacion
     for i in range(0, len(children)):
-        population_to_next_generation.append(children[i])
+        population_to_next_generation.append(children[i].copy())
 
     # Se devuelve la nuega generacion
     return population_to_next_generation
@@ -45,7 +45,7 @@ def replacement_method_2_GG(selection_method0, k0, m0, SP0, T0, P0, population, 
 # retorna los hijos mutados
 def do_replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
     # Se realiza la seleccion
-    selected_result = selection(population, selection_method, k, m, SP, T, P)
+    selected_result = select(k, m, T, P, SP, population, selection_method)
 
     print ("tamano de selected: " + str(len(selected_result)))
 
@@ -70,7 +70,6 @@ def do_replacement_method_2(population, selection_method, k, m, SP, T, P, cross_
         children += 2
 
     return children_result
-
 
 # TODO: GENERATION GAP
 # G entre [0, 1]. Me indica cuantos padres de la generacion t pasan a t + 1

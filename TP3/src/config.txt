@@ -5,11 +5,17 @@
 # L : Longitud del cromosoma (En nuestro caso es 6. Indices de 0 a 5)
 # pm : probabilidad de mutación
 # pc : probabilidad de cruza
+# T : Temperatura
+# P : Presion
+# m : Individuos en torneo
+# SP : Presion selectiva
+#
 # En general : 
 #	N : [20 , 200]
 #	pm : [0.001, 0.01]
 #	pc: [0.6, 0.95]
 # 	G : [0.6, 1]
+#   SP : [1.0, 2.0]
 #
 # Methods
 selection universal
@@ -22,6 +28,10 @@ N 10
 pm 0.01
 pc 0.6
 G 0.6
+T 0.5
+P 0.5
+m 2
+SP 1.5
 #
 # Multiplicadores
 sm 1.3

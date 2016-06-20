@@ -78,8 +78,6 @@ def prepare_fitness_lineal(fitness_lineal,population):
         relative = fitness_lineal[p] / total
         acum += relative
         r.append([fitness_lineal[p], relative, acum, population[p].copy()])
-        # print('order: ' + str(p) + ' fitness_lineal: ' + str(fitness_lineal[p]) + ' relative: ' + str(relative) + ' acum: ' +
-        #       str(acum) + ' fitness: ' + str(population[p].fitness))
 
     return r
 

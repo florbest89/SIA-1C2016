@@ -40,7 +40,7 @@ def parse_items(lot,file):
 
 def parse_config():
     # 0 - N , 1 - pm, 2 - pc, 3 - G
-    parameters = [None] * 4
+    parameters = [None] * 8
     # 0 - sm, 1 - dm, 2 - em, 3 - rm, 4 - hm
     multipliers = [None] * 5
     # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement
@@ -73,6 +73,14 @@ def parse_config():
                 parameters[2] = float(value)
             elif key == 'G':
                 parameters[3] = float(value)
+            elif key == 'T':
+                parameters[4] = float(value)
+            elif key == 'P':
+                parameters[5] = float(value)
+            elif key == 'm':
+                parameters[6] = int(value)
+            elif key == 'SP':
+                parameters[7] = float(value)
             elif key == 'sm':
                 multipliers[0] = float(value)
             elif key == 'dm':
