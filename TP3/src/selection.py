@@ -51,7 +51,6 @@ def ranking(k,population, SP):
 
     while k > 0:
         rj = uniform(0, 1)
-        q = 0
 
         L = len(r)
 
@@ -59,13 +58,11 @@ def ranking(k,population, SP):
 
             qi = r[i][2]
 
-            if q < rj < qi:
+            if rj < qi:
                 ind = r.pop(i)
                 selected.append(ind[3])
                 k -= 1
                 break
-            else:
-                q = r[i][2]
 
     return selected
 
@@ -150,13 +147,13 @@ def boltzmann(population, k, T, P):
     if len(population) < k:
         return population
 
-    r = uniform(0, 1)
+    rj = uniform(0, 1)
 
     while k > 0 and idx < len(r):
         qi = r[idx][0]
 
         # Si es mayor al valor de presion, se selecciona individuo
-        if r < qi:
+        if rj < qi:
             ind = r.pop(idx)
             selected.append(ind[2])
             k -= 1
