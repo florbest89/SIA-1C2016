@@ -226,9 +226,9 @@ def probabilistic_Tournament(population, k):
     return selected
 
 def elite(k, population):
+    population.sort(key=lambda p: p.fitness, reverse=True)
 
     if k < len(population):
-        population.sort(key=lambda p: p.fitness, reverse=True)
         return population[0:k]
     elif k == len(population):
         return population

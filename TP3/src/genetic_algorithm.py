@@ -10,14 +10,6 @@ def genetic_algorithm():
 
     population = create_population(parameters[0],multipliers)
 
-    # number = 10
-    #
-    # helmets = parse_helmets(number)
-    # chestplates = parse_chestplates(number)
-    # gauntlets = parse_gauntlets(number)
-    # weapons = parse_weapons(number)
-    # boots = parse_boots(number)
-
     if stop_criteria == 'generations':
         result = genetic_algorithm_generations(parameters,multipliers,methods,population,stop_value)
 
