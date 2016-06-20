@@ -43,7 +43,7 @@ def parse_config():
     parameters = [None] * 4
     # 0 - sm, 1 - dm, 2 - em, 3 - rm, 4 - hm
     multipliers = [None] * 5
-    # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement
+    # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement, 4 - rep_selection
     methods = [None] * 4
 
     file = './config.txt'
@@ -91,7 +91,7 @@ def parse_config():
                 methods[2] = value
             elif key == 'replacement':
                 methods[3] = value
-            elif key == 'replacement':
+            elif key == 'rep_selection':
                 methods[4] = value
             elif key == 'generations':
                 stop_criteria = key

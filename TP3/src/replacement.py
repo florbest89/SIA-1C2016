@@ -30,7 +30,34 @@ def replacement_method_1(population, selection_method, k, m, SP, T, P, cross_met
 
     return new_generation
 
-def replacement_method_3(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+def replacement_method_3(population, selection_method,selection_for_replacement, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+    population_copy = copy_population(population)
+    new_generation = copy_population(population)
+
+    N = len(population)
+
+    count = k
+    while count > 0:
+        selected = select(k, m, T, P, SP, population_copy, selection_method)
+
+        while len(selected) > 0:
+
+            p1 = selected[0]
+            p2 = selected[1]
+
+            c1, c2 = cross(pc, p1, p2, cross_method)
+            c1, c2 = mutation(c1, c2, pm, mutation_method)
+
+            new_generation.append(c1)
+            new_generation.append(c2)
+
+            selected.pop(0)
+            selected.pop(1)
+
+        count -= 1
+
+    return select(N, m, T, P, SP, new_generation, selection_for_replacement)
+
 
 # k padres
 def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
