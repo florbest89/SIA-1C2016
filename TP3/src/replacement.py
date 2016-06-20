@@ -94,8 +94,8 @@ def transform(selected_population,cross_method, pc, mutation_method, pm):
             transformed.append(c1)
             transformed.append(c2)
 
-            selected_population.pop(0)
             selected_population.pop(1)
+            selected_population.pop(0)
         else:
             p1 = selected_population[0]
 
@@ -192,7 +192,7 @@ def copy_population(population):
 
 def replace(population, replacement_method, selection_method,selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm):
 
-    k = G * len(population)
+    k = floor(G * len(population))
 
     if replacement_method == 'replacement_one':
         return replacement_method_1(population, selection_method, m, SP, T, P, cross_method, pc, mutation_method, pm)
@@ -201,4 +201,4 @@ def replace(population, replacement_method, selection_method,selection_for_repla
     elif replacement_method == 'replacement_three':
         return replacement_method_3(population, selection_method, selection_for_replacement_a, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
     elif replacement_method == 'replacement_mixed':
-        replacement_mix(population, selection_method, selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm)
+        return replacement_mix(population, selection_method, selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm)

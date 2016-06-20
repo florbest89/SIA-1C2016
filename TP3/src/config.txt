@@ -25,14 +25,14 @@
 # If replacement method is "replacement_mixed", then values are two selection methods
 #
 # Methods
-selection universal
-cross cross_1P
-mutation not_uniform
-replacement replacement_one
-rep_selection roulette
+selection roulette
+cross cross_annular
+mutation classic
+replacement replacement_mixed
+rep_selection elite universal
 #
 # Parameters
-N 10
+N 100
 pm 0.01
 pc 0.6
 G 0.6
