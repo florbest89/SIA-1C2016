@@ -27,8 +27,6 @@ def replacement_method_1(population, selection_method, m, SP, T, P, cross_method
     return new_generation
 
 def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
-    print ("valor de k: " + str(k))
-
     selected = select(k,m,T,P,SP,population,selection_method)
     children = transform(selected,cross_method,pc,mutation_method,pm)
 
@@ -173,12 +171,12 @@ def generation_gap(G, population, selection_method, m, SP, T, P, cross_method, p
 
     for i in range(0, len(population)):
         if population[i] in next_generation:
-            population_to_be_evaluated.append(population[i].copy())
+            population_to_be_evaluated.append(population[i])
 
     children = transform(selected,cross_method,pc,mutation_method,pm)
 
     for i in range(0, len(children)):
-        next_generation.append(children[i].copy())
+        next_generation.append(children[i])
 
     return next_generation
 
