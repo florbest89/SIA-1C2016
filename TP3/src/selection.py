@@ -78,8 +78,8 @@ def prepare_fitness_lineal(fitness_lineal,population):
         relative = fitness_lineal[p] / total
         acum += relative
         r.append([fitness_lineal[p], relative, acum, population[p].copy()])
-        print('order: ' + str(p) + ' fitness_lineal: ' + str(fitness_lineal[p]) + ' relative: ' + str(relative) + ' acum: ' +
-              str(acum) + ' fitness: ' + str(population[p].fitness))
+        # print('order: ' + str(p) + ' fitness_lineal: ' + str(fitness_lineal[p]) + ' relative: ' + str(relative) + ' acum: ' +
+        #       str(acum) + ' fitness: ' + str(population[p].fitness))
 
     return r
 
@@ -94,7 +94,7 @@ def prepare_population(population):
         relative = population[p].fitness / total_fitness
         acum += relative
         r.append([population[p].fitness, relative, acum, population[p].copy()])
-        print('fitness: ' + str(population[p].fitness) + 'relative: ' +  str(relative) + ' acum: ' + str(acum))
+        # print('fitness: ' + str(population[p].fitness) + 'relative: ' +  str(relative) + ' acum: ' + str(acum))
 
     return r
 
@@ -251,6 +251,5 @@ def select(k,m,T,P,SP,population,selection_method):
         return deterministic_Tournament(population,k,m)
     else:
         return probabilistic_Tournament(population,k)
-
 
 

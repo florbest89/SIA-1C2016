@@ -8,7 +8,7 @@ def cross_1P(p1, p2):
     locus = randint(0,len(p1.items))
     print('LOCUS : ' + str(locus))
 
-    return cross(p1,p2,locus,L,2)
+    return cross_(p1,p2,locus,L,2)
 
 def cross_2P(p1,p2):
 
@@ -21,9 +21,9 @@ def cross_2P(p1,p2):
     print('LOCUS 2 : ' + str(locus2))
 
     if locus < locus2:
-        return cross(p1,p2,locus,locus2 + 1,2)
+        return cross_(p1,p2,locus,locus2 + 1,2)
     elif locus > locus2 :
-        return cross(p1,p2,locus2,locus + 1,2)
+        return cross_(p1,p2,locus2,locus + 1,2)
     else:
         return cross_2P(p1,p2)
 
@@ -57,9 +57,9 @@ def cross_annular(p1,p2):
 def cross_uniform(p1,p2):
     L = len(p1.items) + 1
 
-    return cross(p1,p2,0,L,0.5)
+    return cross_(p1,p2,0,L,0.5)
 
-def cross(p1,p2,locus_from,locus_to,pc):
+def cross_(p1,p2,locus_from,locus_to,pc):
 
     s1 = p1.copy()
     s2 = p2.copy()
