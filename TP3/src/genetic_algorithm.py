@@ -11,7 +11,7 @@ def genetic_algorithm():
     parameters, multipliers, methods, stop_criteria, stop_value = parse_config()
 
     continue_algorithm = True
-    epsilon = 0.0001
+    epsilon = 0.001
 
     temperature_reduction = 0.05
 
@@ -84,13 +84,15 @@ def genetic_algorithm():
         best_fitness.append(best_defender.fitness)
         fit_avg.append(fitness_avg)
 
+        print('Best fitness of all: ' + str(best))
+
         if abs(best - best_defender.fitness) < epsilon:
             same += 1
         else:
             same = 0
+            best = best_defender.fitness
 
-            if best - best_defender.fitness < 0:
-                best = best_defender.fitness
+        print('same ' + str(same))
 
         if stop_criteria == 'generations':
             continue_algorithm = len(best_fitness) - 1 < stop_value
