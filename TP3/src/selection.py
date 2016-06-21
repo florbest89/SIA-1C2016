@@ -254,8 +254,10 @@ def select_mix(A,N, population,m,T,SP,selection_method_a,selection_method_b):
     N_a = int(A * N)
     N_b = N - N_a
 
-    selected_a = select(N_a, m, T, SP, population, selection_method_a)
-    selected_b = select(N_b, m, T, SP, population, selection_method_b)
+    if N_a > 0:
+        selected_a = select(N_a, m, T, SP, population, selection_method_a)
+    if N_b > 0:
+        selected_b = select(N_b, m, T, SP, population, selection_method_b)
 
     return selected_a + selected_b
 
