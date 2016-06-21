@@ -153,7 +153,14 @@ class Defender(object):
             self.height = allele
 
     def __eq__(self, other):
-        if self.compute_fitness() != other.compute_fitness():
+
+        s_f = self.fitness
+        o_f = other.fitness
+
+        if abs(self.fitness - other.fitness) > 0.001:
+            return False
+
+        if abs(self.height - other.height) > 0.001:
             return False
 
         for i in range(0, 5):

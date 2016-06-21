@@ -13,8 +13,7 @@ def genetic_algorithm():
     continue_algorithm = True
     epsilon = 0.0001
 
-    # 0 - N , 1 - pm, 2 - pc, 3 - G, 4 - T, 5 - P, 6 - SP, 7 - m, 8 - a
-    # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement, 4 - rep_selection [if replacement == replacement_mixed, there is a 5 - rep_selection_2]
+    temperature_reduction = 0.15
 
     new_generation = create_population(parameters[0],multipliers)
 
@@ -23,25 +22,29 @@ def genetic_algorithm():
     similar_generation_counter = 0
 
     # Parameters
+    # 0 - N , 1 - pm, 2 - pc, 3 - G, 4 - T, 5 - SP, 6 - m, 7 - a, 8 - A, 9 - B
     N = parameters[0]
     pm = parameters[1]
     pc = parameters[2]
     G = parameters[3]
     T = parameters[4]
-    P = parameters[5]
-    SP = parameters[6]
-    m = parameters[7]
-    a = parameters[8]
+    SP = parameters[5]
+    m = parameters[6]
+    a = parameters[7]
+    A = parameters[8]
+    B = parameters[9]
 
     # Methods
-    selection_method = methods[0]
-    cross_method = methods[1]
-    mutation_method = methods[2]
-    replacement_method = methods[3]
-    replace_sel_a = methods[4]
-    replace_sel_b = methods[5]
+    # 0 - selection_a, 1 - selection_b, 2 - cross, 3 - mutation, 4 - replacement, 5 - rep_selection_a, 6 - rep_selection_b
+    selection_method_a = methods[0]
+    selection_method_b = methods[1]
+    cross_method = methods[2]
+    mutation_method = methods[3]
+    replacement_method = methods[4]
+    replace_sel_a = methods[5]
+    replace_sel_b = methods[6]
 
-    print('Metodo de seleccion: ' + selection_method)
+    print('Metodos de seleccion: ' + selection_method_a + ' + ' + selection_method_b)
     print('Metodo de cruza: ' + cross_method)
     print('Metodo de mutacion: ' + mutation_method)
     print('Metodo de reemplazo: ' + replacement_method)
@@ -63,14 +66,12 @@ def genetic_algorithm():
     fitness_avg = sum(individual.fitness for individual in new_generation) / N
     fit_avg.append(fitness_avg)
 
-
     while continue_algorithm:
-        new_generation = replace(new_generation, 0.5, 0.5, replacement_method, 'universal', 'boltzmann', 'boltzmann',
-                    'universal', '','', a, G, m, SP, T, P,
-                    cross_method, pc, mutation_method, pm)
+        new_generation = replace(new_generation, A, B, replacement_method, selection_method_a, selection_method_b, replace_sel_a,
+                    replace_sel_b,a, G, m, SP, T,cross_method, pc, mutation_method, pm)
 
-        # new_generation = replace(new_generation, replacement_method, selection_method, replace_sel_a, replace_sel_b, a,
-        #                          G, m, SP, T, P, cross_method, pc, mutation_method, pm)
+        T = T * (1 - temperature_reduction)
+
         best_defender = max(new_generation, key=attrgetter('fitness'))
         fitness_avg = sum(x.fitness for x in new_generation) / N
         best_fitness.append(best_defender.fitness)
@@ -91,33 +92,33 @@ def genetic_algorithm():
         elif stop_criteria == 'content':
             continue_algorithm = same < stop_value
         elif stop_criteria == 'structure':
-            percentage_stop_condition = 0.10
-            similar_generation = 3
+            percentage_stop_condition = stop_value
+            similar_generation = 20
 
             current_new_generation = new_generation
             number_of_people = len(current_new_generation)
+            print('CANTIDAD DE INDIVIDUOS : ' + str(number_of_people))
             same_defender = 0
 
             for i in range(0, number_of_people):
                 if previous_new_generation[i] == current_new_generation[i]:
                     same_defender += 1
 
-            percentage = same_defender/number_of_people
+            percentage_similar = same_defender / number_of_people
 
-            if percentage_stop_condition < percentage:
+            print('PORCENTAJE SIMILAR ' + str(percentage_similar))
+
+            if percentage_stop_condition > percentage_similar:
                 similar_generation_counter = 0
-                # continue_algorithm = False
             else:
                 similar_generation_counter += 1
-                previous_new_generation = copy_population(new_generation)
-                # continue_algorithm = True
 
-            if similar_generation == similar_generation_counter:
-                print('HUBIERON ' + str(similar_generation) + ' SIMILARES.')
-                continue_algorithm = False
-            else:
-                continue_algorithm = True
+            previous_new_generation = copy_population(current_new_generation)
 
+            continue_algorithm = not (similar_generation == similar_generation_counter)
+
+
+    print('CANTIDAD DE GENERACIONES : ' + str(len(new_generation)))
     print('------- MEJOR DEFENSOR -------')
     print(best_defender)
 

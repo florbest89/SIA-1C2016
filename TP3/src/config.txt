@@ -20,27 +20,28 @@
 # Selection methods: elite, universal, roulette, ranking, boltzmann, deterministic_tournament, probabilistic_tournament
 # Cross methods: cross_1P, cross_2P, cross_annular, cross_uniform
 # Mutation methods: classic, not_uniform
-# Replacement methods: replacement_one, replacement_two, replacement_three, replacement_mixed
+# Replacement methods: replacement_one, replacement_two, replacement_three, replacement_gengap, replacement_mixed
 # Replacement selection methods : elite, universal, roulette, ranking, boltzmann, deterministic_tournament, probabilistic_tournament
 # If replacement method is "replacement_mixed", then values are two selection methods
 #
 # Methods
-selection roulette
+selection roulette universal
 cross cross_annular
 mutation classic
-replacement replacement_mixed
-rep_selection elite universal
+replacement replacement_gengap
+rep_selection boltzmann universal
 #
 # Parameters
-N 120
+N 100
 pm 0.01
 pc 0.6
-G 0.6
-T 1.0
-P 0.0
+G 0.3
+T 150
 SP 0
 m 2
 a 1.5
+A 0.4
+B 1
 #
 # Multipliers
 sm 1.3
@@ -50,5 +51,5 @@ rm 1.2
 hm 1.1
 # Stop criterias: generations, structure, optimum, content
 #Stop
-structure 10
+structure 0.8
 

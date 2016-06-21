@@ -137,31 +137,32 @@ def universal_r(r,k):
 # para el correcto funcionamiento del metodo.
 # k cant de individuos
 # T temperatura
-# P presion NO NECESARIO
-def boltzmann(population, k, T, P):
-    r = prepare_botlzmann(population, T)
-    selected = []
-    idx = 0
+def boltzmann(population, k, T):
+
+    N = len(population)
 
     # Si la cantidad de individuos a buscar en mayor a la poblacion
-    if len(population) < k:
+    if k >= N:
         return population
 
-    rj = uniform(0, 1)
+    r = prepare_botlzmann(population, T)
+    selected = []
 
-    while k > 0 and idx < len(r):
-        qi = r[idx][0]
+    while k > 0:
+        q = 0
+        rj = uniform(0, 1)
 
-        # Si es mayor al valor de presion, se selecciona individuo
-        if rj < qi:
-            ind = r.pop(idx)
-            selected.append(ind[2])
-            k -= 1
-        idx += 1
+        L = len(r)
+        for i in range(0,L):
+            qi = r[i][1]
 
-    # en caso de no llegar a los k individuos, returno toda la poblacion
-    if k > 0:
-        return population
+            if q < rj < qi:
+                ind = r.pop(i)
+                selected.append(ind)
+                k -= 1
+                break
+            else:
+                q = r[i][1]
 
     return selected
 
@@ -232,7 +233,7 @@ def elite(k, population):
     elif k == len(population):
         return population
 
-def select(k,m,T,P,SP,population,selection_method):
+def select(k,m,T,SP,population,selection_method):
 
     if selection_method == 'elite':
         return elite(k,population)
@@ -243,17 +244,19 @@ def select(k,m,T,P,SP,population,selection_method):
     elif selection_method == 'ranking':
         return ranking(k,population,SP)
     elif selection_method == 'boltzmann':
-        return boltzmann(population,k,T,P)
+        return boltzmann(population,k,T)
     elif selection_method == 'deterministic_tournament':
         return deterministic_Tournament(population,k,m)
     else:
         return probabilistic_Tournament(population,k)
 
-def select_mix(value,N, population,m,T,P,SP,selection_method1,selection_method2):
-    # N = len(population)
+def select_mix(A,N, population,m,T,SP,selection_method_a,selection_method_b):
 
-    selected1 = select(int(value*N), m, T, P, SP, population, selection_method1)
-    selected2 = select(int((1 - value)*N), m, T, P, SP, population, selection_method2)
+    N_a = int(A * N)
+    N_b = N - N_a
 
-    return selected1 + selected2
+    selected_a = select(N_a, m, T, SP, population, selection_method_a)
+    selected_b = select(N_b, m, T, SP, population, selection_method_b)
+
+    return selected_a + selected_b
 

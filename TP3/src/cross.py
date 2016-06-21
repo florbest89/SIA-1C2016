@@ -34,9 +34,6 @@ def cross_annular(p1,p2):
     locus = randint(0,len(p1.items))
     l = randint(1, int(m.floor(L / 2)))
 
-    print('LOCUS : ' + str(locus))
-    print('l : ' + str(l))
-
     if locus + l <= L:
         return do_cross(p1,p2,locus,locus + l,2)
     else:
@@ -45,9 +42,7 @@ def cross_annular(p1,p2):
         rest = locus + l - L
         for i in range(0, rest):
             allele1 = p1.get_allele(i)
-            print('padre 1: alelo locus: ' + str(i))
             allele2 = p2.get_allele(i)
-            print('padre 2 alelo locus: ' + str(i))
 
             s1.set_allele(i, allele2)
             s2.set_allele(i, allele1)
@@ -69,9 +64,7 @@ def do_cross(p1,p2,locus_from,locus_to,pc):
 
         if p < pc:
             allele1 = p1.get_allele(l)
-            print('padre 1: alelo locus: ' + str(l))
             allele2 = p2.get_allele(l)
-            print('padre 2 alelo locus: ' + str(l))
 
             s1.set_allele(l, allele2)
             s2.set_allele(l, allele1)

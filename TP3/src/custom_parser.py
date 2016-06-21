@@ -39,12 +39,12 @@ def parse_items(lot,file):
     return items
 
 def parse_config():
-    # 0 - N , 1 - pm, 2 - pc, 3 - G, 4 - T, 5 - P, 6 - SP, 7 - m, 8 - a
-    parameters = [None] * 9
+    # 0 - N , 1 - pm, 2 - pc, 3 - G, 4 - T, 5 - SP, 6 - m, 7 - a, 8 - A, 9 - B
+    parameters = [None] * 10
     # 0 - sm, 1 - dm, 2 - em, 3 - rm, 4 - hm
     multipliers = [None] * 5
-    # 0 - selection, 1 - cross, 2 - mutation, 3 - replacement, 4 - rep_selection [if replacement == replacement_mixed, there is a 5 - rep_selection_2]
-    methods = [None] * 6
+    # 0 - selection_a, 1 - selection_b, 2 - cross, 3 - mutation, 4 - replacement, 5 - rep_selection_a, 6 - rep_selection_b
+    methods = [None] * 7
 
     file = './config.txt'
 
@@ -75,14 +75,16 @@ def parse_config():
                 parameters[3] = float(value)
             elif key == 'T':
                 parameters[4] = float(value)
-            elif key == 'P':
-                parameters[5] = float(value)
             elif key == 'SP':
-                parameters[6] = float(value)
+                parameters[5] = float(value)
             elif key == 'm':
-                parameters[7] = int(value)
+                parameters[6] = int(value)
             elif key == 'a':
+                parameters[7] = float(value)
+            elif key == 'A':
                 parameters[8] = float(value)
+            elif key == 'B':
+                parameters[9] = float(value)
             elif key == 'sm':
                 multipliers[0] = float(value)
             elif key == 'dm':
@@ -94,20 +96,19 @@ def parse_config():
             elif key == 'hm':
                 multipliers[4] = float(value)
             elif key == 'selection':
-                methods[0] = value
+                selections = value.split(' ',1)
+                methods[0] = selections[0]
+                methods[1] = selections[1]
             elif key == 'cross':
-                methods[1] = value
-            elif key == 'mutation':
                 methods[2] = value
-            elif key == 'replacement':
+            elif key == 'mutation':
                 methods[3] = value
+            elif key == 'replacement':
+                methods[4] = value
             elif key == 'rep_selection':
-                if methods[3] == 'replacement_mixed':
-                    rep_selections = value.split(' ',1)
-                    methods[4] = rep_selections[0]
-                    methods[5] = rep_selections[1]
-                else:
-                    methods[4] = value
+                rep_selections = value.split(' ',1)
+                methods[5] = rep_selections[0]
+                methods[6] = rep_selections[1]
             elif key == 'generations':
                 stop_criteria = key
                 stop_value = int(value)
