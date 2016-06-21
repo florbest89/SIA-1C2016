@@ -74,8 +74,11 @@ def genetic_algorithm():
 
         print('GENERACION : ' + str(len(best_fitness)))
 
-        if T > 1 :
-            T = T * (1 - temperature_reduction)
+        T = T * (1 - temperature_reduction)
+        #if T > 1 :
+        #    T = T * (1 - temperature_reduction)
+        #else:
+        #    T = 1
 
         best_defender = max(new_generation, key=attrgetter('fitness'))
         fitness_avg = sum(x.fitness for x in new_generation) / N
