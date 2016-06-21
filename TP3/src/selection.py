@@ -158,7 +158,7 @@ def boltzmann(population, k, T):
 
             if q < rj < qi:
                 ind = r.pop(i)
-                selected.append(ind)
+                selected.append(ind[2])
                 k -= 1
                 break
             else:
@@ -177,7 +177,6 @@ def prepare_botlzmann(population, T):
     for i in range(0, len(population)):
         exp_val = exp(population[i].fitness / T) / acum;
         r.append([exp_val, acum, population[i].copy()])
-        print('exp_val: ' + str(exp_val) + ' acum: ' + str(acum) + ' fitness: ' + str(population[i].fitness))
 
     return r
 
@@ -216,7 +215,7 @@ def probabilistic_Tournament(population, k):
             best_fitness = population[selected_ind[0]]
             worst_fitness = population[selected_ind[1]]
 
-        if r >= 0.75:
+        if r < 0.75:
             selected.append(best_fitness)
         else:
             selected.append(worst_fitness)

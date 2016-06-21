@@ -39,7 +39,7 @@ def replacement_method_3(population, A, B, selection_method1, selection_method2,
 
     new_generation = copy_population(population)
 
-    selected = select_mix(A, N, population, m, T, SP, selection_method1, selection_method2)
+    selected = select_mix(A, k, population, m, T, SP, selection_method1, selection_method2)
 
     transformed = transform(selected,cross_method,pc,mutation_method,pm)
 

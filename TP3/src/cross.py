@@ -15,7 +15,7 @@ def cross_2P(p1,p2):
 
     locus = randint(0, max_locus)
     locus2 = randint(0, max_locus)
-    
+
     if locus < locus2:
         return do_cross(p1,p2,locus,locus2 + 1,2)
     elif locus > locus2 :

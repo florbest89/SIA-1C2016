@@ -13,7 +13,7 @@ def genetic_algorithm():
     continue_algorithm = True
     epsilon = 0.0001
 
-    temperature_reduction = 0.15
+    temperature_reduction = 0.05
 
     new_generation = create_population(parameters[0],multipliers)
 
@@ -67,12 +67,15 @@ def genetic_algorithm():
     fit_avg.append(fitness_avg)
 
     while continue_algorithm:
+
+        print('TEMPERATURA :' + str(T))
         new_generation = replace(new_generation, A, B, replacement_method, selection_method_a, selection_method_b, replace_sel_a,
                     replace_sel_b,a, G, m, SP, T,cross_method, pc, mutation_method, pm)
 
         print('GENERACION : ' + str(len(best_fitness)))
 
-        T = T * (1 - temperature_reduction)
+        if T > 1 :
+            T = T * (1 - temperature_reduction)
 
         best_defender = max(new_generation, key=attrgetter('fitness'))
         fitness_avg = sum(x.fitness for x in new_generation) / N

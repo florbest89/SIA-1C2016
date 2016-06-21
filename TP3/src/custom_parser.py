@@ -30,8 +30,6 @@ def parse_items(lot,file):
         line = lines[i].replace('\n','')
         attributes = line.split('\t',5)
 
-        print(attributes)
-
         items.append(Item(int(attributes[0]),float(attributes[1]),float(attributes[2]),float(attributes[3]),float(attributes[4]),float(attributes[5])))
 
         lot -= 1

@@ -25,11 +25,11 @@
 # If replacement method is "replacement_mixed", then values are two selection methods
 #
 # Methods
-selection elite universal
+selection universal boltzmann
 cross cross_1P
 mutation not_uniform
-replacement replacement_one
-rep_selection roulette universal
+replacement replacement_three
+rep_selection probabilistic_tournament roulette
 #
 # Parameters
 N 50
@@ -51,5 +51,5 @@ rm 1.2
 hm 1.1
 # Stop criterias: generations, structure, optimum, content
 #Stop
-generations 500
+structure 0.9
 
