@@ -4,16 +4,21 @@ from mutation import *
 from random import sample
 from math import floor
 
-
-def replacement_method_1(population, selection_method, m, SP, T, P, cross_method, pc, mutation_method, pm):
-    new_generation = []
+def replacement_method_1(population, A, B, selection_method1, selection_method2, selection_method3, selection_method4,
+                         m, SP, T, P, cross_method, pc, mutation_method, pm):
+    # new_generation = []
+    generation = []
 
     if selection_method == 'elite':
-        selected = select(len(population),m,T,P,SP,population,selection_method)
-        new_generation = transform(selected,cross_method,pc,mutation_method,pm)
+        # selected = select(len(population),m,T,P,SP,population,selection_method)
+        # new_generation = transform(selected,cross_method,pc,mutation_method,pm)
+        selected = select_mix(A, len(population), population,m,T,P,SP,selection_method1,selection_method2)
+        generation = transform(selected, cross_method, pc, mutation_method, pm)
+        new_generation = select_mix(B, len(generation), generation, m, T, P, SP, selection_method3, selection_method4)
     else:
         while len(new_generation) < len(population):
-            selected = select(2,m,T,P,SP,population,selection_method)
+            # selected = select(2,m,T,P,SP,population,selection_method)
+            selected = select_mix(A, population, m, T, P, SP, selection_method1, selection_method2)
 
             p1 = selected[0]
             p2 = selected[1]
@@ -21,13 +26,18 @@ def replacement_method_1(population, selection_method, m, SP, T, P, cross_method
             c1, c2 = cross(pc,p1,p2,cross_method)
             c1, c2 = mutation(c1,c2,pm,mutation_method)
 
-            new_generation.append(c1)
-            new_generation.append(c2)
+            # new_generation.append(c1)
+            # new_generation.append(c2)
+            generation.append(c1)
+            generation.append(c2)
+
+        new_generation = select_mix(B, len(generation), generation, m, T, P, SP, selection_method3, selection_method4)
 
     return new_generation
 
-def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
-    selected = select(k,m,T,P,SP,population,selection_method)
+def replacement_method_2(population, A, B, selection_method1, selection_method2, selection_method3, selection_method4, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+    # selected = select(k,m,T,P,SP,population,selection_method)
+    selected = select_mix(A, len(population), population,m,T,P,SP,selection_method1,selection_method2)
     children = transform(selected,cross_method,pc,mutation_method,pm)
 
     # Se crea la nueva generacion
@@ -41,18 +51,21 @@ def replacement_method_2(population, selection_method, k, m, SP, T, P, cross_met
         new_generation.append(children[i].copy())
 
     # Se devuelve la nuega generacion
-    return new_generation
+    return select_mix(B, len(population), new_generation,m,T,P,SP,selection_method3,selection_method4)
 
-def replacement_method_3(population, selection_method, selection_for_replacement, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
+def replacement_method_3(population, A, B, selection_method1, selection_method2, selection_method3, selection_method4, selection_for_replacement, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
 
     new_generation = copy_population(population)
 
-    N = len(population)
+    # N = len(population)
 
-    selected = select(k,m,T,P,SP,population,selection_method)
+    # selected = select(k,m,T,P,SP,population,selection_method)
+    selected = select_mix(A, len(population), population,m,T,P,SP,selection_method1,selection_method2)
+
     transformed = transform(selected,cross_method,pc,mutation_method,pm)
 
-    return select(N, m, T, P, SP, new_generation + transformed, selection_for_replacement)
+    # return select(N, m, T, P, SP, new_generation + transformed, selection_for_replacement)
+    return select_mix(B, len(population), new_generation + transformed,m,T,P,SP,selection_method3,selection_method4)
 
 def replacement_mix(population, selection_method,selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm):
 
@@ -106,53 +119,6 @@ def transform(selected_population,cross_method, pc, mutation_method, pm):
 
     return transformed
 
-# metodo de reemplazo 2 con generation gap
-# para este metodo, el valor de G = k/N
-# def replacement_method_2_GG(selection_method0, k0, m0, SP0, T0, P0, population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
-#     print ("valor de k: " + str(k))
-#
-#     N = len(population)
-#     G = k0/N
-#
-#     population_to_next_generation, population_to_be_evaluated = generation_gap(G, selection_method0, m0, SP0, T0, P0, population)
-#     children = do_replacement_method_2(population_to_be_evaluated, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
-#
-#     # Se crea la nueva generacion
-#     for i in range(0, len(children)):
-#         population_to_next_generation.append(children[i].copy())
-#
-#     # Se devuelve la nuega generacion
-#     return population_to_next_generation
-
-# retorna los hijos mutados
-# def do_replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm):
-#     # Se realiza la seleccion
-#     selected_result = select(population, selection_method, k, m, SP, T, P)
-#
-#     print ("tamano de selected: " + str(len(selected_result)))
-#
-#     cross_result = []
-#
-#     # Se realiza el cross
-#     for i in range(0, int(len(selected_result) / 2)):
-#         s1, s2 = cross(pc, selected_result[i], selected_result[len(selected_result) - 1 - i], cross_method)
-#         cross_result.append(s1)
-#         cross_result.append(s2)
-#
-#     print ("tamano de cross: " + str(len(cross_result)))
-#
-#     # Se realiza la mutacion
-#     children_result = []
-#     children = 0
-#     while children != k:
-#         idx = sample(range(0, len(cross_result)), 2)
-#         c1, c2 = mutation(cross_result[idx[0]], cross_result[idx[1]], pm, mutation_method)
-#         children_result.append(c1)
-#         children_result.append(c2)
-#         children += 2
-#
-#     return children_result
-
 # G entre [0, 1]. Me indica cuantos padres de la generacion t pasan a t + 1
 # Se pasa un selection_method0 para la seleccion de individuos que pasan de la generacion
 # t a t+1 sin sufrir cambios
@@ -190,15 +156,16 @@ def copy_population(population):
 
     return pop_copy
 
-def replace(population, replacement_method, selection_method,selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm):
+def replace(population, A, B, replacement_method, selection_method1, selection_method2, selection_method3, selection_method4,selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm):
 
     k = floor(G * len(population))
 
     if replacement_method == 'replacement_one':
-        return replacement_method_1(population, selection_method, m, SP, T, P, cross_method, pc, mutation_method, pm)
+        return replacement_method_1(population, A, B, selection_method1, selection_method2, selection_method3, selection_method4,
+                         m, SP, T, P, cross_method, pc, mutation_method, pm)
     elif replacement_method == 'replacement_two':
-        return replacement_method_2(population, selection_method, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
+        return replacement_method_2(population, A, B, selection_method1, selection_method2, selection_method3, selection_method4, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
     elif replacement_method == 'replacement_three':
-        return replacement_method_3(population, selection_method, selection_for_replacement_a, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
+        return replacement_method_3(population, A, B, selection_method1, selection_method2, selection_method3, selection_method4, selection_for_replacement, k, m, SP, T, P, cross_method, pc, mutation_method, pm)
     elif replacement_method == 'replacement_mixed':
         return replacement_mix(population, selection_method, selection_for_replacement_a, selection_for_replacement_b, a, G, m, SP, T, P, cross_method, pc, mutation_method, pm)

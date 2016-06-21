@@ -65,8 +65,12 @@ def genetic_algorithm():
 
 
     while continue_algorithm:
-        new_generation = replace(new_generation, replacement_method, selection_method, replace_sel_a, replace_sel_b, a,
-                                 G, m, SP, T, P, cross_method, pc, mutation_method, pm)
+        new_generation = replace(new_generation, 0.5, 0.5, replacement_method, 'universal', 'boltzmann', 'boltzmann',
+                    'universal', '','', a, G, m, SP, T, P,
+                    cross_method, pc, mutation_method, pm)
+
+        # new_generation = replace(new_generation, replacement_method, selection_method, replace_sel_a, replace_sel_b, a,
+        #                          G, m, SP, T, P, cross_method, pc, mutation_method, pm)
         best_defender = max(new_generation, key=attrgetter('fitness'))
         fitness_avg = sum(x.fitness for x in new_generation) / N
         best_fitness.append(best_defender.fitness)

@@ -249,4 +249,11 @@ def select(k,m,T,P,SP,population,selection_method):
     else:
         return probabilistic_Tournament(population,k)
 
+def select_mix(value,N, population,m,T,P,SP,selection_method1,selection_method2):
+    # N = len(population)
+
+    selected1 = select(int(value*N), m, T, P, SP, population, selection_method1)
+    selected2 = select(int((1 - value)*N), m, T, P, SP, population, selection_method2)
+
+    return selected1 + selected2
 
