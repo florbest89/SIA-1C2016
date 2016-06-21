@@ -83,6 +83,8 @@ def genetic_algorithm():
         elif stop_criteria == 'content':
             continue_algorithm = same < stop_value
 
+    print('------- MEJOR DEFENSOR -------')
+    print(best_defender)
 
     print('Termino')
 
