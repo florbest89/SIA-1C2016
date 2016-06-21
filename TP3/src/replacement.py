@@ -7,7 +7,7 @@ def replacement_method_1(population, A, B, selection_method1, selection_method2,
                          m, SP, T, cross_method, pc, mutation_method, pm):
     N = len(population)
 
-    selected = select_mix(A, N, m, T, SP, selection_method1, selection_method2)
+    selected = select_mix(A,N, population,m,T,SP,selection_method1,selection_method2)
 
     new_generation = transform(selected,cross_method,pc,mutation_method,pm)
 

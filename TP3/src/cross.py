@@ -6,7 +6,6 @@ def cross_1P(p1, p2):
     L = len(p1.items) + 1
 
     locus = randint(0,len(p1.items))
-    print('LOCUS : ' + str(locus))
 
     return do_cross(p1,p2,locus,L,2)
 
@@ -16,10 +15,7 @@ def cross_2P(p1,p2):
 
     locus = randint(0, max_locus)
     locus2 = randint(0, max_locus)
-
-    print('LOCUS 1 : ' + str(locus))
-    print('LOCUS 2 : ' + str(locus2))
-
+    
     if locus < locus2:
         return do_cross(p1,p2,locus,locus2 + 1,2)
     elif locus > locus2 :

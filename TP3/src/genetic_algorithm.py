@@ -70,6 +70,8 @@ def genetic_algorithm():
         new_generation = replace(new_generation, A, B, replacement_method, selection_method_a, selection_method_b, replace_sel_a,
                     replace_sel_b,a, G, m, SP, T,cross_method, pc, mutation_method, pm)
 
+        print('GENERACION : ' + str(len(best_fitness)))
+
         T = T * (1 - temperature_reduction)
 
         best_defender = max(new_generation, key=attrgetter('fitness'))
@@ -97,7 +99,6 @@ def genetic_algorithm():
 
             current_new_generation = new_generation
             number_of_people = len(current_new_generation)
-            print('CANTIDAD DE INDIVIDUOS : ' + str(number_of_people))
             same_defender = 0
 
             for i in range(0, number_of_people):
@@ -105,8 +106,6 @@ def genetic_algorithm():
                     same_defender += 1
 
             percentage_similar = same_defender / number_of_people
-
-            print('PORCENTAJE SIMILAR ' + str(percentage_similar))
 
             if percentage_stop_condition > percentage_similar:
                 similar_generation_counter = 0
