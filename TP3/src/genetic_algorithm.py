@@ -18,6 +18,10 @@ def genetic_algorithm():
 
     new_generation = create_population(parameters[0],multipliers)
 
+    # If 'structure' is stop condition
+    previous_new_generation = copy_population(new_generation)
+    similar_generation_counter = 0
+
     # Parameters
     N = parameters[0]
     pm = parameters[1]
@@ -82,7 +86,33 @@ def genetic_algorithm():
             continue_algorithm = best_defender.fitness < stop_value
         elif stop_criteria == 'content':
             continue_algorithm = same < stop_value
+        elif stop_criteria == 'structure':
+            percentage_stop_condition = 0.10
+            similar_generation = 3
 
+            current_new_generation = new_generation
+            number_of_people = len(current_new_generation)
+            same_defender = 0
+
+            for i in range(0, number_of_people):
+                if previous_new_generation[i] == current_new_generation[i]:
+                    same_defender += 1
+
+            percentage = same_defender/number_of_people
+
+            if percentage_stop_condition < percentage:
+                similar_generation_counter = 0
+                # continue_algorithm = False
+            else:
+                similar_generation_counter += 1
+                previous_new_generation = copy_population(new_generation)
+                # continue_algorithm = True
+
+            if similar_generation == similar_generation_counter:
+                print('HUBIERON ' + str(similar_generation) + ' SIMILARES.')
+                continue_algorithm = False
+            else:
+                continue_algorithm = True
 
     print('Termino')
 

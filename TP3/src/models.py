@@ -134,4 +134,12 @@ class Defender(object):
             self.height = allele
 
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        if self.compute_fitness() != other.compute_fitness():
+            return False
+
+        for i in range(0, 5):
+            if self.items[i].id != other.items[i].id:
+                return False
+
+        return True
+        # return self.__dict__ == other.__dict__

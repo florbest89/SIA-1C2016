@@ -32,7 +32,7 @@ replacement replacement_mixed
 rep_selection elite universal
 #
 # Parameters
-N 100
+N 120
 pm 0.01
 pc 0.6
 G 0.6
@@ -49,6 +49,6 @@ em 0.6
 rm 1.2
 hm 1.1
 # Stop criterias: generations, structure, optimum, content
-# Stop
-generations 10
+#Stop
+structure 10
 
