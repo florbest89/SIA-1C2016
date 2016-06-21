@@ -12,6 +12,14 @@ class Item(object):
     def copy(self):
         return Item(self.id,self.strength,self.dexterity,self.expertise,self.resistance,self.health)
 
+    def __str__(self):
+        id_str = 'Id: ' + str(self.id) + '\n'
+        str_str = '\tFuerza: ' + str(self.strength) + '\n'
+        dex_str = '\tAgilidad: ' + str(self.dexterity) + '\n'
+        exp_str = '\tPericia: ' + str(self.expertise) + '\n'
+        res_str = '\tResistencia: ' + str(self.resistance) + '\n'
+        hea_str = '\tVida: ' + str(self.health) + '\n'
+        return id_str + str_str + dex_str + exp_str + res_str + hea_str
 
 class Defender(object):
     def __init__(self, helmet, chestplate, gauntlets, weapons, boots, height,sm, rm, em, dm, hm):
@@ -48,6 +56,17 @@ class Defender(object):
 
         return Defender(self.items[0],self.items[1],self.items[2],self.items[3],self.items[4],self.height,self.sm,self.rm,self.em,self.dm,self.hm)
 
+    def __str__(self):
+        type_str = "DEFENSOR \n"
+        fit_str = 'FITNESS: ' + str(self.fitness) + '\n'
+        height_str = 'Altura: ' + str(self.height) + '\n'
+        hel_str = 'Casco: \n\t' + str(self.items[0])+ '\n'
+        ches_str = 'Pechera: \n\t' + str(self.items[1])+ '\n'
+        gaun_str = 'Guantes: \n\t' + str(self.items[2])+ '\n'
+        wea_str = 'Armas: \n\t' + str(self.items[3])+ '\n'
+        boots_str = 'Botas: \n\t' + str(self.items[4])+ '\n'
+
+        return type_str + fit_str + height_str + hel_str + ches_str + gaun_str + wea_str + boots_str
 
     def ATM(self):
         h = self.height

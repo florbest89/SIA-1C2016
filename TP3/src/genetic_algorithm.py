@@ -114,6 +114,9 @@ def genetic_algorithm():
             else:
                 continue_algorithm = True
 
+    print('------- MEJOR DEFENSOR -------')
+    print(best_defender)
+
     print('Termino')
 
     plt.plot(best_fitness)
