@@ -206,7 +206,7 @@ def probabilistic_Tournament(population, k):
 
         # selecciono siempre de a 2
 
-        selected_ind = sample(range(0, len(population) - 1), 2)
+        selected_ind = sample(range(0, len(population)), 2)
 
         if population[selected_ind[0]].fitness < population[selected_ind[1]].fitness:
             best_fitness = population[selected_ind[1]]
