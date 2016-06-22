@@ -1,4 +1,4 @@
-# Algoritmos Geneticos
+# Algoritmos Genéticos
 
 Sistemas de Inteligencia Artificial <br />
 Trabajo Practico 3
