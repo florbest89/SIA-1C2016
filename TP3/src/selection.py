@@ -174,9 +174,12 @@ def prepare_botlzmann(population, T):
     for i in range(0, len(population)):
         acum = acum + exp(population[i].fitness / T);
 
+    acum_rel = 0.0
+
     for i in range(0, len(population)):
-        exp_val = exp(population[i].fitness / T) / acum;
-        r.append([exp_val, acum, population[i].copy()])
+        exp_val = exp(population[i].fitness / T) / acum
+        acum_rel += exp_val
+        r.append([exp_val, acum_rel, population[i].copy()])
 
     return r
 
