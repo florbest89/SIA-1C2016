@@ -6,6 +6,7 @@ from selection import *
 from replacement import *
 from operator import attrgetter
 import matplotlib.pyplot as plt
+from plot_fitness import  *
 
 def genetic_algorithm():
     parameters, multipliers, methods, stop_criteria, stop_value = parse_config()
@@ -66,6 +67,12 @@ def genetic_algorithm():
     fitness_avg = sum(individual.fitness for individual in new_generation) / N
     fit_avg.append(fitness_avg)
 
+    # variables necesarias para plot en realtime
+    fig = plt.figure(figsize=plt.figaspect(.2))
+    ax = fig.add_subplot(1, 2, 1)
+    trisurf_frame = None
+    ax2 = fig.add_subplot(1, 2, 2)
+
     while continue_algorithm:
 
         print('TEMPERATURA :' + str(T))
@@ -123,6 +130,7 @@ def genetic_algorithm():
 
             continue_algorithm = not (similar_generation == similar_generation_counter)
 
+        doThePlot(best_fitness, fit_avg, ax, ax2)
 
     print('CANTIDAD DE GENERACIONES : ' + str(len(new_generation)))
     print('------- MEJOR DEFENSOR -------')
@@ -130,6 +138,7 @@ def genetic_algorithm():
 
     print('Termino')
 
+    plt.show()
     plt.plot(best_fitness)
     plt.xlabel('Generación')
     plt.ylabel('Mejor fitness')
