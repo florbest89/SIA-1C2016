@@ -34,6 +34,7 @@ def genetic_algorithm():
     a = parameters[7]
     A = parameters[8]
     B = parameters[9]
+    k = parameters[10]
 
     # Methods
     # 0 - selection_a, 1 - selection_b, 2 - cross, 3 - mutation, 4 - replacement, 5 - rep_selection_a, 6 - rep_selection_b
@@ -77,7 +78,7 @@ def genetic_algorithm():
 
         print('TEMPERATURA :' + str(T))
         new_generation = replace(new_generation, A, B, replacement_method, selection_method_a, selection_method_b, replace_sel_a,
-                    replace_sel_b,a, G, m, SP, T,cross_method, pc, mutation_method, pm)
+                    replace_sel_b,a, G, m, SP, T,cross_method, pc, mutation_method, pm,k)
 
         print('GENERACION : ' + str(len(best_fitness)))
 

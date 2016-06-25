@@ -133,9 +133,7 @@ def copy_population(population):
 
     return pop_copy
 
-def replace(population, A, B, replacement_method, selection_method1, selection_method2, selection_method3, selection_method4, a, G, m, SP, T, cross_method, pc, mutation_method, pm):
-
-    k = int(G * len(population))
+def replace(population, A, B, replacement_method, selection_method1, selection_method2, selection_method3, selection_method4, a, G, m, SP, T, cross_method, pc, mutation_method, pm,k):
 
     if replacement_method == 'replacement_one':
         return replacement_method_1(population, A, B, selection_method1, selection_method2, selection_method3, selection_method4,
