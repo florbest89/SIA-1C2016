@@ -152,6 +152,8 @@ class Defender(object):
         else:
             self.height = allele
 
+        self.fitness = self.compute_fitness()
+
     def __eq__(self, other):
 
         s_f = self.fitness

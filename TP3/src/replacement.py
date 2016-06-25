@@ -20,18 +20,16 @@ def replacement_method_2(population, A, B, selection_method1, selection_method2,
     selected = select_mix(A, N, population, m, T, SP, selection_method1, selection_method2)
     children = transform(selected,cross_method,pc,mutation_method,pm)
 
-
     new_generation = []
     index_individual_for_next_generation = sample(range(0, N), N - k)
 
     for i in index_individual_for_next_generation:
         new_generation.append(population[i].copy())
 
-    for i in range(0, len(children)):
-        new_generation.append(children[i].copy())
+    # for i in range(0, len(children)):
+    #     new_generation.append(children[i].copy())
 
-
-    return select_mix(B, N, new_generation, m, T, SP, selection_method3, selection_method4)
+    return new_generation + select_mix(B, k, children, m, T, SP, selection_method3, selection_method4)
 
 def replacement_method_3(population, A, B, selection_method1, selection_method2, selection_method3, selection_method4, k, m, SP, T, cross_method, pc, mutation_method, pm):
 
