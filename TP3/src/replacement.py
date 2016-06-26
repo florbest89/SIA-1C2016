@@ -116,8 +116,44 @@ def replacement_gengap(population, A, B, selection_method1, selection_method2, s
                                     selection_method4, m, SP, T, cross_method, pc, mutation_method, pm)
     elif 0 < G and G < 1:
 
-        selected = sample(population,k)
-        parents = select_mix(A,N-k,population,m,T,SP,selection_method1,selection_method2)
+        parents = select_mix(A, N - k, population, m, T, SP, selection_method1, selection_method2)
+
+        sel_copy = copy_population(parents)
+        selected = copy_population(population)
+
+        count = 0
+        last_len = 0
+
+        while len(sel_copy) > 0:
+            stop = False
+            if count >= 2:
+                break
+
+            for i in range(0,len(sel_copy)):
+
+                if not stop:
+                    for j in range(0,len(selected)):
+                        if i >= len(sel_copy):
+                            stop = True
+                            break
+
+                        if sel_copy[i] == selected[j]:
+                            sel_copy.pop(i)
+                            selected.pop(j)
+                            break
+                else: break
+
+                if len(sel_copy) == last_len:
+                    count += 1
+                else:
+                    last_len = len(sel_copy)
+                    count = 0
+
+
+        selected = selected[0:k]
+
+       # selected = sample(population,k)
+
 
         transformed = transform(selected, cross_method, pc, mutation_method, pm)
 
