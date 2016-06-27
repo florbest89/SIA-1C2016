@@ -43,8 +43,8 @@ def ranking(k,population, SP):
     n = len(population)
     fitness_lineal = [0]*n
 
-    for i in range(0, n):
-        fitness_lineal[i] = 2 - SP + (2*(SP - 1)*(i - 1)/(n - 1))
+    for i in range(1, n+1):
+        fitness_lineal[i-1] = 2 - SP + (2*(SP - 1)*(i - 1)/(n - 1))
 
     r = prepare_fitness_lineal(fitness_lineal, population)
     selected = []

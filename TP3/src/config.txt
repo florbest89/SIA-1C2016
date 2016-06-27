@@ -25,23 +25,23 @@
 # If replacement method is "replacement_mixed", then values are two selection methods
 #
 # Methods
-selection elite elite
-cross cross_2P
-mutation classic
+selection universal roulette
+cross cross_uniform
+mutation not_uniform
 replacement replacement_two
-rep_selection elite elite
+rep_selection elite roulette
 #
 # Parameters
-N 100
-pm 0.005
-pc 0.7
-G 0.5
+N 50
+pm 0.9
+pc 0.8
+G 0.05
 T 200
-SP 1.7
-m 2
-A 1.0
-B 1.0
-k 50
+SP 2.0
+m 3
+A 0.1
+B 0.1
+k 10
 #
 # Multipliers
 sm 1.3
